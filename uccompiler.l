@@ -15,6 +15,7 @@
     void handleKeyword(char* keyword);
     void handleToken(char* token);
     //reserved ["auto"|"break"|"case"|"char"|"const"|"continue"|"default"|"do"|"double"|"else"|"enum"|"extern"|"float"|"for"|"goto"|"if"|"int"|"long"|"register"|"return"|"short"|"signed"|"sizeof"|"static"|"struct"|"switch"|"typedef"|"union"|"unsigned"|"void"|"volatile"|"while"]
+    //\n, \t \\, \’, \" e \ooo
 %}
 numero                                      [0-9]+ 
 decimal                                     [\.\,]
@@ -22,9 +23,11 @@ reserved                                    auto|break|case|char|const|continue|
 %%
 {numero}                                           {handleToken("INTLIT");}
 {numero}({decimal}{numero})?e[\-|\+]{numero}       {handleToken("REALLIT");} 
-\'\\(n|t|\\|\'|\")\'                                     {handleToken("CHRLIT");}
+'\\([0-7][0-7][0-7]|n|t|\\|\'|\")'                                     {handleToken("CHRLIT");}
+''                                              {handleError(INVALID_CHARLIT);}
+'                                              {handleError(UNTERM_CHARLIT);}
 '\\'                                              {handleError(UNTERM_CHARLIT);}
-'.'                                                   {handleToken("CHRLIT");}
+'[^'|\n]'                                                   {handleToken("CHRLIT");}
 '..+'                                                 {handleError(INVALID_CHARLIT);}
 \/\*(.|\n)+                                           {handleError(UNTERM_COMMENT);}
 char                                               {handleKeyword("CHAR");}
