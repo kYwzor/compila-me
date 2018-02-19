@@ -1,4 +1,4 @@
-%X ITEMIZE ENUMERATE
+%X COMMENT
 %{
     #define INVALID_CHARLIT 1
     #define UNTERM_COMMENT 2
@@ -20,16 +20,22 @@
 numero                                      [0-9]+ 
 decimal                                     [\.\,]
 reserved                                    auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|int|long|register|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while
+chrlitconst                                 \\([0-7][0-7][0-7]|n|t|\\|\'|\")|[^'|\n]
+terminator                                  \n|\r|\r\n
 %%
+\/\/.*                                            ;
 {numero}                                           {handleToken("INTLIT");}
 {numero}({decimal}{numero})?e[\-|\+]{numero}       {handleToken("REALLIT");} 
-'\\([0-7][0-7][0-7]|n|t|\\|\'|\")'                                     {handleToken("CHRLIT");}
-''                                              {handleError(INVALID_CHARLIT);}
-'                                              {handleError(UNTERM_CHARLIT);}
-'\\'                                              {handleError(UNTERM_CHARLIT);}
-'[^'|\n]'                                                   {handleToken("CHRLIT");}
-'..+'                                                 {handleError(INVALID_CHARLIT);}
-\/\*(.|\n)+                                           {handleError(UNTERM_COMMENT);}
+
+'([^'|{terminator}|\\]|(\\.)*)+{terminator}                                       {handleError(UNTERM_CHARLIT); line++;}
+'{chrlitconst}'                                     {handleToken("CHRLIT");}
+'([^'|{terminator}|\\]|(\\.)*)*'                                                 {handleError(INVALID_CHARLIT);}
+\/\*                                                    {BEGIN COMMENT; column+= yyleng;}
+<COMMENT>.                                              {column += yyleng;}
+<COMMENT>{terminator}                                             {line++;
+                                                        column = 1;}
+<COMMENT>\/\* {BEGIN 0; column += yyleng;}
+<COMMENT><<EOF>> {handleError(UNTERM_COMMENT);}
 char                                               {handleKeyword("CHAR");}
 else                                               {handleKeyword("ELSE");}
 while                                              {handleKeyword("WHILE");}
@@ -66,8 +72,8 @@ void                                               {handleKeyword("VOID");}
 {reserved}                                            {handleToken("RESERVED");}
 [a-z|A-Z|_][a-z|A-Z|_|0-9]*                           {handleToken("ID");}
 " "                                                   {column += yyleng;}
-.                                                     {column += yyleng;}
-\n                                                    {line++; column = 1;}
+.                                                     {handleError(ILLEGAL_CHAR);}
+{terminator}                                                    {line++; column = 1;}
 
 %%
 int main(int argc, char** argv)
