@@ -15,65 +15,65 @@
     void handleKeyword(char* keyword);
     void handleToken(char* token);
     //reserved ["auto"|"break"|"case"|"char"|"const"|"continue"|"default"|"do"|"double"|"else"|"enum"|"extern"|"float"|"for"|"goto"|"if"|"int"|"long"|"register"|"return"|"short"|"signed"|"sizeof"|"static"|"struct"|"switch"|"typedef"|"union"|"unsigned"|"void"|"volatile"|"while"]
+    //garantir reserved
     //\n, \t \\, \’, \" e \ooo
 %}
 numero                                      [0-9]+ 
 decimal                                     [\.\,]
-reserved                                    auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|int|long|register|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while
+reserved                                    ","|"<"|">"|"."|"_"|"("|")"|";"|"$"|":"|"%"|"["|"]"|"#"|"?"|"'"|"&"|"{"|"}"|\"|"^"|"!"|"*"|"/"|"|"|"-"|"\\"|"~"|"+"|auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|int|long|register|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while
 chrlitconst                                 \\([0-7][0-7][0-7]|n|t|\\|\'|\")|[^'|\n]
 terminator                                  \n|\r|\r\n
 %%
 \/\/.*                                            ;
-{numero}                                           {handleToken("INTLIT");}
-{numero}({decimal}{numero})?e[\-|\+]{numero}       {handleToken("REALLIT");} 
+{numero}                                            {handleToken("INTLIT");}
+{numero}({decimal}{numero})?e[\-|\+]{numero}        {handleToken("REALLIT");} 
 
-'([^'|{terminator}|\\]|(\\.)*)+{terminator}                                       {handleError(UNTERM_CHARLIT); line++;}
+'([^'|{terminator}|\\]|(\\.)*)+{terminator}         {handleError(UNTERM_CHARLIT); line++;}
 '{chrlitconst}'                                     {handleToken("CHRLIT");}
-'([^'|{terminator}|\\]|(\\.)*)*'                                                 {handleError(INVALID_CHARLIT);}
-\/\*                                                    {BEGIN COMMENT; column+= yyleng;}
-<COMMENT>.                                              {column += yyleng;}
-<COMMENT>{terminator}                                             {line++;
-                                                        column = 1;}
-<COMMENT>\/\* {BEGIN 0; column += yyleng;}
-<COMMENT><<EOF>> {handleError(UNTERM_COMMENT);}
-char                                               {handleKeyword("CHAR");}
-else                                               {handleKeyword("ELSE");}
-while                                              {handleKeyword("WHILE");}
-if                                                 {handleKeyword("IF");}
-int                                                {handleKeyword("INT");}
-short                                              {handleKeyword("SHORT");}
-double                                             {handleKeyword("DOUBLE");}
-return                                             {handleKeyword("RETURN");}
-void                                               {handleKeyword("VOID");}
-\&                                                 {handleKeyword("BITWISEAND");}
-\|                                                 {handleKeyword("BITWISEOR");}
-\^                                                 {handleKeyword("BITWISEXOR");}
-\&\&                                                  {handleKeyword("AND");}
-\=                                                 {handleKeyword("ASSIGN");}
-\*                                                    {handleKeyword("MUL");}
-\,                                                    {handleKeyword("COMMA");}
-\/                                                    {handleKeyword("DIV");}
-\=\=                                                  {handleKeyword("EQ");}
-\>\=                                                  {handleKeyword("GE");}
-\>                                                    {handleKeyword("GT");}
-\{                                                    {handleKeyword("LBRACE");}
-\<\=                                                  {handleKeyword("LE");}
-\(                                                    {handleKeyword("LPAR");}
-\<                                                    {handleKeyword("LT");}
-\-                                                    {handleKeyword("MINUS");}
-\%                                                    {handleKeyword("MOD");}
-\!\=                                                  {handleKeyword("NE");}
-\!                                                    {handleKeyword("NOT");}
-\|\|                                               {handleKeyword("OR");}
-\+                                                    {handleKeyword("PLUS");}
-\}                                                    {handleKeyword("RBRACE");}
-\)                                                    {handleKeyword("RPAR");}
-\;                                                    {handleKeyword("SEMI");}
-{reserved}                                            {handleToken("RESERVED");}
-[a-z|A-Z|_][a-z|A-Z|_|0-9]*                           {handleToken("ID");}
-" "                                                   {column += yyleng;}
-.                                                     {handleError(ILLEGAL_CHAR);}
-{terminator}                                                    {line++; column = 1;}
+'([^'|{terminator}|\\]|(\\.)*)*'                    {handleError(INVALID_CHARLIT);}
+\/\*                                                {BEGIN COMMENT; handleToken("START COMMENT"); column+= yyleng;}
+<COMMENT>.                                          {column += yyleng;}
+<COMMENT>{terminator}                               {line++; column = 1;}
+<COMMENT>\*\/                                       {BEGIN 0; handleToken("END COMMENT"); column += yyleng;}
+<COMMENT><<EOF>>                                    {handleError(UNTERM_COMMENT);}
+char                                                {handleKeyword("CHAR");}
+else                                                {handleKeyword("ELSE");}
+while                                               {handleKeyword("WHILE");}
+if                                                  {handleKeyword("IF");}
+int                                                 {handleKeyword("INT");}
+short                                               {handleKeyword("SHORT");}
+double                                              {handleKeyword("DOUBLE");}
+return                                              {handleKeyword("RETURN");}
+void                                                {handleKeyword("VOID");}
+\&                                                  {handleKeyword("BITWISEAND");}
+\|                                                  {handleKeyword("BITWISEOR");}
+\^                                                  {handleKeyword("BITWISEXOR");}
+\&\&                                                {handleKeyword("AND");}
+\=                                                  {handleKeyword("ASSIGN");}
+\*                                                  {handleKeyword("MUL");}
+\,                                                  {handleKeyword("COMMA");}
+\/                                                  {handleKeyword("DIV");}
+\=\=                                                {handleKeyword("EQ");}
+\>\=                                                {handleKeyword("GE");}
+\>                                                  {handleKeyword("GT");}
+\{                                                  {handleKeyword("LBRACE");}
+\<\=                                                {handleKeyword("LE");}
+\(                                                  {handleKeyword("LPAR");}
+\<                                                  {handleKeyword("LT");}
+\-                                                  {handleKeyword("MINUS");}
+\%                                                  {handleKeyword("MOD");}
+\!\=                                                {handleKeyword("NE");}
+\!                                                  {handleKeyword("NOT");}
+\|\|                                                {handleKeyword("OR");}
+\+                                                  {handleKeyword("PLUS");}
+\}                                                  {handleKeyword("RBRACE");}
+\)                                                  {handleKeyword("RPAR");}
+\;                                                  {handleKeyword("SEMI");}
+{reserved}                                          {handleToken("RESERVED");}
+[a-z|A-Z|_][a-z|A-Z|_|0-9]*                         {handleToken("ID");}
+" "                                                 {column += yyleng;}
+.                                                   {handleError(ILLEGAL_CHAR);}
+{terminator}                                        {line++; column = 1;}
 
 %%
 int main(int argc, char** argv)

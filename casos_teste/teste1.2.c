@@ -6,27 +6,30 @@ int main(void)
     i = '\t';
     i = '\n';
     i = '\"';
-    i = '\''
+    i = '\'';
+    i = '\000';
     //
     /* ola
     salut*/
 
     /* sdfsdfs
     dfsdfsdf*/ char pila;
-    i = 'ab;aa;
-    i = '\000' ab;
+    /*Unterminated*/
+    i = 'ab;aa
     i = 'a
-    i = 'a'a;
     i = '\4\';
+    i = '\';
+    i = '\000' ab;
+    i = 'a';
+    /*Invalid*/
+    i = 'a'a;
     i = '\`';
-    i = '\000';
+    i = '\090';
     i = 'ab'cd';
     i = 'ab\'cd';
     i = '\ ';
-    i = '\';
     i = '';
-    i = '\090';
-    i = ''';
+    i = '''; //Also Unterminated
     while (i <= 'Z')
     {
         putchar(i);
