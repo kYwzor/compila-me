@@ -18,23 +18,24 @@
     //garantir reserved
     //\n, \t \\, \’, \" e \ooo
 %}
-numero                                      [0-9]+ 
-decimal                                     [\.\,]
-reserved                                    ","|"<"|">"|"."|"_"|"("|")"|";"|"$"|":"|"%"|"["|"]"|"#"|"?"|"'"|"&"|"{"|"}"|\"|"^"|"!"|"*"|"/"|"|"|"-"|"\\"|"~"|"+"|auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|int|long|register|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while
-chrlitconst                                 \\([0-7][0-7][0-7]|n|t|\\|\'|\")|[^'|\n]
-terminator                                  \n|\r|\r\n
+numero                                              [0-9] 
+decimal                                             \.|\,
+reserved                                            \[|\]|\+\+|\-\-|auto|break|case|const|continue|default|do|enum|extern|float|for|goto|inline|long|register|restrict|signed|sizeof|static|struct|switch|typedef|union|unsigned|volatile|_Bool|_Complex|_Imaginary
+chrlitconst                                         \\([0-7][0-7][0-7]|n|t|\\|\'|\")|[^'|\n|\\]
+terminator                                          \n|\r|\r\n
+separator                                           \t|" "|\s|\b|\f
 %%
-\/\/.*                                            ;
-{numero}                                            {handleToken("INTLIT");}
-{numero}({decimal}{numero})?e[\-|\+]{numero}        {handleToken("REALLIT");} 
-
-'([^'|{terminator}|\\]|(\\.)*)+{terminator}         {handleError(UNTERM_CHARLIT); line++;}
-'{chrlitconst}'                                     {handleToken("CHRLIT");}
-'([^'|{terminator}|\\]|(\\.)*)*'                    {handleError(INVALID_CHARLIT);}
-\/\*                                                {BEGIN COMMENT; handleToken("START COMMENT"); column+= yyleng;}
+\/\/.*                                              ;
+({numero})+                                            {handleToken("INTLIT");}
+(({numero})*({decimal})?({numero})+|({numero})+({decimal})?({numero})*)(e|E)?[\-|\+]?({numero})*       {handleToken("REALLIT");} 
+'({chrlitconst})'                                    {handleToken("CHRLIT");}
+'([^'|\n|\r|\r\n|\\]|(\\.)*)*'      {handleError(INVALID_CHARLIT);}
+('\\)+                                              {handleError(UNTERM_CHARLIT);}
+'([^'|\n|\r|\r\n|\\]|(\\.)*)+((\\\\)*\\')?({terminator})         {handleError(UNTERM_CHARLIT); line++; column = 1;}
+\/\*                                                {BEGIN COMMENT; column+= yyleng;}
 <COMMENT>.                                          {column += yyleng;}
-<COMMENT>{terminator}                               {line++; column = 1;}
-<COMMENT>\*\/                                       {BEGIN 0; handleToken("END COMMENT"); column += yyleng;}
+<COMMENT>({terminator})                           {line++; column = 1;}
+<COMMENT>\*\/                                       {BEGIN 0; column += yyleng;}
 <COMMENT><<EOF>>                                    {handleError(UNTERM_COMMENT);}
 char                                                {handleKeyword("CHAR");}
 else                                                {handleKeyword("ELSE");}
@@ -69,11 +70,11 @@ void                                                {handleKeyword("VOID");}
 \}                                                  {handleKeyword("RBRACE");}
 \)                                                  {handleKeyword("RPAR");}
 \;                                                  {handleKeyword("SEMI");}
-{reserved}                                          {handleToken("RESERVED");}
+({reserved})                                          {handleToken("RESERVED");}
 [a-z|A-Z|_][a-z|A-Z|_|0-9]*                         {handleToken("ID");}
-" "                                                 {column += yyleng;}
+({separator})                                         {column += yyleng;}
 .                                                   {handleError(ILLEGAL_CHAR);}
-{terminator}                                        {line++; column = 1;}
+({terminator})                                        {line++; column = 1;}
 
 %%
 int main(int argc, char** argv)
@@ -104,7 +105,7 @@ void handleToken(char* token){
 
 void handleError(int errorCode){
     if(errorCode == 1){
-        printf("Line %d, col %d: invalid char constant %s\n", line, column, yytext);
+        printf("Line %d, col %d: invalid char constant (%s)\n", line, column, yytext);
     }
     else if(errorCode == 2){
         printf("Line %d, col %d: unterminated comment\n", line, column);
@@ -113,7 +114,7 @@ void handleError(int errorCode){
         printf("Line %d, col %d: unterminated char constant\n", line, column);
     }
     else if(errorCode == 4){
-        printf("Line %d, col %d: illegal character %s\n", line, column,yytext);
+        printf("Line %d, col %d: illegal character (%s)\n", line, column,yytext);
     }
     column += yyleng;
 }
