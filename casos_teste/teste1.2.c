@@ -1,6 +1,10 @@
+/*a
+*/
+''
 int main(void)
 {
     char i = '\'';
+i='ab;aa
     i = ' ';
     i = '\\';
     i = '\t';
@@ -22,7 +26,7 @@ int main(void)
     i = '\000' ab;
     i = 'a';
     /*Invalid*/
-    i = 'a'a;
+    i = 'a'a;k
     i = '\`';
     i = '\090';
     i = 'ab'cd';

@@ -11,6 +11,8 @@
     int flag = 0;
     int line = 1;
     int column = 1;
+    int line_memory;
+    int column_memory;
     void handleError(int errorCode);
     void handleKeyword(char* keyword);
     void handleToken(char* token);
@@ -27,16 +29,26 @@ separator                                           \t|" "|\s|\b|\f
 %%
 \/\/.*                                              ;
 ({numero})+                                            {handleToken("INTLIT");}
-(({numero})*({decimal})?({numero})+|({numero})+({decimal})?({numero})*)(e|E)?[\-|\+]?({numero})*       {handleToken("REALLIT");} 
+(({numero})*({decimal})?({numero})+|({numero})+({decimal})?({numero})*)((e|E)[\-|\+]?({numero})+)?       {handleToken("REALLIT");} 
 '({chrlitconst})'                                    {handleToken("CHRLIT");}
 '([^'|\n|\r|\r\n|\\]|(\\.)*)*'      {handleError(INVALID_CHARLIT);}
 ('\\)+                                              {handleError(UNTERM_CHARLIT);}
 '([^'|\n|\r|\r\n|\\]|(\\.)*)+((\\\\)*\\')?({terminator})         {handleError(UNTERM_CHARLIT); line++; column = 1;}
-\/\*                                                {BEGIN COMMENT; column+= yyleng;}
-<COMMENT>.                                          {column += yyleng;}
-<COMMENT>({terminator})                           {line++; column = 1;}
-<COMMENT>\*\/                                       {BEGIN 0; column += yyleng;}
-<COMMENT><<EOF>>                                    {handleError(UNTERM_COMMENT);}
+\/\*                                                {BEGIN COMMENT; 
+                                                    column_memory = column; 
+                                                    line_memory = line; 
+                                                    column_memory += yyleng;}
+<COMMENT>({terminator})                             {line_memory += 1;
+                                                    column_memory = 1;}
+<COMMENT>.                                          {column_memory += yyleng;}
+<COMMENT>\*\/                                       {BEGIN 0; 
+                                                    line = line_memory;
+                                                    column_memory += yyleng;
+                                                    column = column_memory;}
+<COMMENT><<EOF>>                                    {handleError(UNTERM_COMMENT); 
+                                                    column = column_memory; 
+                                                    line = line_memory; 
+                                                    BEGIN 0;}
 char                                                {handleKeyword("CHAR");}
 else                                                {handleKeyword("ELSE");}
 while                                               {handleKeyword("WHILE");}
@@ -92,29 +104,32 @@ int yywrap()
 void handleKeyword(char* keyword){
     if(flag){
         printf("%s\n", keyword);
-        column += yyleng;
     }
+        column += yyleng;
 }
 
 void handleToken(char* token){
     if(flag){
         printf("%s(%s)\n", token, yytext);
-        column += yyleng;
     }
+        column += yyleng;
 }
 
 void handleError(int errorCode){
     if(errorCode == 1){
         printf("Line %d, col %d: invalid char constant (%s)\n", line, column, yytext);
+        column += yyleng;
     }
     else if(errorCode == 2){
         printf("Line %d, col %d: unterminated comment\n", line, column);
+        column_memory += yyleng;
     }
     else if(errorCode == 3){
         printf("Line %d, col %d: unterminated char constant\n", line, column);
+        column += yyleng;
     }
     else if(errorCode == 4){
-        printf("Line %d, col %d: illegal character (%s)\n", line, column,yytext);
+        printf("Line %d, col %d: illegal character (%s)\n", line, column, yytext);
+        column += yyleng;
     }
-    column += yyleng;
 }
