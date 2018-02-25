@@ -21,7 +21,7 @@
     //\n, \t \\, \’, \" e \ooo
 %}
 numero                                              [0-9] 
-decimal                                             \.|\,
+decimal                                             \.
 reserved                                            \[|\]|\+\+|\-\-|auto|break|case|const|continue|default|do|enum|extern|float|for|goto|inline|long|register|restrict|signed|sizeof|static|struct|switch|typedef|union|unsigned|volatile|_Bool|_Complex|_Imaginary
 chrlitconst                                         \\([0-7][0-7][0-7]|n|t|\\|\'|\")|[^'|\n|\\]
 terminator                                          \n|\r|\r\n
@@ -82,11 +82,11 @@ void                                                {handleKeyword("VOID");}
 \}                                                  {handleKeyword("RBRACE");}
 \)                                                  {handleKeyword("RPAR");}
 \;                                                  {handleKeyword("SEMI");}
-({reserved})                                          {handleToken("RESERVED");}
-[a-z|A-Z|_][a-z|A-Z|_|0-9]*                         {handleToken("ID");}
-({separator})                                         {column += yyleng;}
+({reserved})                                        {handleToken("RESERVED");}
+[a-zA-Z_][a-zA-Z_0-9]*                              {handleToken("ID");}
+({separator})                                       {column += yyleng;}
+({terminator})                                      {line++; column = 1;}
 .                                                   {handleError(ILLEGAL_CHAR);}
-({terminator})                                        {line++; column = 1;}
 
 %%
 int main(int argc, char** argv)
