@@ -231,3 +231,34 @@ Line 110, col 1: unterminated char constant
 Line 111, col 1: illegal character (\)
 Line 111, col 2: invalid char constant ('')
 Line 111, col 4: unterminated char constant
+BITWISEOR
+OR
+OR
+BITWISEOR
+OR
+OR
+CHRLIT('\0')
+Line 119, col 1: unterminated char constant
+Line 120, col 1: unterminated char constant
+Line 121, col 1: unterminated char constant
+Line 122, col 1: invalid char constant ('\23\\\\')
+CHRLIT('\'')
+CHRLIT('\'')
+Line 124, col 5: unterminated char constant
+INT
+ID(eiro)
+SEMI
+ID(inteiro)
+SEMI
+INT
+ID(a)
+ASSIGN
+INTLIT(0)
+COMMA
+ID(b)
+ASSIGN
+INTLIT(2)
+COMMA
+ID(c)
+SEMI
+Line 129, col 1: unterminated char constant
