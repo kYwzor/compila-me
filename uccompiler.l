@@ -30,8 +30,8 @@ separator                                           \t|" "|\s|\b|\f
 ({numero})+                                         {handleToken("INTLIT");}
 (({numero})*\.?({numero})+|({numero})+\.?({numero})*)((e|E)[\-\+]?({numero})+)?       {handleToken("REALLIT");} 
 '({chrlitconst})'                                   {handleToken("CHRLIT");}
-'([^'\n\r\\]|(\\.)*)*'                              {handleError(INVALID_CHARLIT);}
-'([^'\n\r\\]|(\\.)*)+\\?                            {handleError(UNTERM_CHARLIT);}
+'([^'\n\r\\]|(\\.))*'                               {handleError(INVALID_CHARLIT);}
+'([^'\n\r\\]|(\\.))*\\?                             {handleError(UNTERM_CHARLIT);}
 \/\*                                                {BEGIN COMMENT; 
                                                     column_memory = column; 
                                                     line_memory = line; 
