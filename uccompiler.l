@@ -23,7 +23,7 @@
 numero                                              [0-9] 
 reserved                                            \[|\]|\+\+|\-\-|auto|break|case|const|continue|default|do|enum|extern|float|for|goto|inline|long|register|restrict|signed|sizeof|static|struct|switch|typedef|union|unsigned|volatile|_Bool|_Complex|_Imaginary
 chrlitconst                                         \\([0-7][0-7]?[0-7]?|n|t|\\|\'|\")|[^'\n\\]
-terminator                                          \n|\r|\r\n
+terminator                                          \n|\r\n|\r
 separator                                           \t|" "|\s|\b|\f
 %%
 \/\/.*                                              ;
@@ -32,7 +32,7 @@ separator                                           \t|" "|\s|\b|\f
 '({chrlitconst})'                                   {handleToken("CHRLIT");}
 '([^'\n\r\\]|(\\.)*)*'                              {handleError(INVALID_CHARLIT);}
 ('\\)+                                              {handleError(UNTERM_CHARLIT);}
-'([^'\n\r\\]|(\\.)*)+((\\\\)*\\')?({terminator})    {handleError(UNTERM_CHARLIT); line++; column = 1;}
+'([^'\n\r\\]|(\\.)*)+((\\\\)*\\')?                  {handleError(UNTERM_CHARLIT);}
 \/\*                                                {BEGIN COMMENT; 
                                                     column_memory = column; 
                                                     line_memory = line; 
