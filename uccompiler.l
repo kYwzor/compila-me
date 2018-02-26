@@ -31,7 +31,6 @@ separator                                           \t|" "|\s|\b|\f
 (({numero})*\.?({numero})+|({numero})+\.?({numero})*)((e|E)[\-\+]?({numero})+)?       {handleToken("REALLIT");} 
 '({chrlitconst})'                                   {handleToken("CHRLIT");}
 '([^'\n\r\\]|(\\.)*)*'                              {handleError(INVALID_CHARLIT);}
-('\\)+                                              {handleError(UNTERM_CHARLIT);}
 '([^'\n\r\\]|(\\.)*)+\\?                            {handleError(UNTERM_CHARLIT);}
 \/\*                                                {BEGIN COMMENT; 
                                                     column_memory = column; 
