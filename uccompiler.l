@@ -8,6 +8,7 @@
     Tiago Gomes 2015238615*/
     #include "stdio.h"
     #include "ctype.h"
+    #include "y.tab.h"
     int flag = 0;
     int line = 1;
     int column = 1;
@@ -90,7 +91,7 @@ void                                                {handleKeyword("VOID"); retu
 int main(int argc, char** argv)
 {
     if(argc == 2 && strcmp(argv[1],"-l") == 0) flag = 1;
-    yylex();
+    yyparse();
     return 0;
 }
 
