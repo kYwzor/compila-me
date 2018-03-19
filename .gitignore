@@ -1,4 +1,12 @@
-*.out
+# LEX/YACC stuff
 lex.yy.c
+y.tab.c
+y.tab.h
+
+# Outputs produced
+*.out
+uccompiler
 *.zip
+
+
 password.txt
