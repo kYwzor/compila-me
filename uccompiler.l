@@ -14,8 +14,8 @@
     int line_memory;
     int column_memory;
     void handleError(int errorCode);
-    int handleKeyword(char* keyword);
-    int handleToken(char* token_val);
+    void handleKeyword(char* keyword);
+    void handleToken(char* token_val);
     //reserved ["auto"|"break"|"case"|"char"|"const"|"continue"|"default"|"do"|"double"|"else"|"enum"|"extern"|"float"|"for"|"goto"|"if"|"int"|"long"|"register"|"return"|"short"|"signed"|"sizeof"|"static"|"struct"|"switch"|"typedef"|"union"|"unsigned"|"void"|"volatile"|"while"]
     //garantir reserved
     //\n, \t \\, \’, \" e \ooo
@@ -99,23 +99,21 @@ int yywrap()
     return 1;
 }
 
-int handleKeyword(char* keyword){
+void handleKeyword(char* keyword){
     if(flag){
         printf("%s\n", keyword);
     }
     column += yyleng;
-    return token;
 }
 
-int handleToken(char* token_val){
+void handleToken(char* token_val){
     if(flag){
         printf("%s(%s)\n", token_val, yytext);
     }
     column += yyleng;
-    return token;
 }
 
-int handleError(int errorCode){
+void handleError(int errorCode){
     if(errorCode == 1){
         printf("Line %d, col %d: invalid char constant (%s)\n", line, column, yytext);
         column += yyleng;
