@@ -1,0 +1,44 @@
+FunctionsAndDeclarations
+-FunctionDefinition
+--TypeSpec
+---CHAR INT VOID SHORT DOUBLE
+--FunctionDeclarator
+---ID LPAR RPAR
+---ParameterList
+----ParameterDeclaration
+-----TypeSpec 
+------CHAR INT VOID SHORT DOUBLE
+-----ID
+----COMMA
+--FunctionBody
+---LBRACE
+---DeclarationsAndStatements
+----Statement DeclarationsAndStatements
+----Declaration DeclarationsAndStatements
+----Statement
+----Declaration
+---RBRACE
+-FunctionDeclaration
+--TypeSpec
+---CHAR INT VOID SHORT DOUBLE
+--FunctionDeclarator
+---ID
+---LPAR
+---ParameterList
+----ParameterDeclaration
+-----TypeSpec 
+------CHAR INT VOID SHORT DOUBLE
+-----ID
+----COMMA
+---RPAR
+--SEMI
+-Declaration
+--TypeSpec
+---CHAR INT VOID SHORT DOUBLE
+--Declarator
+---ID
+---ASSIGN
+---Expr
+
+--COMMA
+--SEMI

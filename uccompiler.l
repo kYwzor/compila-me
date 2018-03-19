@@ -14,8 +14,8 @@
     int line_memory;
     int column_memory;
     void handleError(int errorCode);
-    void handleKeyword(char* keyword);
-    void handleToken(char* token);
+    int handleKeyword(char* keyword);
+    int handleToken(char* token_val);
     //reserved ["auto"|"break"|"case"|"char"|"const"|"continue"|"default"|"do"|"double"|"else"|"enum"|"extern"|"float"|"for"|"goto"|"if"|"int"|"long"|"register"|"return"|"short"|"signed"|"sizeof"|"static"|"struct"|"switch"|"typedef"|"union"|"unsigned"|"void"|"volatile"|"while"]
     //garantir reserved
     //\n, \t \\, \’, \" e \ooo
@@ -27,9 +27,9 @@ terminator                                          \r\n|\n|\r
 separator                                           \t|" "|\s|\b|\f
 %%
 \/\/.*                                              ;
-({numero})+                                         {handleToken("INTLIT");}
-(({numero})*\.?({numero})+|({numero})+\.?({numero})*)((e|E)[\-\+]?({numero})+)?       {handleToken("REALLIT");} 
-'({chrlitconst})'                                   {handleToken("CHRLIT");}
+({numero})+                                         {handleToken("INTLIT"); return INTLIT;}
+(({numero})*\.?({numero})+|({numero})+\.?({numero})*)((e|E)[\-\+]?({numero})+)?       {handleToken("REALLIT"); return REALLIT;} 
+'({chrlitconst})'                                   {handleToken("CHRLIT"); return CHRLIT;}
 '([^'\n\r\\]|(\\.))*'                               {handleError(INVALID_CHARLIT);}
 '([^'\n\r\\]|(\\.))*\\?                             {handleError(UNTERM_CHARLIT);}
 \/\*                                                {BEGIN COMMENT; 
@@ -47,41 +47,41 @@ separator                                           \t|" "|\s|\b|\f
                                                     column = column_memory; 
                                                     line = line_memory; 
                                                     BEGIN 0;}
-char                                                {handleKeyword("CHAR");}
-else                                                {handleKeyword("ELSE");}
-while                                               {handleKeyword("WHILE");}
-if                                                  {handleKeyword("IF");}
-int                                                 {handleKeyword("INT");}
-short                                               {handleKeyword("SHORT");}
-double                                              {handleKeyword("DOUBLE");}
-return                                              {handleKeyword("RETURN");}
-void                                                {handleKeyword("VOID");}
-\&                                                  {handleKeyword("BITWISEAND");}
-\|                                                  {handleKeyword("BITWISEOR");}
-\^                                                  {handleKeyword("BITWISEXOR");}
-\&\&                                                {handleKeyword("AND");}
-\=                                                  {handleKeyword("ASSIGN");}
-\*                                                  {handleKeyword("MUL");}
-\,                                                  {handleKeyword("COMMA");}
-\/                                                  {handleKeyword("DIV");}
-\=\=                                                {handleKeyword("EQ");}
-\>\=                                                {handleKeyword("GE");}
-\>                                                  {handleKeyword("GT");}
-\{                                                  {handleKeyword("LBRACE");}
-\<\=                                                {handleKeyword("LE");}
-\(                                                  {handleKeyword("LPAR");}
-\<                                                  {handleKeyword("LT");}
-\-                                                  {handleKeyword("MINUS");}
-\%                                                  {handleKeyword("MOD");}
-\!\=                                                {handleKeyword("NE");}
-\!                                                  {handleKeyword("NOT");}
-\|\|                                                {handleKeyword("OR");}
-\+                                                  {handleKeyword("PLUS");}
-\}                                                  {handleKeyword("RBRACE");}
-\)                                                  {handleKeyword("RPAR");}
-\;                                                  {handleKeyword("SEMI");}
-({reserved})                                        {handleToken("RESERVED");}
-[a-zA-Z_][a-zA-Z_0-9]*                              {handleToken("ID");}
+char                                                {handleKeyword("CHAR"); return CHAR;}
+else                                                {handleKeyword("ELSE"); return ELSE;}
+while                                               {handleKeyword("WHILE"); return WHILE;}
+if                                                  {handleKeyword("IF"); return IF;}
+int                                                 {handleKeyword("INT"); return INT;}
+short                                               {handleKeyword("SHORT"); return SHORT;}
+double                                              {handleKeyword("DOUBLE"); return DOUBLE;}
+return                                              {handleKeyword("RETURN"); return RETURN;}
+void                                                {handleKeyword("VOID"); return VOID;}
+\&                                                  {handleKeyword("BITWISEAND"); return BITWISEAND;}
+\|                                                  {handleKeyword("BITWISEOR"); return BITWISEOR;}
+\^                                                  {handleKeyword("BITWISEXOR"); return BITWISEXOR;}
+\&\&                                                {handleKeyword("AND"); return AND;}
+\=                                                  {handleKeyword("ASSIGN"); return ASSIGN;}
+\*                                                  {handleKeyword("MUL"); return MUL;}
+\,                                                  {handleKeyword("COMMA"); return COMMA;}
+\/                                                  {handleKeyword("DIV"); return DIV;}
+\=\=                                                {handleKeyword("EQ"); return EQ;}
+\>\=                                                {handleKeyword("GE"); return GE;}
+\>                                                  {handleKeyword("GT"); return GT;}
+\{                                                  {handleKeyword("LBRACE"); return LBRACE;}
+\<\=                                                {handleKeyword("LE"); return LE;}
+\(                                                  {handleKeyword("LPAR"); return LPAR;}
+\<                                                  {handleKeyword("LT"); return LT;} 
+\-                                                  {handleKeyword("MINUS"); return MINUS;}
+\%                                                  {handleKeyword("MOD"); return MOD;}
+\!\=                                                {handleKeyword("NE"); return NE;}
+\!                                                  {handleKeyword("NOT"); return NOT;}
+\|\|                                                {handleKeyword("OR"); return OR;}
+\+                                                  {handleKeyword("PLUS"); return PLUS;}
+\}                                                  {handleKeyword("RBRACE"); return RBRACE;}
+\)                                                  {handleKeyword("RPAR"); return RPAR;}
+\;                                                  {handleKeyword("SEMI"); return SEMI;}
+({reserved})                                        {handleToken("RESERVED"); return RESERVED;}
+[a-zA-Z_][a-zA-Z_0-9]*                              {handleToken("ID"); return ID;}
 ({separator})                                       {column += yyleng;}
 ({terminator})                                      {line++; column = 1;}
 .                                                   {handleError(ILLEGAL_CHAR);}
@@ -99,21 +99,23 @@ int yywrap()
     return 1;
 }
 
-void handleKeyword(char* keyword){
+int handleKeyword(char* keyword){
     if(flag){
         printf("%s\n", keyword);
     }
-        column += yyleng;
+    column += yyleng;
+    return token;
 }
 
-void handleToken(char* token){
+int handleToken(char* token_val){
     if(flag){
-        printf("%s(%s)\n", token, yytext);
+        printf("%s(%s)\n", token_val, yytext);
     }
-        column += yyleng;
+    column += yyleng;
+    return token;
 }
 
-void handleError(int errorCode){
+int handleError(int errorCode){
     if(errorCode == 1){
         printf("Line %d, col %d: invalid char constant (%s)\n", line, column, yytext);
         column += yyleng;
@@ -130,4 +132,8 @@ void handleError(int errorCode){
         printf("Line %d, col %d: illegal character (%s)\n", line, column, yytext);
         column += yyleng;
     }
+}
+
+void yyerror (char *s){
+    printf ("%s\n", s);
 }

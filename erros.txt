@@ -1,0 +1,8 @@
+D-
+|||| devia ser ou e ou
+||| devia ser ou e bitwise ou
+int a = 0, b = 10, c;
+
+G-
+'|' - devia ser charlit
+\n - esta caracter ilegal???????????? inteiros separados por linhas (intlits)
