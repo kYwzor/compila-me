@@ -46,7 +46,62 @@
 %token SEMI
 %token RESERVED
 %token ID
-%left LAST
+
+/*Isto foi feito por mim, serve para atribuir a precedencia aos conjuntos de simbolos alem dos simbolos individuais
+*/
+%token math_precedence
+%left math_precedence
+
+%token modifier_precedence
+%right modifier_precedence
+
+%token compare_precedence
+%left compare_precedence
+
+%token assign_precedence
+%right assign_precedence
+
+%token logic_precedence
+%left logic_precedence
+
+/*GRANDES DUVIDAS NESTE*/
+%token arguments_precedence
+%right arguments_precedence
+
+
+%right REALLIT
+%right CHRLIT
+%right INTLIT
+
+/*Precendencia como definidas no C em si*/
+%left COMMA
+%left MUL
+%left DIV
+%left PLUS
+%left MINUS
+%left MOD
+
+%left EQ
+%left GE
+%left GT
+%left LE
+%left LT
+%left NE
+
+%left LPAR
+%left RPAR
+
+%left BITWISEAND
+%left BITWISEOR
+%left BITWISEXOR
+
+%left AND
+%left OR
+
+%right NOT
+
+
+%right ASSIGN
 
 
 %union{
@@ -54,11 +109,77 @@
 }
 
 %%
-main:
-    typespec
-    | expr
+
+
+
+functions_and_declarations:
+    functions_and_declarations_mandatory functions_and_declarations_none_or_more
     ;
-typespec: 
+
+functions_and_declarations_mandatory:
+    function_definition
+    | function_declaration
+    | declaration
+    ;
+
+functions_and_declarations_none_or_more:
+    functions_and_declarations_mandatory functions_and_declarations_none_or_more
+    | 
+    ;
+
+function_definition:
+    type_spec function_declarator function_body
+    ;
+
+function_body:
+    LBRACE declarations_and_statements RBRACE
+    | LBRACE RBRACE
+    ;
+
+declarations_and_statements:
+    statement declarations_and_statements
+    | declaration declarations_and_statements
+    | statement
+    | declaration
+    ;
+
+function_declaration:
+    type_spec function_declarator SEMI
+    ;
+
+function_declarator:
+    ID LPAR parameter_list RPAR
+    ;
+
+parameter_list:
+    parameter_declaration parameter_declaration_none_or_more 
+    ;
+
+parameter_declaration_none_or_more:
+    COMMA parameter_declaration
+    |
+    ;
+
+parameter_declaration:
+    type_spec ID
+    | type_spec
+    ;
+
+declaration:
+    type_spec declarator declarator_none_or_more SEMI
+    ;
+    
+declarator_none_or_more:
+    COMMA declarator
+    |
+    ;
+
+declarator:
+    ID ASSIGN expr
+    | ID
+    ;
+
+type_spec: 
     INT {pprint("Int");}
     | CHAR {pprint("Char");}
     | VOID {pprint("Void");}
@@ -66,14 +187,30 @@ typespec:
     | DOUBLE {pprint("Double");}
     ;
 
+statement:
+    expr SEMI {;}
+    | SEMI {;}
+    | LBRACE statement_none_or_more RBRACE {;}
+    | IF LPAR expr RPAR statement ELSE statement {;}
+    | IF LPAR expr RPAR statement {;}
+    | WHILE LPAR expr RPAR statement{;}
+    | RETURN expr SEMI {;}
+    | RETURN SEMI {;}
+    ;
+
+statement_none_or_more:
+    statement statement_none_or_more 
+    |
+    ;
+
 expr:
-    expr expr_assignments expr {pprint("expr_assignments");}
-    | expr expr_math expr {pprint("expr_math");}
-    | expr expr_logic expr {pprint("expr_logic");}
-    | expr expr_compare expr {pprint("expr_compare");}
-    | expr_modifier expr %prec LAST {pprint("expr_modifier");}
+    expr expr_assignments %prec assign_precedence expr {pprint("expr_assignments");}
+    | expr expr_math %prec math_precedence expr {pprint("expr_math");}
+    | expr expr_logic %prec logic_precedence expr {pprint("expr_logic");}
+    | expr expr_compare %prec compare_precedence expr {pprint("expr_compare");}
+    | expr_modifier %prec modifier_precedence expr {pprint("expr_modifier");}
     | ID LPAR RPAR {pprint("expr_arguments");}
-    | ID LPAR expr expr_arguments RPAR {pprint("expr_arguments");}
+    | ID LPAR expr expr_arguments %prec arguments_precedence RPAR {pprint("expr_arguments");}
     | expr_values {pprint("expr_values");}
     ;
 

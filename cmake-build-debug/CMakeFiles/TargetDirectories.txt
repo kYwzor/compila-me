@@ -1,0 +1,3 @@
+/home/soren5/Work/uni/3_2/COMP/compila-me/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/soren5/Work/uni/3_2/COMP/compila-me/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/soren5/Work/uni/3_2/COMP/compila-me/cmake-build-debug/CMakeFiles/compila_me.dir

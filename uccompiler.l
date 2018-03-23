@@ -45,35 +45,33 @@ separator                                           \t|" "|\s|\b|\f
                                                     column_memory += yyleng;
                                                     column = column_memory;}
 <COMMENT><<EOF>>                                    {handleError(UNTERM_COMMENT); 
-                                                    column = column_memory; 
-                                                    line = line_memory; 
-                                                    BEGIN 0;}
-char                                                {handleKeyword("CHAR"); return CHAR;}
-else                                                {handleKeyword("ELSE"); return ELSE;}
-while                                               {handleKeyword("WHILE"); return WHILE;}
-if                                                  {handleKeyword("IF"); return IF;}
-int                                                 {handleKeyword("INT"); return INT;}
-short                                               {handleKeyword("SHORT"); return SHORT;}
-double                                              {handleKeyword("DOUBLE"); return DOUBLE;}
-return                                              {handleKeyword("RETURN"); return RETURN;}
-void                                                {handleKeyword("VOID"); return VOID;}
-\&                                                  {handleKeyword("BITWISEAND"); return BITWISEAND;}
-\|                                                  {handleKeyword("BITWISEOR"); return BITWISEOR;}
-\^                                                  {handleKeyword("BITWISEXOR"); return BITWISEXOR;}
-\&\&                                                {handleKeyword("AND"); return AND;}
-\=                                                  {handleKeyword("ASSIGN"); return ASSIGN;}
-\*                                                  {handleKeyword("MUL"); return MUL;}
-\,                                                  {handleKeyword("COMMA"); return COMMA;}
-\/                                                  {handleKeyword("DIV"); return DIV;}
-\=\=                                                {handleKeyword("EQ"); return EQ;}
-\>\=                                                {handleKeyword("GE"); return GE;}
-\>                                                  {handleKeyword("GT"); return GT;}
-\{                                                  {handleKeyword("LBRACE"); return LBRACE;}
-\<\=                                                {handleKeyword("LE"); return LE;}
-\(                                                  {handleKeyword("LPAR"); return LPAR;}
+                                                    column = column_memory; line = line_memory; BEGIN 0;} 
+char                                                {handleKeyword("CHAR"); return CHAR;} 
+else                                                {handleKeyword("ELSE"); return ELSE;} 
+while                                               {handleKeyword("WHILE"); return WHILE;} 
+if                                                  {handleKeyword("IF"); return IF;} 
+int                                                 {handleKeyword("INT"); return INT;} 
+short                                               {handleKeyword("SHORT"); return SHORT;} 
+double                                              {handleKeyword("DOUBLE"); return DOUBLE;} 
+return                                              {handleKeyword("RETURN"); return RETURN;} 
+void                                                {handleKeyword("VOID"); return VOID;} 
+\&                                                  {handleKeyword("BITWISEAND"); return BITWISEAND;} 
+\|                                                  {handleKeyword("BITWISEOR"); return BITWISEOR;} 
+\^                                                  {handleKeyword("BITWISEXOR"); return BITWISEXOR;} 
+\&\&                                                {handleKeyword("AND"); return AND;} 
+\=                                                  {handleKeyword("ASSIGN"); return ASSIGN;} 
+\*                                                  {handleKeyword("MUL"); return MUL;} 
+\,                                                  {handleKeyword("COMMA"); return COMMA;} 
+\/                                                  {handleKeyword("DIV"); return DIV;} 
+\=\=                                                {handleKeyword("EQ"); return EQ;} 
+\>\=                                                {handleKeyword("GE"); return GE;} 
+\>                                                  {handleKeyword("GT"); return GT;} 
+\{                                                  {handleKeyword("LBRACE"); return LBRACE;} 
+\<\=                                                {handleKeyword("LE"); return LE;} 
+\(                                                  {handleKeyword("LPAR"); return LPAR;} 
 \<                                                  {handleKeyword("LT"); return LT;} 
-\-                                                  {handleKeyword("MINUS"); return MINUS;}
-\%                                                  {handleKeyword("MOD"); return MOD;}
+\-                                                  {handleKeyword("MINUS"); return MINUS;} 
+\%                                                  {handleKeyword("MOD"); return MOD;} 
 \!\=                                                {handleKeyword("NE"); return NE;}
 \!                                                  {handleKeyword("NOT"); return NOT;}
 \|\|                                                {handleKeyword("OR"); return OR;}

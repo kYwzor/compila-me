@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/compila_me.dir/lex.yy.c.o CMakeFiles/compila_me.dir/y.tab.c.o  -o compila_me 
