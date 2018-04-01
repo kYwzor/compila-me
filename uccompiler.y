@@ -8,101 +8,27 @@
     void yyerror (const char *s);
 %}
 
-%token REALLIT 
-%token INTLIT
-%token CHRLIT
-%token CHAR
-%token ELSE
-%token WHILE
-%token IF
-%token INT
-%token SHORT
-%token DOUBLE
-%token RETURN
-%token VOID
-%token BITWISEAND
-%token BITWISEOR
-%token BITWISEXOR
-%token AND
-%token ASSIGN
-%token MUL
-%token COMMA
-%token DIV
-%token EQ
-%token GE
-%token GT
-%token LBRACE
-%token LE
-%token LPAR
-%token LT
-%token MINUS
-%token MOD
-%token NE
-%token NOT
-%token OR 
-%token PLUS
-%token RBRACE
-%token RPAR
-%token SEMI
-%token RESERVED
-%token ID
-
-/*Isto foi feito por mim, serve para atribuir a precedencia aos conjuntos de simbolos alem dos simbolos individuais
-*/
-%token math_precedence
-%left math_precedence
-
-%token modifier_precedence
-%right modifier_precedence
-
-%token compare_precedence
-%left compare_precedence
-
-%token assign_precedence
-%right assign_precedence
-
-%token logic_precedence
-%left logic_precedence
-
-/*GRANDES DUVIDAS NESTE*/
-%token arguments_precedence
-%right arguments_precedence
-
-
-%right REALLIT
-%right CHRLIT
-%right INTLIT
+%token REALLIT, INTLIT, CHRLIT, CHAR, ELSE, WHILE, IF, INT, SHORT, DOUBLE, RETURN, VOID, BITWISEAND, BITWISEOR, BITWISEXOR, AND, ASSIGN, MUL, COMMA, DIV, EQ, GE, GT, LBRACE, LE, LPAR, LT, MINUS, MOD, NE, NOT, OR, PLUS, RBRACE, RPAR, SEMI, RESERVED, ID
 
 /*Precendencia como definidas no C em si*/
-%left COMMA
-%left MUL
-%left DIV
-%left PLUS
-%left MINUS
-%left MOD
+%left LPAR, RPAR
+ 
+%right NOT
 
-%left EQ
-%left GE
-%left GT
-%left LE
-%left LT
-%left NE
+%left MUL, DIV, MOD
+%left PLUS, MINUS
 
-%left LPAR
-%left RPAR
+%left GE, GT, LE, LT
+%left EQ, NE
 
 %left BITWISEAND
-%left BITWISEOR
 %left BITWISEXOR
+%left BITWISEOR
 
 %left AND
 %left OR
 
-%right NOT
-
-
-%right ASSIGN
-
+%left COMMA
 
 %union{
     char* value;
@@ -267,7 +193,7 @@ expr_values:
 %%
 
 void pprint(char* string){
-    printf("%s\n", string);
+    //printf("%s\n", string);
 }
 /*
 statement: expression '\n'  
