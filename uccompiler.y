@@ -8,18 +8,18 @@
     void yyerror (const char *s);
 %}
 
-%token REALLIT, INTLIT, CHRLIT, CHAR, ELSE, WHILE, IF, INT, SHORT, DOUBLE, RETURN, VOID, BITWISEAND, BITWISEOR, BITWISEXOR, AND, ASSIGN, MUL, COMMA, DIV, EQ, GE, GT, LBRACE, LE, LPAR, LT, MINUS, MOD, NE, NOT, OR, PLUS, RBRACE, RPAR, SEMI, RESERVED, ID
+%token REALLIT  INTLIT  CHRLIT  CHAR  ELSE  WHILE  IF  INT  SHORT  DOUBLE  RETURN  VOID  BITWISEAND  BITWISEOR  BITWISEXOR  AND  ASSIGN  MUL  COMMA  DIV  EQ  GE  GT  LBRACE  LE  LPAR  LT  MINUS  MOD  NE  NOT  OR  PLUS  RBRACE  RPAR  SEMI  RESERVED  ID
 
 /*Precendencia como definidas no C em si*/
-%left LPAR, RPAR
+%left LPAR  RPAR
  
 %right NOT
 
-%left MUL, DIV, MOD
-%left PLUS, MINUS
+%left MUL  DIV  MOD
+%left PLUS  MINUS
 
-%left GE, GT, LE, LT
-%left EQ, NE
+%left GE  GT  LE  LT
+%left EQ  NE
 
 %left BITWISEAND
 %left BITWISEXOR
@@ -35,8 +35,6 @@
 }
 
 %%
-
-
 
 functions_and_declarations:
     functions_and_declarations_mandatory functions_and_declarations_none_or_more
@@ -125,69 +123,100 @@ statement:
     ;
 
 statement_none_or_more:
-    statement statement_none_or_more 
+    statement statement_none_or_more {;}
     |
     ;
 
 expr:
-    expr expr_assignments %prec assign_precedence expr {pprint("expr_assignments");}
-    | expr expr_math %prec math_precedence expr {pprint("expr_math");}
-    | expr expr_logic %prec logic_precedence expr {pprint("expr_logic");}
-    | expr expr_compare %prec compare_precedence expr {pprint("expr_compare");}
-    | expr_modifier %prec modifier_precedence expr {pprint("expr_modifier");}
-    | ID LPAR RPAR {pprint("expr_arguments");}
-    | ID LPAR expr expr_arguments %prec arguments_precedence RPAR {pprint("expr_arguments");}
-    | expr_values {pprint("expr_values");}
+    assignment_expr {;}
+    | expr COMMA assignment_expr {;}
+    ;
+    
+assignment_expr:
+    logical_OR_expr {;}
+    | ASSIGN  assignment_expr {;}
     ;
 
 
-expr_assignments:
-    ASSIGN 
-    | COMMA
+logical_OR_expr:
+    logical_AND_expr {;}
+    | logical_OR_expr OR logical_AND_expr {;}
     ;
 
-expr_math:
-    PLUS
-    | MINUS
-    | MUL
-    | DIV
-    | MOD
+logical_AND_expr:
+    inclusive_OR_expr {;}
+    | logical_AND_expr AND inclusive_OR_expr {;}
     ;
 
-expr_logic:
-    OR
-    | AND
-    | BITWISEAND
-    | BITWISEOR
-    | BITWISEXOR
+inclusive_OR_expr:
+    exclusive_OR_expr {;}
+    | inclusive_OR_expr BITWISEOR exclusive_OR_expr {;}
     ;
 
-expr_compare:
-    EQ
-    | NE
-    | LE
-    | GE
-    | LT
-    | GT
+exclusive_OR_expr:
+    AND_expr {;}
+    | exclusive_OR_expr BITWISEXOR AND_expr {;}
     ;
 
-expr_modifier:
-    PLUS
-    | MINUS
-    | NOT
+AND_expr:
+    equality_expr {;}
+    | AND_expr BITWISEAND equality_expr {;}
     ;
 
-expr_arguments:
-    COMMA expr expr_arguments
-    | 
+equality_expr:
+    relational_expr {;}
+    | equality_expr EQ relational_expr{;}
+    | equality_expr NE relational_expr {;}
     ;
 
-expr_values:
-    ID 
-    | INTLIT 
-    | CHRLIT 
-    | REALLIT 
-    | LPAR expr RPAR
+relational_expr:
+    additive_expr {;}
+    | relational_expr LT  additive_expr {;}
+    | relational_expr GT additive_expr {;}
+    | relational_expr LE additive_expr {;}
+    | relational_expr GE additive_expr {;}
+    ;
+
+additive_expr:
+    multiplicative_expr {;}
+    | additive_expr PLUS multiplicative_expr {;}
+    | additive_expr MINUS multiplicative_expr {;}
+    ;
+
+multiplicative_expr:
+    unary_expression {;}
+    | multiplicative_expr MUL unary_expression{;}
+    | multiplicative_expr DIV unary_expression{;}
+    | multiplicative_expr MOD unary_expression {;}
+    ;
+
+
+unary_expression:
+    postfix_expr {;}
+    | PLUS unary_expression {;}
+    | MINUS unary_expression {;}
+    | NOT unary_expression {;}
+    ;
+
+
+
+argument_expr_list:
+    assignment_expr {;}
+    | argument_expr_list COMMA assignment_expr {;}
+    ;
+
+postfix_expr:
+    primary_expr {;}
+    | postfix_expr LPAR argument_expr_list RPAR {;}
+    | postfix_expr LPAR RPAR  {;}
+    ;
+
+primary_expr:
+    ID {;}
+    | INTLIT {;}
+    | CHRLIT {;}
+    | REALLIT {;}
+    | LPAR expr RPAR {;}
     ;
 
 %%
@@ -195,26 +224,4 @@ expr_values:
 void pprint(char* string){
     //printf("%s\n", string);
 }
-/*
-statement: expression '\n'  
-
-	| statement expression '\n'
-	;
-
-calc:
-     calc '+' calc   {$$=$1+$3;}
-    |   calc '-' calc       {$$=$1-$3;}
-    |   calc '*' calc       {$$=$1*$3;}
-    |   calc '/' calc       {if($3==0) printf("Divide by zero!\n");
-                                        else $$=$1/$3;}
-    |   '(' calc ')'              {$$=$2;}
-    |   NUMBER                          {$$=$1;}
-    |   VAR                              {$$=symlook($1)->value;}
-    |   '-' calc %prec FAKEMINUS  {$$=-$2;}
-    ;
- 
-expression: 
-	VAR '=' calc {symlook($1)->value = $3; if(DEBUG)printf("Atribui %d a %s\n", $3, $1);}	/*Guarda valor da variavel*/
-/*	| VAR	{printf("o valor da variavel %s e' %d\n", symlook($1)->name, symlook($1)->value);} *//*Reproduz o valor*/
-/*	;*/
 
