@@ -3,2167 +3,2241 @@ Terminals unused in grammar
    RESERVED
 
 
-State 35 conflicts: 1 shift/reduce
-State 136 conflicts: 1 shift/reduce
-
-
 Grammar
 
-    0 $accept: functions_and_declarations $end
+    0 $accept: Functions_and_declarations $end
 
-    1 functions_and_declarations: functions_and_declarations_mandatory functions_and_declarations_none_or_more
+    1 Functions_and_declarations: Functions_and_declarations_mandatory Functions_and_declarations_none_or_more
 
-    2 functions_and_declarations_mandatory: function_definition
-    3                                     | function_declaration
-    4                                     | declaration
+    2 Functions_and_declarations_mandatory: Function_definition
+    3                                     | Function_declaration
+    4                                     | Declaration
 
-    5 functions_and_declarations_none_or_more: functions_and_declarations_mandatory functions_and_declarations_none_or_more
+    5 Functions_and_declarations_none_or_more: Functions_and_declarations_mandatory Functions_and_declarations_none_or_more
     6                                        | %empty
 
-    7 function_definition: type_spec function_declarator function_body
+    7 Function_definition: Type_spec Function_declarator Function_body
 
-    8 function_body: LBRACE declarations_and_statements RBRACE
+    8 Function_body: LBRACE Declarations_and_statements RBRACE
     9              | LBRACE RBRACE
 
-   10 declarations_and_statements: statement declarations_and_statements
-   11                            | declaration declarations_and_statements
-   12                            | statement
-   13                            | declaration
+   10 Declarations_and_statements: Statement Declarations_and_statements
+   11                            | Declaration Declarations_and_statements
+   12                            | Statement
+   13                            | Declaration
 
-   14 function_declaration: type_spec function_declarator SEMI
+   14 Function_declaration: Type_spec Function_declarator SEMI
 
-   15 function_declarator: ID LPAR parameter_list RPAR
+   15 Function_declarator: ID LPAR Parameter_list RPAR
 
-   16 parameter_list: parameter_declaration parameter_declaration_none_or_more
+   16 Parameter_list: Parameter_declaration Parameter_declaration_none_or_more
 
-   17 parameter_declaration_none_or_more: COMMA parameter_declaration
+   17 Parameter_declaration_none_or_more: COMMA Parameter_declaration
    18                                   | %empty
 
-   19 parameter_declaration: type_spec ID
-   20                      | type_spec
+   19 Parameter_declaration: Type_spec ID
+   20                      | Type_spec
 
-   21 declaration: type_spec declarator declarator_none_or_more SEMI
+   21 Declaration: Type_spec Declarator Declarator_none_or_more SEMI
+   22            | error SEMI
 
-   22 declarator_none_or_more: COMMA declarator
-   23                        | %empty
+   23 Declarator_none_or_more: COMMA Declarator
+   24                        | %empty
 
-   24 declarator: ID ASSIGN expr
-   25           | ID
+   25 Declarator: ID ASSIGN Expr
+   26           | ID
 
-   26 type_spec: INT
-   27          | CHAR
-   28          | VOID
-   29          | SHORT
-   30          | DOUBLE
+   27 Type_spec: INT
+   28          | CHAR
+   29          | VOID
+   30          | SHORT
+   31          | DOUBLE
 
-   31 statement: expr SEMI
-   32          | SEMI
-   33          | LBRACE statement_none_or_more RBRACE
-   34          | IF LPAR expr RPAR statement ELSE statement
-   35          | IF LPAR expr RPAR statement
-   36          | WHILE LPAR expr RPAR statement
-   37          | RETURN expr SEMI
-   38          | RETURN SEMI
+   32 Statement: SEMI
+   33          | Expr SEMI
+   34          | LBRACE Statement_none_or_more RBRACE
+   35          | LBRACE error RBRACE
+   36          | IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error
+   37          | IF LPAR Expr RPAR Statement_or_error
+   38          | WHILE LPAR Expr RPAR Statement_or_error
+   39          | RETURN Expr SEMI
+   40          | RETURN SEMI
 
-   39 statement_none_or_more: statement statement_none_or_more
-   40                       | %empty
+   41 Statement_or_error: Statement
+   42                   | error SEMI
 
-   41 expr: assignment_expr
-   42     | expr COMMA assignment_expr
+   43 Statement_none_or_more: Statement Statement_none_or_more
+   44                       | %empty
 
-   43 assignment_expr: logical_OR_expr
-   44                | ASSIGN assignment_expr
+   45 Expr: Assignment_expr
+   46     | Expr COMMA Assignment_expr
 
-   45 logical_OR_expr: logical_AND_expr
-   46                | logical_OR_expr OR logical_AND_expr
+   47 Assignment_expr: Logical_OR_expr
+   48                | Unary_expression ASSIGN Assignment_expr
 
-   47 logical_AND_expr: inclusive_OR_expr
-   48                 | logical_AND_expr AND inclusive_OR_expr
+   49 Logical_OR_expr: Logical_AND_expr
+   50                | Logical_OR_expr OR Logical_AND_expr
 
-   49 inclusive_OR_expr: exclusive_OR_expr
-   50                  | inclusive_OR_expr BITWISEOR exclusive_OR_expr
+   51 Logical_AND_expr: Inclusive_OR_expr
+   52                 | Logical_AND_expr AND Inclusive_OR_expr
 
-   51 exclusive_OR_expr: AND_expr
-   52                  | exclusive_OR_expr BITWISEXOR AND_expr
+   53 Inclusive_OR_expr: Exclusive_OR_expr
+   54                  | Inclusive_OR_expr BITWISEOR Exclusive_OR_expr
 
-   53 AND_expr: equality_expr
-   54         | AND_expr BITWISEAND equality_expr
+   55 Exclusive_OR_expr: AND_expr
+   56                  | Exclusive_OR_expr BITWISEXOR AND_expr
 
-   55 equality_expr: relational_expr
-   56              | equality_expr EQ relational_expr
-   57              | equality_expr NE relational_expr
+   57 AND_expr: Equality_expr
+   58         | AND_expr BITWISEAND Equality_expr
 
-   58 relational_expr: additive_expr
-   59                | relational_expr LT additive_expr
-   60                | relational_expr GT additive_expr
-   61                | relational_expr LE additive_expr
-   62                | relational_expr GE additive_expr
+   59 Equality_expr: Relational_expr
+   60              | Equality_expr EQ Relational_expr
+   61              | Equality_expr NE Relational_expr
 
-   63 additive_expr: multiplicative_expr
-   64              | additive_expr PLUS multiplicative_expr
-   65              | additive_expr MINUS multiplicative_expr
+   62 Relational_expr: Additive_expr
+   63                | Relational_expr LT Additive_expr
+   64                | Relational_expr GT Additive_expr
+   65                | Relational_expr LE Additive_expr
+   66                | Relational_expr GE Additive_expr
 
-   66 multiplicative_expr: unary_expression
-   67                    | multiplicative_expr MUL unary_expression
-   68                    | multiplicative_expr DIV unary_expression
-   69                    | multiplicative_expr MOD unary_expression
+   67 Additive_expr: Multiplicative_expr
+   68              | Additive_expr PLUS Multiplicative_expr
+   69              | Additive_expr MINUS Multiplicative_expr
 
-   70 unary_expression: postfix_expr
-   71                 | PLUS unary_expression
-   72                 | MINUS unary_expression
-   73                 | NOT unary_expression
+   70 Multiplicative_expr: Unary_expression
+   71                    | Multiplicative_expr MUL Unary_expression
+   72                    | Multiplicative_expr DIV Unary_expression
+   73                    | Multiplicative_expr MOD Unary_expression
 
-   74 argument_expr_list: assignment_expr
-   75                   | argument_expr_list COMMA assignment_expr
+   74 Unary_expression: Postfix_expr
+   75                 | PLUS Unary_expression
+   76                 | MINUS Unary_expression
+   77                 | NOT Unary_expression
 
-   76 postfix_expr: primary_expr
-   77             | postfix_expr LPAR argument_expr_list RPAR
-   78             | postfix_expr LPAR RPAR
+   78 Argument_expr_list: Assignment_expr
+   79                   | Argument_expr_list COMMA Assignment_expr
 
-   79 primary_expr: ID
-   80             | INTLIT
-   81             | CHRLIT
-   82             | REALLIT
-   83             | LPAR expr RPAR
+   80 Postfix_expr: Primary_expr
+   81             | Postfix_expr LPAR Argument_expr_list RPAR
+   82             | Postfix_expr LPAR RPAR
+
+   83 Primary_expr: ID
+   84             | INTLIT
+   85             | CHRLIT
+   86             | REALLIT
+   87             | LPAR Expr RPAR
+   88             | LPAR error RPAR
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-error (256)
-REALLIT (258) 82
-INTLIT (259) 80
-CHRLIT (260) 81
-CHAR (261) 27
-ELSE (262) 34
-WHILE (263) 36
-IF (264) 34 35
-INT (265) 26
-SHORT (266) 29
-DOUBLE (267) 30
-RETURN (268) 37 38
-VOID (269) 28
-BITWISEAND (270) 54
-BITWISEOR (271) 50
-BITWISEXOR (272) 52
-AND (273) 48
-ASSIGN (274) 24 44
-MUL (275) 67
-COMMA (276) 17 22 42 75
-DIV (277) 68
-EQ (278) 56
-GE (279) 62
-GT (280) 60
-LBRACE (281) 8 9 33
-LE (282) 61
-LPAR (283) 15 34 35 36 77 78 83
-LT (284) 59
-MINUS (285) 65 72
-MOD (286) 69
-NE (287) 57
-NOT (288) 73
-OR (289) 46
-PLUS (290) 64 71
-RBRACE (291) 8 9 33
-RPAR (292) 15 34 35 36 77 78 83
-SEMI (293) 14 21 31 32 37 38
+error (256) 22 35 42 88
+REALLIT (258) 86
+INTLIT (259) 84
+CHRLIT (260) 85
+CHAR (261) 28
+ELSE (262) 36
+WHILE (263) 38
+IF (264) 36 37
+INT (265) 27
+SHORT (266) 30
+DOUBLE (267) 31
+RETURN (268) 39 40
+VOID (269) 29
+BITWISEAND (270) 58
+BITWISEOR (271) 54
+BITWISEXOR (272) 56
+AND (273) 52
+ASSIGN (274) 25 48
+MUL (275) 71
+COMMA (276) 17 23 46 79
+DIV (277) 72
+EQ (278) 60
+GE (279) 66
+GT (280) 64
+LBRACE (281) 8 9 34 35
+LE (282) 65
+LPAR (283) 15 36 37 38 81 82 87 88
+LT (284) 63
+MINUS (285) 69 76
+MOD (286) 73
+NE (287) 61
+NOT (288) 77
+OR (289) 50
+PLUS (290) 68 75
+RBRACE (291) 8 9 34 35
+RPAR (292) 15 36 37 38 81 82 87 88
+SEMI (293) 14 21 22 32 33 39 40 42
 RESERVED (294)
-ID (295) 15 19 24 25 79
+ID (295) 15 19 25 26 83
 
 
 Nonterminals, with rules where they appear
 
 $accept (41)
     on left: 0
-functions_and_declarations (42)
+Functions_and_declarations (42)
     on left: 1, on right: 0
-functions_and_declarations_mandatory (43)
+Functions_and_declarations_mandatory (43)
     on left: 2 3 4, on right: 1 5
-functions_and_declarations_none_or_more (44)
+Functions_and_declarations_none_or_more (44)
     on left: 5 6, on right: 1 5
-function_definition (45)
+Function_definition (45)
     on left: 7, on right: 2
-function_body (46)
+Function_body (46)
     on left: 8 9, on right: 7
-declarations_and_statements (47)
+Declarations_and_statements (47)
     on left: 10 11 12 13, on right: 8 10 11
-function_declaration (48)
+Function_declaration (48)
     on left: 14, on right: 3
-function_declarator (49)
+Function_declarator (49)
     on left: 15, on right: 7 14
-parameter_list (50)
+Parameter_list (50)
     on left: 16, on right: 15
-parameter_declaration_none_or_more (51)
+Parameter_declaration_none_or_more (51)
     on left: 17 18, on right: 16
-parameter_declaration (52)
+Parameter_declaration (52)
     on left: 19 20, on right: 16 17
-declaration (53)
-    on left: 21, on right: 4 11 13
-declarator_none_or_more (54)
-    on left: 22 23, on right: 21
-declarator (55)
-    on left: 24 25, on right: 21 22
-type_spec (56)
-    on left: 26 27 28 29 30, on right: 7 14 19 20 21
-statement (57)
-    on left: 31 32 33 34 35 36 37 38, on right: 10 12 34 35 36 39
-statement_none_or_more (58)
-    on left: 39 40, on right: 33 39
-expr (59)
-    on left: 41 42, on right: 24 31 34 35 36 37 42 83
-assignment_expr (60)
-    on left: 43 44, on right: 41 42 44 74 75
-logical_OR_expr (61)
-    on left: 45 46, on right: 43 46
-logical_AND_expr (62)
-    on left: 47 48, on right: 45 46 48
-inclusive_OR_expr (63)
-    on left: 49 50, on right: 47 48 50
-exclusive_OR_expr (64)
+Declaration (53)
+    on left: 21 22, on right: 4 11 13
+Declarator_none_or_more (54)
+    on left: 23 24, on right: 21
+Declarator (55)
+    on left: 25 26, on right: 21 23
+Type_spec (56)
+    on left: 27 28 29 30 31, on right: 7 14 19 20 21
+Statement (57)
+    on left: 32 33 34 35 36 37 38 39 40, on right: 10 12 41 43
+Statement_or_error (58)
+    on left: 41 42, on right: 36 37 38
+Statement_none_or_more (59)
+    on left: 43 44, on right: 34 43
+Expr (60)
+    on left: 45 46, on right: 25 33 36 37 38 39 46 87
+Assignment_expr (61)
+    on left: 47 48, on right: 45 46 48 78 79
+Logical_OR_expr (62)
+    on left: 49 50, on right: 47 50
+Logical_AND_expr (63)
     on left: 51 52, on right: 49 50 52
-AND_expr (65)
+Inclusive_OR_expr (64)
     on left: 53 54, on right: 51 52 54
-equality_expr (66)
-    on left: 55 56 57, on right: 53 54 56 57
-relational_expr (67)
-    on left: 58 59 60 61 62, on right: 55 56 57 59 60 61 62
-additive_expr (68)
-    on left: 63 64 65, on right: 58 59 60 61 62 64 65
-multiplicative_expr (69)
-    on left: 66 67 68 69, on right: 63 64 65 67 68 69
-unary_expression (70)
-    on left: 70 71 72 73, on right: 66 67 68 69 71 72 73
-argument_expr_list (71)
-    on left: 74 75, on right: 75 77
-postfix_expr (72)
-    on left: 76 77 78, on right: 70 77 78
-primary_expr (73)
-    on left: 79 80 81 82 83, on right: 76
+Exclusive_OR_expr (65)
+    on left: 55 56, on right: 53 54 56
+AND_expr (66)
+    on left: 57 58, on right: 55 56 58
+Equality_expr (67)
+    on left: 59 60 61, on right: 57 58 60 61
+Relational_expr (68)
+    on left: 62 63 64 65 66, on right: 59 60 61 63 64 65 66
+Additive_expr (69)
+    on left: 67 68 69, on right: 62 63 64 65 66 68 69
+Multiplicative_expr (70)
+    on left: 70 71 72 73, on right: 67 68 69 71 72 73
+Unary_expression (71)
+    on left: 74 75 76 77, on right: 48 70 71 72 73 75 76 77
+Argument_expr_list (72)
+    on left: 78 79, on right: 79 81
+Postfix_expr (73)
+    on left: 80 81 82, on right: 74 81 82
+Primary_expr (74)
+    on left: 83 84 85 86 87 88, on right: 80
 
 
 State 0
 
-    0 $accept: . functions_and_declarations $end
+    0 $accept: . Functions_and_declarations $end
 
-    CHAR    shift, and go to state 1
-    INT     shift, and go to state 2
-    SHORT   shift, and go to state 3
-    DOUBLE  shift, and go to state 4
-    VOID    shift, and go to state 5
+    error   shift, and go to state 1
+    CHAR    shift, and go to state 2
+    INT     shift, and go to state 3
+    SHORT   shift, and go to state 4
+    DOUBLE  shift, and go to state 5
+    VOID    shift, and go to state 6
 
-    functions_and_declarations            go to state 6
-    functions_and_declarations_mandatory  go to state 7
-    function_definition                   go to state 8
-    function_declaration                  go to state 9
-    declaration                           go to state 10
-    type_spec                             go to state 11
+    Functions_and_declarations            go to state 7
+    Functions_and_declarations_mandatory  go to state 8
+    Function_definition                   go to state 9
+    Function_declaration                  go to state 10
+    Declaration                           go to state 11
+    Type_spec                             go to state 12
 
 
 State 1
 
-   27 type_spec: CHAR .
+   22 Declaration: error . SEMI
 
-    $default  reduce using rule 27 (type_spec)
+    SEMI  shift, and go to state 13
 
 
 State 2
 
-   26 type_spec: INT .
+   28 Type_spec: CHAR .
 
-    $default  reduce using rule 26 (type_spec)
+    $default  reduce using rule 28 (Type_spec)
 
 
 State 3
 
-   29 type_spec: SHORT .
+   27 Type_spec: INT .
 
-    $default  reduce using rule 29 (type_spec)
+    $default  reduce using rule 27 (Type_spec)
 
 
 State 4
 
-   30 type_spec: DOUBLE .
+   30 Type_spec: SHORT .
 
-    $default  reduce using rule 30 (type_spec)
+    $default  reduce using rule 30 (Type_spec)
 
 
 State 5
 
-   28 type_spec: VOID .
+   31 Type_spec: DOUBLE .
 
-    $default  reduce using rule 28 (type_spec)
+    $default  reduce using rule 31 (Type_spec)
 
 
 State 6
 
-    0 $accept: functions_and_declarations . $end
+   29 Type_spec: VOID .
 
-    $end  shift, and go to state 12
+    $default  reduce using rule 29 (Type_spec)
 
 
 State 7
 
-    1 functions_and_declarations: functions_and_declarations_mandatory . functions_and_declarations_none_or_more
+    0 $accept: Functions_and_declarations . $end
 
-    CHAR    shift, and go to state 1
-    INT     shift, and go to state 2
-    SHORT   shift, and go to state 3
-    DOUBLE  shift, and go to state 4
-    VOID    shift, and go to state 5
-
-    $default  reduce using rule 6 (functions_and_declarations_none_or_more)
-
-    functions_and_declarations_mandatory     go to state 13
-    functions_and_declarations_none_or_more  go to state 14
-    function_definition                      go to state 8
-    function_declaration                     go to state 9
-    declaration                              go to state 10
-    type_spec                                go to state 11
+    $end  shift, and go to state 14
 
 
 State 8
 
-    2 functions_and_declarations_mandatory: function_definition .
+    1 Functions_and_declarations: Functions_and_declarations_mandatory . Functions_and_declarations_none_or_more
 
-    $default  reduce using rule 2 (functions_and_declarations_mandatory)
+    error   shift, and go to state 1
+    CHAR    shift, and go to state 2
+    INT     shift, and go to state 3
+    SHORT   shift, and go to state 4
+    DOUBLE  shift, and go to state 5
+    VOID    shift, and go to state 6
+
+    $end  reduce using rule 6 (Functions_and_declarations_none_or_more)
+
+    Functions_and_declarations_mandatory     go to state 15
+    Functions_and_declarations_none_or_more  go to state 16
+    Function_definition                      go to state 9
+    Function_declaration                     go to state 10
+    Declaration                              go to state 11
+    Type_spec                                go to state 12
 
 
 State 9
 
-    3 functions_and_declarations_mandatory: function_declaration .
+    2 Functions_and_declarations_mandatory: Function_definition .
 
-    $default  reduce using rule 3 (functions_and_declarations_mandatory)
+    $default  reduce using rule 2 (Functions_and_declarations_mandatory)
 
 
 State 10
 
-    4 functions_and_declarations_mandatory: declaration .
+    3 Functions_and_declarations_mandatory: Function_declaration .
 
-    $default  reduce using rule 4 (functions_and_declarations_mandatory)
+    $default  reduce using rule 3 (Functions_and_declarations_mandatory)
 
 
 State 11
 
-    7 function_definition: type_spec . function_declarator function_body
-   14 function_declaration: type_spec . function_declarator SEMI
-   21 declaration: type_spec . declarator declarator_none_or_more SEMI
+    4 Functions_and_declarations_mandatory: Declaration .
 
-    ID  shift, and go to state 15
-
-    function_declarator  go to state 16
-    declarator           go to state 17
+    $default  reduce using rule 4 (Functions_and_declarations_mandatory)
 
 
 State 12
 
-    0 $accept: functions_and_declarations $end .
+    7 Function_definition: Type_spec . Function_declarator Function_body
+   14 Function_declaration: Type_spec . Function_declarator SEMI
+   21 Declaration: Type_spec . Declarator Declarator_none_or_more SEMI
 
-    $default  accept
+    ID  shift, and go to state 17
+
+    Function_declarator  go to state 18
+    Declarator           go to state 19
 
 
 State 13
 
-    5 functions_and_declarations_none_or_more: functions_and_declarations_mandatory . functions_and_declarations_none_or_more
+   22 Declaration: error SEMI .
 
-    CHAR    shift, and go to state 1
-    INT     shift, and go to state 2
-    SHORT   shift, and go to state 3
-    DOUBLE  shift, and go to state 4
-    VOID    shift, and go to state 5
-
-    $default  reduce using rule 6 (functions_and_declarations_none_or_more)
-
-    functions_and_declarations_mandatory     go to state 13
-    functions_and_declarations_none_or_more  go to state 18
-    function_definition                      go to state 8
-    function_declaration                     go to state 9
-    declaration                              go to state 10
-    type_spec                                go to state 11
+    $default  reduce using rule 22 (Declaration)
 
 
 State 14
 
-    1 functions_and_declarations: functions_and_declarations_mandatory functions_and_declarations_none_or_more .
+    0 $accept: Functions_and_declarations $end .
 
-    $default  reduce using rule 1 (functions_and_declarations)
+    $default  accept
 
 
 State 15
 
-   15 function_declarator: ID . LPAR parameter_list RPAR
-   24 declarator: ID . ASSIGN expr
-   25           | ID .
+    5 Functions_and_declarations_none_or_more: Functions_and_declarations_mandatory . Functions_and_declarations_none_or_more
 
-    ASSIGN  shift, and go to state 19
-    LPAR    shift, and go to state 20
+    error   shift, and go to state 1
+    CHAR    shift, and go to state 2
+    INT     shift, and go to state 3
+    SHORT   shift, and go to state 4
+    DOUBLE  shift, and go to state 5
+    VOID    shift, and go to state 6
 
-    $default  reduce using rule 25 (declarator)
+    $end  reduce using rule 6 (Functions_and_declarations_none_or_more)
+
+    Functions_and_declarations_mandatory     go to state 15
+    Functions_and_declarations_none_or_more  go to state 20
+    Function_definition                      go to state 9
+    Function_declaration                     go to state 10
+    Declaration                              go to state 11
+    Type_spec                                go to state 12
 
 
 State 16
 
-    7 function_definition: type_spec function_declarator . function_body
-   14 function_declaration: type_spec function_declarator . SEMI
+    1 Functions_and_declarations: Functions_and_declarations_mandatory Functions_and_declarations_none_or_more .
 
-    LBRACE  shift, and go to state 21
-    SEMI    shift, and go to state 22
-
-    function_body  go to state 23
+    $default  reduce using rule 1 (Functions_and_declarations)
 
 
 State 17
 
-   21 declaration: type_spec declarator . declarator_none_or_more SEMI
+   15 Function_declarator: ID . LPAR Parameter_list RPAR
+   25 Declarator: ID . ASSIGN Expr
+   26           | ID .
 
-    COMMA  shift, and go to state 24
+    ASSIGN  shift, and go to state 21
+    LPAR    shift, and go to state 22
 
-    $default  reduce using rule 23 (declarator_none_or_more)
-
-    declarator_none_or_more  go to state 25
+    $default  reduce using rule 26 (Declarator)
 
 
 State 18
 
-    5 functions_and_declarations_none_or_more: functions_and_declarations_mandatory functions_and_declarations_none_or_more .
+    7 Function_definition: Type_spec Function_declarator . Function_body
+   14 Function_declaration: Type_spec Function_declarator . SEMI
 
-    $default  reduce using rule 5 (functions_and_declarations_none_or_more)
+    LBRACE  shift, and go to state 23
+    SEMI    shift, and go to state 24
+
+    Function_body  go to state 25
 
 
 State 19
 
-   24 declarator: ID ASSIGN . expr
+   21 Declaration: Type_spec Declarator . Declarator_none_or_more SEMI
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    ASSIGN   shift, and go to state 29
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    COMMA  shift, and go to state 26
 
-    expr                 go to state 35
-    assignment_expr      go to state 36
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    $default  reduce using rule 24 (Declarator_none_or_more)
+
+    Declarator_none_or_more  go to state 27
 
 
 State 20
 
-   15 function_declarator: ID LPAR . parameter_list RPAR
+    5 Functions_and_declarations_none_or_more: Functions_and_declarations_mandatory Functions_and_declarations_none_or_more .
 
-    CHAR    shift, and go to state 1
-    INT     shift, and go to state 2
-    SHORT   shift, and go to state 3
-    DOUBLE  shift, and go to state 4
-    VOID    shift, and go to state 5
-
-    parameter_list         go to state 49
-    parameter_declaration  go to state 50
-    type_spec              go to state 51
+    $default  reduce using rule 5 (Functions_and_declarations_none_or_more)
 
 
 State 21
 
-    8 function_body: LBRACE . declarations_and_statements RBRACE
-    9              | LBRACE . RBRACE
+   25 Declarator: ID ASSIGN . Expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    CHAR     shift, and go to state 1
-    WHILE    shift, and go to state 52
-    IF       shift, and go to state 53
-    INT      shift, and go to state 2
-    SHORT    shift, and go to state 3
-    DOUBLE   shift, and go to state 4
-    RETURN   shift, and go to state 54
-    VOID     shift, and go to state 5
-    ASSIGN   shift, and go to state 29
-    LBRACE   shift, and go to state 55
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    RBRACE   shift, and go to state 56
-    SEMI     shift, and go to state 57
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    declarations_and_statements  go to state 58
-    declaration                  go to state 59
-    type_spec                    go to state 60
-    statement                    go to state 61
-    expr                         go to state 62
-    assignment_expr              go to state 36
-    logical_OR_expr              go to state 37
-    logical_AND_expr             go to state 38
-    inclusive_OR_expr            go to state 39
-    exclusive_OR_expr            go to state 40
-    AND_expr                     go to state 41
-    equality_expr                go to state 42
-    relational_expr              go to state 43
-    additive_expr                go to state 44
-    multiplicative_expr          go to state 45
-    unary_expression             go to state 46
-    postfix_expr                 go to state 47
-    primary_expr                 go to state 48
+    Expr                 go to state 36
+    Assignment_expr      go to state 37
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 22
 
-   14 function_declaration: type_spec function_declarator SEMI .
+   15 Function_declarator: ID LPAR . Parameter_list RPAR
 
-    $default  reduce using rule 14 (function_declaration)
+    CHAR    shift, and go to state 2
+    INT     shift, and go to state 3
+    SHORT   shift, and go to state 4
+    DOUBLE  shift, and go to state 5
+    VOID    shift, and go to state 6
+
+    Parameter_list         go to state 50
+    Parameter_declaration  go to state 51
+    Type_spec              go to state 52
 
 
 State 23
 
-    7 function_definition: type_spec function_declarator function_body .
+    8 Function_body: LBRACE . Declarations_and_statements RBRACE
+    9              | LBRACE . RBRACE
 
-    $default  reduce using rule 7 (function_definition)
+    error    shift, and go to state 1
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    CHAR     shift, and go to state 2
+    WHILE    shift, and go to state 53
+    IF       shift, and go to state 54
+    INT      shift, and go to state 3
+    SHORT    shift, and go to state 4
+    DOUBLE   shift, and go to state 5
+    RETURN   shift, and go to state 55
+    VOID     shift, and go to state 6
+    LBRACE   shift, and go to state 56
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    RBRACE   shift, and go to state 57
+    SEMI     shift, and go to state 58
+    ID       shift, and go to state 35
+
+    Declarations_and_statements  go to state 59
+    Declaration                  go to state 60
+    Type_spec                    go to state 61
+    Statement                    go to state 62
+    Expr                         go to state 63
+    Assignment_expr              go to state 37
+    Logical_OR_expr              go to state 38
+    Logical_AND_expr             go to state 39
+    Inclusive_OR_expr            go to state 40
+    Exclusive_OR_expr            go to state 41
+    AND_expr                     go to state 42
+    Equality_expr                go to state 43
+    Relational_expr              go to state 44
+    Additive_expr                go to state 45
+    Multiplicative_expr          go to state 46
+    Unary_expression             go to state 47
+    Postfix_expr                 go to state 48
+    Primary_expr                 go to state 49
 
 
 State 24
 
-   22 declarator_none_or_more: COMMA . declarator
+   14 Function_declaration: Type_spec Function_declarator SEMI .
 
-    ID  shift, and go to state 63
-
-    declarator  go to state 64
+    $default  reduce using rule 14 (Function_declaration)
 
 
 State 25
 
-   21 declaration: type_spec declarator declarator_none_or_more . SEMI
+    7 Function_definition: Type_spec Function_declarator Function_body .
 
-    SEMI  shift, and go to state 65
+    $default  reduce using rule 7 (Function_definition)
 
 
 State 26
 
-   82 primary_expr: REALLIT .
+   23 Declarator_none_or_more: COMMA . Declarator
 
-    $default  reduce using rule 82 (primary_expr)
+    ID  shift, and go to state 64
+
+    Declarator  go to state 65
 
 
 State 27
 
-   80 primary_expr: INTLIT .
+   21 Declaration: Type_spec Declarator Declarator_none_or_more . SEMI
 
-    $default  reduce using rule 80 (primary_expr)
+    SEMI  shift, and go to state 66
 
 
 State 28
 
-   81 primary_expr: CHRLIT .
+   86 Primary_expr: REALLIT .
 
-    $default  reduce using rule 81 (primary_expr)
+    $default  reduce using rule 86 (Primary_expr)
 
 
 State 29
 
-   44 assignment_expr: ASSIGN . assignment_expr
+   84 Primary_expr: INTLIT .
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    ASSIGN   shift, and go to state 29
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
-
-    assignment_expr      go to state 66
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    $default  reduce using rule 84 (Primary_expr)
 
 
 State 30
 
-   83 primary_expr: LPAR . expr RPAR
+   85 Primary_expr: CHRLIT .
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    ASSIGN   shift, and go to state 29
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
-
-    expr                 go to state 67
-    assignment_expr      go to state 36
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    $default  reduce using rule 85 (Primary_expr)
 
 
 State 31
 
-   72 unary_expression: MINUS . unary_expression
+   87 Primary_expr: LPAR . Expr RPAR
+   88             | LPAR . error RPAR
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    error    shift, and go to state 67
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    unary_expression  go to state 68
-    postfix_expr      go to state 47
-    primary_expr      go to state 48
+    Expr                 go to state 68
+    Assignment_expr      go to state 37
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 32
 
-   73 unary_expression: NOT . unary_expression
+   76 Unary_expression: MINUS . Unary_expression
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    unary_expression  go to state 69
-    postfix_expr      go to state 47
-    primary_expr      go to state 48
+    Unary_expression  go to state 69
+    Postfix_expr      go to state 48
+    Primary_expr      go to state 49
 
 
 State 33
 
-   71 unary_expression: PLUS . unary_expression
+   77 Unary_expression: NOT . Unary_expression
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    unary_expression  go to state 70
-    postfix_expr      go to state 47
-    primary_expr      go to state 48
+    Unary_expression  go to state 70
+    Postfix_expr      go to state 48
+    Primary_expr      go to state 49
 
 
 State 34
 
-   79 primary_expr: ID .
+   75 Unary_expression: PLUS . Unary_expression
 
-    $default  reduce using rule 79 (primary_expr)
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
+
+    Unary_expression  go to state 71
+    Postfix_expr      go to state 48
+    Primary_expr      go to state 49
 
 
 State 35
 
-   24 declarator: ID ASSIGN expr .
-   42 expr: expr . COMMA assignment_expr
+   83 Primary_expr: ID .
 
-    COMMA  shift, and go to state 71
-
-    COMMA     [reduce using rule 24 (declarator)]
-    $default  reduce using rule 24 (declarator)
+    $default  reduce using rule 83 (Primary_expr)
 
 
 State 36
 
-   41 expr: assignment_expr .
+   25 Declarator: ID ASSIGN Expr .
+   46 Expr: Expr . COMMA Assignment_expr
 
-    $default  reduce using rule 41 (expr)
+    COMMA  shift, and go to state 72
+
+    $default  reduce using rule 25 (Declarator)
 
 
 State 37
 
-   43 assignment_expr: logical_OR_expr .
-   46 logical_OR_expr: logical_OR_expr . OR logical_AND_expr
+   45 Expr: Assignment_expr .
 
-    OR  shift, and go to state 72
-
-    $default  reduce using rule 43 (assignment_expr)
+    $default  reduce using rule 45 (Expr)
 
 
 State 38
 
-   45 logical_OR_expr: logical_AND_expr .
-   48 logical_AND_expr: logical_AND_expr . AND inclusive_OR_expr
+   47 Assignment_expr: Logical_OR_expr .
+   50 Logical_OR_expr: Logical_OR_expr . OR Logical_AND_expr
 
-    AND  shift, and go to state 73
+    OR  shift, and go to state 73
 
-    $default  reduce using rule 45 (logical_OR_expr)
+    $default  reduce using rule 47 (Assignment_expr)
 
 
 State 39
 
-   47 logical_AND_expr: inclusive_OR_expr .
-   50 inclusive_OR_expr: inclusive_OR_expr . BITWISEOR exclusive_OR_expr
+   49 Logical_OR_expr: Logical_AND_expr .
+   52 Logical_AND_expr: Logical_AND_expr . AND Inclusive_OR_expr
 
-    BITWISEOR  shift, and go to state 74
+    AND  shift, and go to state 74
 
-    $default  reduce using rule 47 (logical_AND_expr)
+    $default  reduce using rule 49 (Logical_OR_expr)
 
 
 State 40
 
-   49 inclusive_OR_expr: exclusive_OR_expr .
-   52 exclusive_OR_expr: exclusive_OR_expr . BITWISEXOR AND_expr
+   51 Logical_AND_expr: Inclusive_OR_expr .
+   54 Inclusive_OR_expr: Inclusive_OR_expr . BITWISEOR Exclusive_OR_expr
 
-    BITWISEXOR  shift, and go to state 75
+    BITWISEOR  shift, and go to state 75
 
-    $default  reduce using rule 49 (inclusive_OR_expr)
+    $default  reduce using rule 51 (Logical_AND_expr)
 
 
 State 41
 
-   51 exclusive_OR_expr: AND_expr .
-   54 AND_expr: AND_expr . BITWISEAND equality_expr
+   53 Inclusive_OR_expr: Exclusive_OR_expr .
+   56 Exclusive_OR_expr: Exclusive_OR_expr . BITWISEXOR AND_expr
 
-    BITWISEAND  shift, and go to state 76
+    BITWISEXOR  shift, and go to state 76
 
-    $default  reduce using rule 51 (exclusive_OR_expr)
+    $default  reduce using rule 53 (Inclusive_OR_expr)
 
 
 State 42
 
-   53 AND_expr: equality_expr .
-   56 equality_expr: equality_expr . EQ relational_expr
-   57              | equality_expr . NE relational_expr
+   55 Exclusive_OR_expr: AND_expr .
+   58 AND_expr: AND_expr . BITWISEAND Equality_expr
 
-    EQ  shift, and go to state 77
-    NE  shift, and go to state 78
+    BITWISEAND  shift, and go to state 77
 
-    $default  reduce using rule 53 (AND_expr)
+    $default  reduce using rule 55 (Exclusive_OR_expr)
 
 
 State 43
 
-   55 equality_expr: relational_expr .
-   59 relational_expr: relational_expr . LT additive_expr
-   60                | relational_expr . GT additive_expr
-   61                | relational_expr . LE additive_expr
-   62                | relational_expr . GE additive_expr
+   57 AND_expr: Equality_expr .
+   60 Equality_expr: Equality_expr . EQ Relational_expr
+   61              | Equality_expr . NE Relational_expr
 
-    GE  shift, and go to state 79
-    GT  shift, and go to state 80
-    LE  shift, and go to state 81
-    LT  shift, and go to state 82
+    EQ  shift, and go to state 78
+    NE  shift, and go to state 79
 
-    $default  reduce using rule 55 (equality_expr)
+    $default  reduce using rule 57 (AND_expr)
 
 
 State 44
 
-   58 relational_expr: additive_expr .
-   64 additive_expr: additive_expr . PLUS multiplicative_expr
-   65              | additive_expr . MINUS multiplicative_expr
+   59 Equality_expr: Relational_expr .
+   63 Relational_expr: Relational_expr . LT Additive_expr
+   64                | Relational_expr . GT Additive_expr
+   65                | Relational_expr . LE Additive_expr
+   66                | Relational_expr . GE Additive_expr
 
-    MINUS  shift, and go to state 83
-    PLUS   shift, and go to state 84
+    GE  shift, and go to state 80
+    GT  shift, and go to state 81
+    LE  shift, and go to state 82
+    LT  shift, and go to state 83
 
-    $default  reduce using rule 58 (relational_expr)
+    $default  reduce using rule 59 (Equality_expr)
 
 
 State 45
 
-   63 additive_expr: multiplicative_expr .
-   67 multiplicative_expr: multiplicative_expr . MUL unary_expression
-   68                    | multiplicative_expr . DIV unary_expression
-   69                    | multiplicative_expr . MOD unary_expression
+   62 Relational_expr: Additive_expr .
+   68 Additive_expr: Additive_expr . PLUS Multiplicative_expr
+   69              | Additive_expr . MINUS Multiplicative_expr
 
-    MUL  shift, and go to state 85
-    DIV  shift, and go to state 86
-    MOD  shift, and go to state 87
+    MINUS  shift, and go to state 84
+    PLUS   shift, and go to state 85
 
-    $default  reduce using rule 63 (additive_expr)
+    $default  reduce using rule 62 (Relational_expr)
 
 
 State 46
 
-   66 multiplicative_expr: unary_expression .
+   67 Additive_expr: Multiplicative_expr .
+   71 Multiplicative_expr: Multiplicative_expr . MUL Unary_expression
+   72                    | Multiplicative_expr . DIV Unary_expression
+   73                    | Multiplicative_expr . MOD Unary_expression
 
-    $default  reduce using rule 66 (multiplicative_expr)
+    MUL  shift, and go to state 86
+    DIV  shift, and go to state 87
+    MOD  shift, and go to state 88
+
+    $default  reduce using rule 67 (Additive_expr)
 
 
 State 47
 
-   70 unary_expression: postfix_expr .
-   77 postfix_expr: postfix_expr . LPAR argument_expr_list RPAR
-   78             | postfix_expr . LPAR RPAR
+   48 Assignment_expr: Unary_expression . ASSIGN Assignment_expr
+   70 Multiplicative_expr: Unary_expression .
 
-    LPAR  shift, and go to state 88
+    ASSIGN  shift, and go to state 89
 
-    $default  reduce using rule 70 (unary_expression)
+    $default  reduce using rule 70 (Multiplicative_expr)
 
 
 State 48
 
-   76 postfix_expr: primary_expr .
+   74 Unary_expression: Postfix_expr .
+   81 Postfix_expr: Postfix_expr . LPAR Argument_expr_list RPAR
+   82             | Postfix_expr . LPAR RPAR
 
-    $default  reduce using rule 76 (postfix_expr)
+    LPAR  shift, and go to state 90
+
+    $default  reduce using rule 74 (Unary_expression)
 
 
 State 49
 
-   15 function_declarator: ID LPAR parameter_list . RPAR
+   80 Postfix_expr: Primary_expr .
 
-    RPAR  shift, and go to state 89
+    $default  reduce using rule 80 (Postfix_expr)
 
 
 State 50
 
-   16 parameter_list: parameter_declaration . parameter_declaration_none_or_more
+   15 Function_declarator: ID LPAR Parameter_list . RPAR
 
-    COMMA  shift, and go to state 90
-
-    $default  reduce using rule 18 (parameter_declaration_none_or_more)
-
-    parameter_declaration_none_or_more  go to state 91
+    RPAR  shift, and go to state 91
 
 
 State 51
 
-   19 parameter_declaration: type_spec . ID
-   20                      | type_spec .
+   16 Parameter_list: Parameter_declaration . Parameter_declaration_none_or_more
 
-    ID  shift, and go to state 92
+    COMMA  shift, and go to state 92
 
-    $default  reduce using rule 20 (parameter_declaration)
+    $default  reduce using rule 18 (Parameter_declaration_none_or_more)
+
+    Parameter_declaration_none_or_more  go to state 93
 
 
 State 52
 
-   36 statement: WHILE . LPAR expr RPAR statement
+   19 Parameter_declaration: Type_spec . ID
+   20                      | Type_spec .
 
-    LPAR  shift, and go to state 93
+    ID  shift, and go to state 94
+
+    $default  reduce using rule 20 (Parameter_declaration)
 
 
 State 53
 
-   34 statement: IF . LPAR expr RPAR statement ELSE statement
-   35          | IF . LPAR expr RPAR statement
+   38 Statement: WHILE . LPAR Expr RPAR Statement_or_error
 
-    LPAR  shift, and go to state 94
+    LPAR  shift, and go to state 95
 
 
 State 54
 
-   37 statement: RETURN . expr SEMI
-   38          | RETURN . SEMI
+   36 Statement: IF . LPAR Expr RPAR Statement_or_error ELSE Statement_or_error
+   37          | IF . LPAR Expr RPAR Statement_or_error
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    ASSIGN   shift, and go to state 29
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    SEMI     shift, and go to state 95
-    ID       shift, and go to state 34
-
-    expr                 go to state 96
-    assignment_expr      go to state 36
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    LPAR  shift, and go to state 96
 
 
 State 55
 
-   33 statement: LBRACE . statement_none_or_more RBRACE
+   39 Statement: RETURN . Expr SEMI
+   40          | RETURN . SEMI
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    WHILE    shift, and go to state 52
-    IF       shift, and go to state 53
-    RETURN   shift, and go to state 54
-    ASSIGN   shift, and go to state 29
-    LBRACE   shift, and go to state 55
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    SEMI     shift, and go to state 57
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    SEMI     shift, and go to state 97
+    ID       shift, and go to state 35
 
-    $default  reduce using rule 40 (statement_none_or_more)
-
-    statement               go to state 97
-    statement_none_or_more  go to state 98
-    expr                    go to state 62
-    assignment_expr         go to state 36
-    logical_OR_expr         go to state 37
-    logical_AND_expr        go to state 38
-    inclusive_OR_expr       go to state 39
-    exclusive_OR_expr       go to state 40
-    AND_expr                go to state 41
-    equality_expr           go to state 42
-    relational_expr         go to state 43
-    additive_expr           go to state 44
-    multiplicative_expr     go to state 45
-    unary_expression        go to state 46
-    postfix_expr            go to state 47
-    primary_expr            go to state 48
+    Expr                 go to state 98
+    Assignment_expr      go to state 37
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 56
 
-    9 function_body: LBRACE RBRACE .
+   34 Statement: LBRACE . Statement_none_or_more RBRACE
+   35          | LBRACE . error RBRACE
 
-    $default  reduce using rule 9 (function_body)
+    error    shift, and go to state 99
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    WHILE    shift, and go to state 53
+    IF       shift, and go to state 54
+    RETURN   shift, and go to state 55
+    LBRACE   shift, and go to state 56
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    SEMI     shift, and go to state 58
+    ID       shift, and go to state 35
+
+    RBRACE  reduce using rule 44 (Statement_none_or_more)
+
+    Statement               go to state 100
+    Statement_none_or_more  go to state 101
+    Expr                    go to state 63
+    Assignment_expr         go to state 37
+    Logical_OR_expr         go to state 38
+    Logical_AND_expr        go to state 39
+    Inclusive_OR_expr       go to state 40
+    Exclusive_OR_expr       go to state 41
+    AND_expr                go to state 42
+    Equality_expr           go to state 43
+    Relational_expr         go to state 44
+    Additive_expr           go to state 45
+    Multiplicative_expr     go to state 46
+    Unary_expression        go to state 47
+    Postfix_expr            go to state 48
+    Primary_expr            go to state 49
 
 
 State 57
 
-   32 statement: SEMI .
+    9 Function_body: LBRACE RBRACE .
 
-    $default  reduce using rule 32 (statement)
+    $default  reduce using rule 9 (Function_body)
 
 
 State 58
 
-    8 function_body: LBRACE declarations_and_statements . RBRACE
+   32 Statement: SEMI .
 
-    RBRACE  shift, and go to state 99
+    $default  reduce using rule 32 (Statement)
 
 
 State 59
 
-   11 declarations_and_statements: declaration . declarations_and_statements
-   13                            | declaration .
+    8 Function_body: LBRACE Declarations_and_statements . RBRACE
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    CHAR     shift, and go to state 1
-    WHILE    shift, and go to state 52
-    IF       shift, and go to state 53
-    INT      shift, and go to state 2
-    SHORT    shift, and go to state 3
-    DOUBLE   shift, and go to state 4
-    RETURN   shift, and go to state 54
-    VOID     shift, and go to state 5
-    ASSIGN   shift, and go to state 29
-    LBRACE   shift, and go to state 55
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    SEMI     shift, and go to state 57
-    ID       shift, and go to state 34
-
-    $default  reduce using rule 13 (declarations_and_statements)
-
-    declarations_and_statements  go to state 100
-    declaration                  go to state 59
-    type_spec                    go to state 60
-    statement                    go to state 61
-    expr                         go to state 62
-    assignment_expr              go to state 36
-    logical_OR_expr              go to state 37
-    logical_AND_expr             go to state 38
-    inclusive_OR_expr            go to state 39
-    exclusive_OR_expr            go to state 40
-    AND_expr                     go to state 41
-    equality_expr                go to state 42
-    relational_expr              go to state 43
-    additive_expr                go to state 44
-    multiplicative_expr          go to state 45
-    unary_expression             go to state 46
-    postfix_expr                 go to state 47
-    primary_expr                 go to state 48
+    RBRACE  shift, and go to state 102
 
 
 State 60
 
-   21 declaration: type_spec . declarator declarator_none_or_more SEMI
+   11 Declarations_and_statements: Declaration . Declarations_and_statements
+   13                            | Declaration .
 
-    ID  shift, and go to state 63
+    error    shift, and go to state 1
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    CHAR     shift, and go to state 2
+    WHILE    shift, and go to state 53
+    IF       shift, and go to state 54
+    INT      shift, and go to state 3
+    SHORT    shift, and go to state 4
+    DOUBLE   shift, and go to state 5
+    RETURN   shift, and go to state 55
+    VOID     shift, and go to state 6
+    LBRACE   shift, and go to state 56
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    SEMI     shift, and go to state 58
+    ID       shift, and go to state 35
 
-    declarator  go to state 17
+    RBRACE  reduce using rule 13 (Declarations_and_statements)
+
+    Declarations_and_statements  go to state 103
+    Declaration                  go to state 60
+    Type_spec                    go to state 61
+    Statement                    go to state 62
+    Expr                         go to state 63
+    Assignment_expr              go to state 37
+    Logical_OR_expr              go to state 38
+    Logical_AND_expr             go to state 39
+    Inclusive_OR_expr            go to state 40
+    Exclusive_OR_expr            go to state 41
+    AND_expr                     go to state 42
+    Equality_expr                go to state 43
+    Relational_expr              go to state 44
+    Additive_expr                go to state 45
+    Multiplicative_expr          go to state 46
+    Unary_expression             go to state 47
+    Postfix_expr                 go to state 48
+    Primary_expr                 go to state 49
 
 
 State 61
 
-   10 declarations_and_statements: statement . declarations_and_statements
-   12                            | statement .
+   21 Declaration: Type_spec . Declarator Declarator_none_or_more SEMI
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    CHAR     shift, and go to state 1
-    WHILE    shift, and go to state 52
-    IF       shift, and go to state 53
-    INT      shift, and go to state 2
-    SHORT    shift, and go to state 3
-    DOUBLE   shift, and go to state 4
-    RETURN   shift, and go to state 54
-    VOID     shift, and go to state 5
-    ASSIGN   shift, and go to state 29
-    LBRACE   shift, and go to state 55
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    SEMI     shift, and go to state 57
-    ID       shift, and go to state 34
+    ID  shift, and go to state 64
 
-    $default  reduce using rule 12 (declarations_and_statements)
-
-    declarations_and_statements  go to state 101
-    declaration                  go to state 59
-    type_spec                    go to state 60
-    statement                    go to state 61
-    expr                         go to state 62
-    assignment_expr              go to state 36
-    logical_OR_expr              go to state 37
-    logical_AND_expr             go to state 38
-    inclusive_OR_expr            go to state 39
-    exclusive_OR_expr            go to state 40
-    AND_expr                     go to state 41
-    equality_expr                go to state 42
-    relational_expr              go to state 43
-    additive_expr                go to state 44
-    multiplicative_expr          go to state 45
-    unary_expression             go to state 46
-    postfix_expr                 go to state 47
-    primary_expr                 go to state 48
+    Declarator  go to state 19
 
 
 State 62
 
-   31 statement: expr . SEMI
-   42 expr: expr . COMMA assignment_expr
+   10 Declarations_and_statements: Statement . Declarations_and_statements
+   12                            | Statement .
 
-    COMMA  shift, and go to state 71
-    SEMI   shift, and go to state 102
+    error    shift, and go to state 1
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    CHAR     shift, and go to state 2
+    WHILE    shift, and go to state 53
+    IF       shift, and go to state 54
+    INT      shift, and go to state 3
+    SHORT    shift, and go to state 4
+    DOUBLE   shift, and go to state 5
+    RETURN   shift, and go to state 55
+    VOID     shift, and go to state 6
+    LBRACE   shift, and go to state 56
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    SEMI     shift, and go to state 58
+    ID       shift, and go to state 35
+
+    RBRACE  reduce using rule 12 (Declarations_and_statements)
+
+    Declarations_and_statements  go to state 104
+    Declaration                  go to state 60
+    Type_spec                    go to state 61
+    Statement                    go to state 62
+    Expr                         go to state 63
+    Assignment_expr              go to state 37
+    Logical_OR_expr              go to state 38
+    Logical_AND_expr             go to state 39
+    Inclusive_OR_expr            go to state 40
+    Exclusive_OR_expr            go to state 41
+    AND_expr                     go to state 42
+    Equality_expr                go to state 43
+    Relational_expr              go to state 44
+    Additive_expr                go to state 45
+    Multiplicative_expr          go to state 46
+    Unary_expression             go to state 47
+    Postfix_expr                 go to state 48
+    Primary_expr                 go to state 49
 
 
 State 63
 
-   24 declarator: ID . ASSIGN expr
-   25           | ID .
+   33 Statement: Expr . SEMI
+   46 Expr: Expr . COMMA Assignment_expr
 
-    ASSIGN  shift, and go to state 19
-
-    $default  reduce using rule 25 (declarator)
+    COMMA  shift, and go to state 72
+    SEMI   shift, and go to state 105
 
 
 State 64
 
-   22 declarator_none_or_more: COMMA declarator .
+   25 Declarator: ID . ASSIGN Expr
+   26           | ID .
 
-    $default  reduce using rule 22 (declarator_none_or_more)
+    ASSIGN  shift, and go to state 21
+
+    $default  reduce using rule 26 (Declarator)
 
 
 State 65
 
-   21 declaration: type_spec declarator declarator_none_or_more SEMI .
+   23 Declarator_none_or_more: COMMA Declarator .
 
-    $default  reduce using rule 21 (declaration)
+    $default  reduce using rule 23 (Declarator_none_or_more)
 
 
 State 66
 
-   44 assignment_expr: ASSIGN assignment_expr .
+   21 Declaration: Type_spec Declarator Declarator_none_or_more SEMI .
 
-    $default  reduce using rule 44 (assignment_expr)
+    $default  reduce using rule 21 (Declaration)
 
 
 State 67
 
-   42 expr: expr . COMMA assignment_expr
-   83 primary_expr: LPAR expr . RPAR
+   88 Primary_expr: LPAR error . RPAR
 
-    COMMA  shift, and go to state 71
-    RPAR   shift, and go to state 103
+    RPAR  shift, and go to state 106
 
 
 State 68
 
-   72 unary_expression: MINUS unary_expression .
+   46 Expr: Expr . COMMA Assignment_expr
+   87 Primary_expr: LPAR Expr . RPAR
 
-    $default  reduce using rule 72 (unary_expression)
+    COMMA  shift, and go to state 72
+    RPAR   shift, and go to state 107
 
 
 State 69
 
-   73 unary_expression: NOT unary_expression .
+   76 Unary_expression: MINUS Unary_expression .
 
-    $default  reduce using rule 73 (unary_expression)
+    $default  reduce using rule 76 (Unary_expression)
 
 
 State 70
 
-   71 unary_expression: PLUS unary_expression .
+   77 Unary_expression: NOT Unary_expression .
 
-    $default  reduce using rule 71 (unary_expression)
+    $default  reduce using rule 77 (Unary_expression)
 
 
 State 71
 
-   42 expr: expr COMMA . assignment_expr
+   75 Unary_expression: PLUS Unary_expression .
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    ASSIGN   shift, and go to state 29
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
-
-    assignment_expr      go to state 104
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    $default  reduce using rule 75 (Unary_expression)
 
 
 State 72
 
-   46 logical_OR_expr: logical_OR_expr OR . logical_AND_expr
+   46 Expr: Expr COMMA . Assignment_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    logical_AND_expr     go to state 105
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Assignment_expr      go to state 108
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 73
 
-   48 logical_AND_expr: logical_AND_expr AND . inclusive_OR_expr
+   50 Logical_OR_expr: Logical_OR_expr OR . Logical_AND_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    inclusive_OR_expr    go to state 106
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Logical_AND_expr     go to state 109
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 74
 
-   50 inclusive_OR_expr: inclusive_OR_expr BITWISEOR . exclusive_OR_expr
+   52 Logical_AND_expr: Logical_AND_expr AND . Inclusive_OR_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    exclusive_OR_expr    go to state 107
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Inclusive_OR_expr    go to state 111
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 75
 
-   52 exclusive_OR_expr: exclusive_OR_expr BITWISEXOR . AND_expr
+   54 Inclusive_OR_expr: Inclusive_OR_expr BITWISEOR . Exclusive_OR_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    AND_expr             go to state 108
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Exclusive_OR_expr    go to state 112
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 76
 
-   54 AND_expr: AND_expr BITWISEAND . equality_expr
+   56 Exclusive_OR_expr: Exclusive_OR_expr BITWISEXOR . AND_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    equality_expr        go to state 109
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    AND_expr             go to state 113
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 77
 
-   56 equality_expr: equality_expr EQ . relational_expr
+   58 AND_expr: AND_expr BITWISEAND . Equality_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    relational_expr      go to state 110
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Equality_expr        go to state 114
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 78
 
-   57 equality_expr: equality_expr NE . relational_expr
+   60 Equality_expr: Equality_expr EQ . Relational_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    relational_expr      go to state 111
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Relational_expr      go to state 115
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 79
 
-   62 relational_expr: relational_expr GE . additive_expr
+   61 Equality_expr: Equality_expr NE . Relational_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    additive_expr        go to state 112
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Relational_expr      go to state 116
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 80
 
-   60 relational_expr: relational_expr GT . additive_expr
+   66 Relational_expr: Relational_expr GE . Additive_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    additive_expr        go to state 113
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Additive_expr        go to state 117
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 81
 
-   61 relational_expr: relational_expr LE . additive_expr
+   64 Relational_expr: Relational_expr GT . Additive_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    additive_expr        go to state 114
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Additive_expr        go to state 118
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 82
 
-   59 relational_expr: relational_expr LT . additive_expr
+   65 Relational_expr: Relational_expr LE . Additive_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    additive_expr        go to state 115
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Additive_expr        go to state 119
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 83
 
-   65 additive_expr: additive_expr MINUS . multiplicative_expr
+   63 Relational_expr: Relational_expr LT . Additive_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    multiplicative_expr  go to state 116
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Additive_expr        go to state 120
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 84
 
-   64 additive_expr: additive_expr PLUS . multiplicative_expr
+   69 Additive_expr: Additive_expr MINUS . Multiplicative_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    multiplicative_expr  go to state 117
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Multiplicative_expr  go to state 121
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 85
 
-   67 multiplicative_expr: multiplicative_expr MUL . unary_expression
+   68 Additive_expr: Additive_expr PLUS . Multiplicative_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    unary_expression  go to state 118
-    postfix_expr      go to state 47
-    primary_expr      go to state 48
+    Multiplicative_expr  go to state 122
+    Unary_expression     go to state 110
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 86
 
-   68 multiplicative_expr: multiplicative_expr DIV . unary_expression
+   71 Multiplicative_expr: Multiplicative_expr MUL . Unary_expression
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    unary_expression  go to state 119
-    postfix_expr      go to state 47
-    primary_expr      go to state 48
+    Unary_expression  go to state 123
+    Postfix_expr      go to state 48
+    Primary_expr      go to state 49
 
 
 State 87
 
-   69 multiplicative_expr: multiplicative_expr MOD . unary_expression
+   72 Multiplicative_expr: Multiplicative_expr DIV . Unary_expression
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    unary_expression  go to state 120
-    postfix_expr      go to state 47
-    primary_expr      go to state 48
+    Unary_expression  go to state 124
+    Postfix_expr      go to state 48
+    Primary_expr      go to state 49
 
 
 State 88
 
-   77 postfix_expr: postfix_expr LPAR . argument_expr_list RPAR
-   78             | postfix_expr LPAR . RPAR
+   73 Multiplicative_expr: Multiplicative_expr MOD . Unary_expression
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    ASSIGN   shift, and go to state 29
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    RPAR     shift, and go to state 121
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    assignment_expr      go to state 122
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    argument_expr_list   go to state 123
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Unary_expression  go to state 125
+    Postfix_expr      go to state 48
+    Primary_expr      go to state 49
 
 
 State 89
 
-   15 function_declarator: ID LPAR parameter_list RPAR .
+   48 Assignment_expr: Unary_expression ASSIGN . Assignment_expr
 
-    $default  reduce using rule 15 (function_declarator)
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
+
+    Assignment_expr      go to state 126
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 90
 
-   17 parameter_declaration_none_or_more: COMMA . parameter_declaration
+   81 Postfix_expr: Postfix_expr LPAR . Argument_expr_list RPAR
+   82             | Postfix_expr LPAR . RPAR
 
-    CHAR    shift, and go to state 1
-    INT     shift, and go to state 2
-    SHORT   shift, and go to state 3
-    DOUBLE  shift, and go to state 4
-    VOID    shift, and go to state 5
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    RPAR     shift, and go to state 127
+    ID       shift, and go to state 35
 
-    parameter_declaration  go to state 124
-    type_spec              go to state 51
+    Assignment_expr      go to state 128
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Argument_expr_list   go to state 129
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 91
 
-   16 parameter_list: parameter_declaration parameter_declaration_none_or_more .
+   15 Function_declarator: ID LPAR Parameter_list RPAR .
 
-    $default  reduce using rule 16 (parameter_list)
+    $default  reduce using rule 15 (Function_declarator)
 
 
 State 92
 
-   19 parameter_declaration: type_spec ID .
+   17 Parameter_declaration_none_or_more: COMMA . Parameter_declaration
 
-    $default  reduce using rule 19 (parameter_declaration)
+    CHAR    shift, and go to state 2
+    INT     shift, and go to state 3
+    SHORT   shift, and go to state 4
+    DOUBLE  shift, and go to state 5
+    VOID    shift, and go to state 6
+
+    Parameter_declaration  go to state 130
+    Type_spec              go to state 52
 
 
 State 93
 
-   36 statement: WHILE LPAR . expr RPAR statement
+   16 Parameter_list: Parameter_declaration Parameter_declaration_none_or_more .
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    ASSIGN   shift, and go to state 29
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
-
-    expr                 go to state 125
-    assignment_expr      go to state 36
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    $default  reduce using rule 16 (Parameter_list)
 
 
 State 94
 
-   34 statement: IF LPAR . expr RPAR statement ELSE statement
-   35          | IF LPAR . expr RPAR statement
+   19 Parameter_declaration: Type_spec ID .
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    ASSIGN   shift, and go to state 29
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
-
-    expr                 go to state 126
-    assignment_expr      go to state 36
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    $default  reduce using rule 19 (Parameter_declaration)
 
 
 State 95
 
-   38 statement: RETURN SEMI .
+   38 Statement: WHILE LPAR . Expr RPAR Statement_or_error
 
-    $default  reduce using rule 38 (statement)
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
+
+    Expr                 go to state 131
+    Assignment_expr      go to state 37
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 96
 
-   37 statement: RETURN expr . SEMI
-   42 expr: expr . COMMA assignment_expr
+   36 Statement: IF LPAR . Expr RPAR Statement_or_error ELSE Statement_or_error
+   37          | IF LPAR . Expr RPAR Statement_or_error
 
-    COMMA  shift, and go to state 71
-    SEMI   shift, and go to state 127
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
+
+    Expr                 go to state 132
+    Assignment_expr      go to state 37
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 97
 
-   39 statement_none_or_more: statement . statement_none_or_more
+   40 Statement: RETURN SEMI .
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    WHILE    shift, and go to state 52
-    IF       shift, and go to state 53
-    RETURN   shift, and go to state 54
-    ASSIGN   shift, and go to state 29
-    LBRACE   shift, and go to state 55
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    SEMI     shift, and go to state 57
-    ID       shift, and go to state 34
-
-    $default  reduce using rule 40 (statement_none_or_more)
-
-    statement               go to state 97
-    statement_none_or_more  go to state 128
-    expr                    go to state 62
-    assignment_expr         go to state 36
-    logical_OR_expr         go to state 37
-    logical_AND_expr        go to state 38
-    inclusive_OR_expr       go to state 39
-    exclusive_OR_expr       go to state 40
-    AND_expr                go to state 41
-    equality_expr           go to state 42
-    relational_expr         go to state 43
-    additive_expr           go to state 44
-    multiplicative_expr     go to state 45
-    unary_expression        go to state 46
-    postfix_expr            go to state 47
-    primary_expr            go to state 48
+    $default  reduce using rule 40 (Statement)
 
 
 State 98
 
-   33 statement: LBRACE statement_none_or_more . RBRACE
+   39 Statement: RETURN Expr . SEMI
+   46 Expr: Expr . COMMA Assignment_expr
 
-    RBRACE  shift, and go to state 129
+    COMMA  shift, and go to state 72
+    SEMI   shift, and go to state 133
 
 
 State 99
 
-    8 function_body: LBRACE declarations_and_statements RBRACE .
+   35 Statement: LBRACE error . RBRACE
 
-    $default  reduce using rule 8 (function_body)
+    RBRACE  shift, and go to state 134
 
 
 State 100
 
-   11 declarations_and_statements: declaration declarations_and_statements .
+   43 Statement_none_or_more: Statement . Statement_none_or_more
 
-    $default  reduce using rule 11 (declarations_and_statements)
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    WHILE    shift, and go to state 53
+    IF       shift, and go to state 54
+    RETURN   shift, and go to state 55
+    LBRACE   shift, and go to state 56
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    SEMI     shift, and go to state 58
+    ID       shift, and go to state 35
+
+    $default  reduce using rule 44 (Statement_none_or_more)
+
+    Statement               go to state 100
+    Statement_none_or_more  go to state 135
+    Expr                    go to state 63
+    Assignment_expr         go to state 37
+    Logical_OR_expr         go to state 38
+    Logical_AND_expr        go to state 39
+    Inclusive_OR_expr       go to state 40
+    Exclusive_OR_expr       go to state 41
+    AND_expr                go to state 42
+    Equality_expr           go to state 43
+    Relational_expr         go to state 44
+    Additive_expr           go to state 45
+    Multiplicative_expr     go to state 46
+    Unary_expression        go to state 47
+    Postfix_expr            go to state 48
+    Primary_expr            go to state 49
 
 
 State 101
 
-   10 declarations_and_statements: statement declarations_and_statements .
+   34 Statement: LBRACE Statement_none_or_more . RBRACE
 
-    $default  reduce using rule 10 (declarations_and_statements)
+    RBRACE  shift, and go to state 136
 
 
 State 102
 
-   31 statement: expr SEMI .
+    8 Function_body: LBRACE Declarations_and_statements RBRACE .
 
-    $default  reduce using rule 31 (statement)
+    $default  reduce using rule 8 (Function_body)
 
 
 State 103
 
-   83 primary_expr: LPAR expr RPAR .
+   11 Declarations_and_statements: Declaration Declarations_and_statements .
 
-    $default  reduce using rule 83 (primary_expr)
+    $default  reduce using rule 11 (Declarations_and_statements)
 
 
 State 104
 
-   42 expr: expr COMMA assignment_expr .
+   10 Declarations_and_statements: Statement Declarations_and_statements .
 
-    $default  reduce using rule 42 (expr)
+    $default  reduce using rule 10 (Declarations_and_statements)
 
 
 State 105
 
-   46 logical_OR_expr: logical_OR_expr OR logical_AND_expr .
-   48 logical_AND_expr: logical_AND_expr . AND inclusive_OR_expr
+   33 Statement: Expr SEMI .
 
-    AND  shift, and go to state 73
-
-    $default  reduce using rule 46 (logical_OR_expr)
+    $default  reduce using rule 33 (Statement)
 
 
 State 106
 
-   48 logical_AND_expr: logical_AND_expr AND inclusive_OR_expr .
-   50 inclusive_OR_expr: inclusive_OR_expr . BITWISEOR exclusive_OR_expr
+   88 Primary_expr: LPAR error RPAR .
 
-    BITWISEOR  shift, and go to state 74
-
-    $default  reduce using rule 48 (logical_AND_expr)
+    $default  reduce using rule 88 (Primary_expr)
 
 
 State 107
 
-   50 inclusive_OR_expr: inclusive_OR_expr BITWISEOR exclusive_OR_expr .
-   52 exclusive_OR_expr: exclusive_OR_expr . BITWISEXOR AND_expr
+   87 Primary_expr: LPAR Expr RPAR .
 
-    BITWISEXOR  shift, and go to state 75
-
-    $default  reduce using rule 50 (inclusive_OR_expr)
+    $default  reduce using rule 87 (Primary_expr)
 
 
 State 108
 
-   52 exclusive_OR_expr: exclusive_OR_expr BITWISEXOR AND_expr .
-   54 AND_expr: AND_expr . BITWISEAND equality_expr
+   46 Expr: Expr COMMA Assignment_expr .
 
-    BITWISEAND  shift, and go to state 76
-
-    $default  reduce using rule 52 (exclusive_OR_expr)
+    $default  reduce using rule 46 (Expr)
 
 
 State 109
 
-   54 AND_expr: AND_expr BITWISEAND equality_expr .
-   56 equality_expr: equality_expr . EQ relational_expr
-   57              | equality_expr . NE relational_expr
+   50 Logical_OR_expr: Logical_OR_expr OR Logical_AND_expr .
+   52 Logical_AND_expr: Logical_AND_expr . AND Inclusive_OR_expr
 
-    EQ  shift, and go to state 77
-    NE  shift, and go to state 78
+    AND  shift, and go to state 74
 
-    $default  reduce using rule 54 (AND_expr)
+    $default  reduce using rule 50 (Logical_OR_expr)
 
 
 State 110
 
-   56 equality_expr: equality_expr EQ relational_expr .
-   59 relational_expr: relational_expr . LT additive_expr
-   60                | relational_expr . GT additive_expr
-   61                | relational_expr . LE additive_expr
-   62                | relational_expr . GE additive_expr
+   70 Multiplicative_expr: Unary_expression .
 
-    GE  shift, and go to state 79
-    GT  shift, and go to state 80
-    LE  shift, and go to state 81
-    LT  shift, and go to state 82
-
-    $default  reduce using rule 56 (equality_expr)
+    $default  reduce using rule 70 (Multiplicative_expr)
 
 
 State 111
 
-   57 equality_expr: equality_expr NE relational_expr .
-   59 relational_expr: relational_expr . LT additive_expr
-   60                | relational_expr . GT additive_expr
-   61                | relational_expr . LE additive_expr
-   62                | relational_expr . GE additive_expr
+   52 Logical_AND_expr: Logical_AND_expr AND Inclusive_OR_expr .
+   54 Inclusive_OR_expr: Inclusive_OR_expr . BITWISEOR Exclusive_OR_expr
 
-    GE  shift, and go to state 79
-    GT  shift, and go to state 80
-    LE  shift, and go to state 81
-    LT  shift, and go to state 82
+    BITWISEOR  shift, and go to state 75
 
-    $default  reduce using rule 57 (equality_expr)
+    $default  reduce using rule 52 (Logical_AND_expr)
 
 
 State 112
 
-   62 relational_expr: relational_expr GE additive_expr .
-   64 additive_expr: additive_expr . PLUS multiplicative_expr
-   65              | additive_expr . MINUS multiplicative_expr
+   54 Inclusive_OR_expr: Inclusive_OR_expr BITWISEOR Exclusive_OR_expr .
+   56 Exclusive_OR_expr: Exclusive_OR_expr . BITWISEXOR AND_expr
 
-    MINUS  shift, and go to state 83
-    PLUS   shift, and go to state 84
+    BITWISEXOR  shift, and go to state 76
 
-    $default  reduce using rule 62 (relational_expr)
+    $default  reduce using rule 54 (Inclusive_OR_expr)
 
 
 State 113
 
-   60 relational_expr: relational_expr GT additive_expr .
-   64 additive_expr: additive_expr . PLUS multiplicative_expr
-   65              | additive_expr . MINUS multiplicative_expr
+   56 Exclusive_OR_expr: Exclusive_OR_expr BITWISEXOR AND_expr .
+   58 AND_expr: AND_expr . BITWISEAND Equality_expr
 
-    MINUS  shift, and go to state 83
-    PLUS   shift, and go to state 84
+    BITWISEAND  shift, and go to state 77
 
-    $default  reduce using rule 60 (relational_expr)
+    $default  reduce using rule 56 (Exclusive_OR_expr)
 
 
 State 114
 
-   61 relational_expr: relational_expr LE additive_expr .
-   64 additive_expr: additive_expr . PLUS multiplicative_expr
-   65              | additive_expr . MINUS multiplicative_expr
+   58 AND_expr: AND_expr BITWISEAND Equality_expr .
+   60 Equality_expr: Equality_expr . EQ Relational_expr
+   61              | Equality_expr . NE Relational_expr
 
-    MINUS  shift, and go to state 83
-    PLUS   shift, and go to state 84
+    EQ  shift, and go to state 78
+    NE  shift, and go to state 79
 
-    $default  reduce using rule 61 (relational_expr)
+    $default  reduce using rule 58 (AND_expr)
 
 
 State 115
 
-   59 relational_expr: relational_expr LT additive_expr .
-   64 additive_expr: additive_expr . PLUS multiplicative_expr
-   65              | additive_expr . MINUS multiplicative_expr
+   60 Equality_expr: Equality_expr EQ Relational_expr .
+   63 Relational_expr: Relational_expr . LT Additive_expr
+   64                | Relational_expr . GT Additive_expr
+   65                | Relational_expr . LE Additive_expr
+   66                | Relational_expr . GE Additive_expr
 
-    MINUS  shift, and go to state 83
-    PLUS   shift, and go to state 84
+    GE  shift, and go to state 80
+    GT  shift, and go to state 81
+    LE  shift, and go to state 82
+    LT  shift, and go to state 83
 
-    $default  reduce using rule 59 (relational_expr)
+    $default  reduce using rule 60 (Equality_expr)
 
 
 State 116
 
-   65 additive_expr: additive_expr MINUS multiplicative_expr .
-   67 multiplicative_expr: multiplicative_expr . MUL unary_expression
-   68                    | multiplicative_expr . DIV unary_expression
-   69                    | multiplicative_expr . MOD unary_expression
+   61 Equality_expr: Equality_expr NE Relational_expr .
+   63 Relational_expr: Relational_expr . LT Additive_expr
+   64                | Relational_expr . GT Additive_expr
+   65                | Relational_expr . LE Additive_expr
+   66                | Relational_expr . GE Additive_expr
 
-    MUL  shift, and go to state 85
-    DIV  shift, and go to state 86
-    MOD  shift, and go to state 87
+    GE  shift, and go to state 80
+    GT  shift, and go to state 81
+    LE  shift, and go to state 82
+    LT  shift, and go to state 83
 
-    $default  reduce using rule 65 (additive_expr)
+    $default  reduce using rule 61 (Equality_expr)
 
 
 State 117
 
-   64 additive_expr: additive_expr PLUS multiplicative_expr .
-   67 multiplicative_expr: multiplicative_expr . MUL unary_expression
-   68                    | multiplicative_expr . DIV unary_expression
-   69                    | multiplicative_expr . MOD unary_expression
+   66 Relational_expr: Relational_expr GE Additive_expr .
+   68 Additive_expr: Additive_expr . PLUS Multiplicative_expr
+   69              | Additive_expr . MINUS Multiplicative_expr
 
-    MUL  shift, and go to state 85
-    DIV  shift, and go to state 86
-    MOD  shift, and go to state 87
+    MINUS  shift, and go to state 84
+    PLUS   shift, and go to state 85
 
-    $default  reduce using rule 64 (additive_expr)
+    $default  reduce using rule 66 (Relational_expr)
 
 
 State 118
 
-   67 multiplicative_expr: multiplicative_expr MUL unary_expression .
+   64 Relational_expr: Relational_expr GT Additive_expr .
+   68 Additive_expr: Additive_expr . PLUS Multiplicative_expr
+   69              | Additive_expr . MINUS Multiplicative_expr
 
-    $default  reduce using rule 67 (multiplicative_expr)
+    MINUS  shift, and go to state 84
+    PLUS   shift, and go to state 85
+
+    $default  reduce using rule 64 (Relational_expr)
 
 
 State 119
 
-   68 multiplicative_expr: multiplicative_expr DIV unary_expression .
+   65 Relational_expr: Relational_expr LE Additive_expr .
+   68 Additive_expr: Additive_expr . PLUS Multiplicative_expr
+   69              | Additive_expr . MINUS Multiplicative_expr
 
-    $default  reduce using rule 68 (multiplicative_expr)
+    MINUS  shift, and go to state 84
+    PLUS   shift, and go to state 85
+
+    $default  reduce using rule 65 (Relational_expr)
 
 
 State 120
 
-   69 multiplicative_expr: multiplicative_expr MOD unary_expression .
+   63 Relational_expr: Relational_expr LT Additive_expr .
+   68 Additive_expr: Additive_expr . PLUS Multiplicative_expr
+   69              | Additive_expr . MINUS Multiplicative_expr
 
-    $default  reduce using rule 69 (multiplicative_expr)
+    MINUS  shift, and go to state 84
+    PLUS   shift, and go to state 85
+
+    $default  reduce using rule 63 (Relational_expr)
 
 
 State 121
 
-   78 postfix_expr: postfix_expr LPAR RPAR .
+   69 Additive_expr: Additive_expr MINUS Multiplicative_expr .
+   71 Multiplicative_expr: Multiplicative_expr . MUL Unary_expression
+   72                    | Multiplicative_expr . DIV Unary_expression
+   73                    | Multiplicative_expr . MOD Unary_expression
 
-    $default  reduce using rule 78 (postfix_expr)
+    MUL  shift, and go to state 86
+    DIV  shift, and go to state 87
+    MOD  shift, and go to state 88
+
+    $default  reduce using rule 69 (Additive_expr)
 
 
 State 122
 
-   74 argument_expr_list: assignment_expr .
+   68 Additive_expr: Additive_expr PLUS Multiplicative_expr .
+   71 Multiplicative_expr: Multiplicative_expr . MUL Unary_expression
+   72                    | Multiplicative_expr . DIV Unary_expression
+   73                    | Multiplicative_expr . MOD Unary_expression
 
-    $default  reduce using rule 74 (argument_expr_list)
+    MUL  shift, and go to state 86
+    DIV  shift, and go to state 87
+    MOD  shift, and go to state 88
+
+    $default  reduce using rule 68 (Additive_expr)
 
 
 State 123
 
-   75 argument_expr_list: argument_expr_list . COMMA assignment_expr
-   77 postfix_expr: postfix_expr LPAR argument_expr_list . RPAR
+   71 Multiplicative_expr: Multiplicative_expr MUL Unary_expression .
 
-    COMMA  shift, and go to state 130
-    RPAR   shift, and go to state 131
+    $default  reduce using rule 71 (Multiplicative_expr)
 
 
 State 124
 
-   17 parameter_declaration_none_or_more: COMMA parameter_declaration .
+   72 Multiplicative_expr: Multiplicative_expr DIV Unary_expression .
 
-    $default  reduce using rule 17 (parameter_declaration_none_or_more)
+    $default  reduce using rule 72 (Multiplicative_expr)
 
 
 State 125
 
-   36 statement: WHILE LPAR expr . RPAR statement
-   42 expr: expr . COMMA assignment_expr
+   73 Multiplicative_expr: Multiplicative_expr MOD Unary_expression .
 
-    COMMA  shift, and go to state 71
-    RPAR   shift, and go to state 132
+    $default  reduce using rule 73 (Multiplicative_expr)
 
 
 State 126
 
-   34 statement: IF LPAR expr . RPAR statement ELSE statement
-   35          | IF LPAR expr . RPAR statement
-   42 expr: expr . COMMA assignment_expr
+   48 Assignment_expr: Unary_expression ASSIGN Assignment_expr .
 
-    COMMA  shift, and go to state 71
-    RPAR   shift, and go to state 133
+    $default  reduce using rule 48 (Assignment_expr)
 
 
 State 127
 
-   37 statement: RETURN expr SEMI .
+   82 Postfix_expr: Postfix_expr LPAR RPAR .
 
-    $default  reduce using rule 37 (statement)
+    $default  reduce using rule 82 (Postfix_expr)
 
 
 State 128
 
-   39 statement_none_or_more: statement statement_none_or_more .
+   78 Argument_expr_list: Assignment_expr .
 
-    $default  reduce using rule 39 (statement_none_or_more)
+    $default  reduce using rule 78 (Argument_expr_list)
 
 
 State 129
 
-   33 statement: LBRACE statement_none_or_more RBRACE .
+   79 Argument_expr_list: Argument_expr_list . COMMA Assignment_expr
+   81 Postfix_expr: Postfix_expr LPAR Argument_expr_list . RPAR
 
-    $default  reduce using rule 33 (statement)
+    COMMA  shift, and go to state 137
+    RPAR   shift, and go to state 138
 
 
 State 130
 
-   75 argument_expr_list: argument_expr_list COMMA . assignment_expr
+   17 Parameter_declaration_none_or_more: COMMA Parameter_declaration .
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    ASSIGN   shift, and go to state 29
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    ID       shift, and go to state 34
-
-    assignment_expr      go to state 134
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    $default  reduce using rule 17 (Parameter_declaration_none_or_more)
 
 
 State 131
 
-   77 postfix_expr: postfix_expr LPAR argument_expr_list RPAR .
+   38 Statement: WHILE LPAR Expr . RPAR Statement_or_error
+   46 Expr: Expr . COMMA Assignment_expr
 
-    $default  reduce using rule 77 (postfix_expr)
+    COMMA  shift, and go to state 72
+    RPAR   shift, and go to state 139
 
 
 State 132
 
-   36 statement: WHILE LPAR expr RPAR . statement
+   36 Statement: IF LPAR Expr . RPAR Statement_or_error ELSE Statement_or_error
+   37          | IF LPAR Expr . RPAR Statement_or_error
+   46 Expr: Expr . COMMA Assignment_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    WHILE    shift, and go to state 52
-    IF       shift, and go to state 53
-    RETURN   shift, and go to state 54
-    ASSIGN   shift, and go to state 29
-    LBRACE   shift, and go to state 55
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    SEMI     shift, and go to state 57
-    ID       shift, and go to state 34
-
-    statement            go to state 135
-    expr                 go to state 62
-    assignment_expr      go to state 36
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    COMMA  shift, and go to state 72
+    RPAR   shift, and go to state 140
 
 
 State 133
 
-   34 statement: IF LPAR expr RPAR . statement ELSE statement
-   35          | IF LPAR expr RPAR . statement
+   39 Statement: RETURN Expr SEMI .
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    WHILE    shift, and go to state 52
-    IF       shift, and go to state 53
-    RETURN   shift, and go to state 54
-    ASSIGN   shift, and go to state 29
-    LBRACE   shift, and go to state 55
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    SEMI     shift, and go to state 57
-    ID       shift, and go to state 34
-
-    statement            go to state 136
-    expr                 go to state 62
-    assignment_expr      go to state 36
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    $default  reduce using rule 39 (Statement)
 
 
 State 134
 
-   75 argument_expr_list: argument_expr_list COMMA assignment_expr .
+   35 Statement: LBRACE error RBRACE .
 
-    $default  reduce using rule 75 (argument_expr_list)
+    $default  reduce using rule 35 (Statement)
 
 
 State 135
 
-   36 statement: WHILE LPAR expr RPAR statement .
+   43 Statement_none_or_more: Statement Statement_none_or_more .
 
-    $default  reduce using rule 36 (statement)
+    $default  reduce using rule 43 (Statement_none_or_more)
 
 
 State 136
 
-   34 statement: IF LPAR expr RPAR statement . ELSE statement
-   35          | IF LPAR expr RPAR statement .
+   34 Statement: LBRACE Statement_none_or_more RBRACE .
 
-    ELSE  shift, and go to state 137
-
-    ELSE      [reduce using rule 35 (statement)]
-    $default  reduce using rule 35 (statement)
+    $default  reduce using rule 34 (Statement)
 
 
 State 137
 
-   34 statement: IF LPAR expr RPAR statement ELSE . statement
+   79 Argument_expr_list: Argument_expr_list COMMA . Assignment_expr
 
-    REALLIT  shift, and go to state 26
-    INTLIT   shift, and go to state 27
-    CHRLIT   shift, and go to state 28
-    WHILE    shift, and go to state 52
-    IF       shift, and go to state 53
-    RETURN   shift, and go to state 54
-    ASSIGN   shift, and go to state 29
-    LBRACE   shift, and go to state 55
-    LPAR     shift, and go to state 30
-    MINUS    shift, and go to state 31
-    NOT      shift, and go to state 32
-    PLUS     shift, and go to state 33
-    SEMI     shift, and go to state 57
-    ID       shift, and go to state 34
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    ID       shift, and go to state 35
 
-    statement            go to state 138
-    expr                 go to state 62
-    assignment_expr      go to state 36
-    logical_OR_expr      go to state 37
-    logical_AND_expr     go to state 38
-    inclusive_OR_expr    go to state 39
-    exclusive_OR_expr    go to state 40
-    AND_expr             go to state 41
-    equality_expr        go to state 42
-    relational_expr      go to state 43
-    additive_expr        go to state 44
-    multiplicative_expr  go to state 45
-    unary_expression     go to state 46
-    postfix_expr         go to state 47
-    primary_expr         go to state 48
+    Assignment_expr      go to state 141
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
 
 
 State 138
 
-   34 statement: IF LPAR expr RPAR statement ELSE statement .
+   81 Postfix_expr: Postfix_expr LPAR Argument_expr_list RPAR .
 
-    $default  reduce using rule 34 (statement)
+    $default  reduce using rule 81 (Postfix_expr)
+
+
+State 139
+
+   38 Statement: WHILE LPAR Expr RPAR . Statement_or_error
+
+    error    shift, and go to state 142
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    WHILE    shift, and go to state 53
+    IF       shift, and go to state 54
+    RETURN   shift, and go to state 55
+    LBRACE   shift, and go to state 56
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    SEMI     shift, and go to state 58
+    ID       shift, and go to state 35
+
+    Statement            go to state 143
+    Statement_or_error   go to state 144
+    Expr                 go to state 63
+    Assignment_expr      go to state 37
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
+
+
+State 140
+
+   36 Statement: IF LPAR Expr RPAR . Statement_or_error ELSE Statement_or_error
+   37          | IF LPAR Expr RPAR . Statement_or_error
+
+    error    shift, and go to state 142
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    WHILE    shift, and go to state 53
+    IF       shift, and go to state 54
+    RETURN   shift, and go to state 55
+    LBRACE   shift, and go to state 56
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    SEMI     shift, and go to state 58
+    ID       shift, and go to state 35
+
+    Statement            go to state 143
+    Statement_or_error   go to state 145
+    Expr                 go to state 63
+    Assignment_expr      go to state 37
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
+
+
+State 141
+
+   79 Argument_expr_list: Argument_expr_list COMMA Assignment_expr .
+
+    $default  reduce using rule 79 (Argument_expr_list)
+
+
+State 142
+
+   42 Statement_or_error: error . SEMI
+
+    SEMI  shift, and go to state 146
+
+
+State 143
+
+   41 Statement_or_error: Statement .
+
+    $default  reduce using rule 41 (Statement_or_error)
+
+
+State 144
+
+   38 Statement: WHILE LPAR Expr RPAR Statement_or_error .
+
+    $default  reduce using rule 38 (Statement)
+
+
+State 145
+
+   36 Statement: IF LPAR Expr RPAR Statement_or_error . ELSE Statement_or_error
+   37          | IF LPAR Expr RPAR Statement_or_error .
+
+    ELSE  shift, and go to state 147
+
+    $default  reduce using rule 37 (Statement)
+
+
+State 146
+
+   42 Statement_or_error: error SEMI .
+
+    $default  reduce using rule 42 (Statement_or_error)
+
+
+State 147
+
+   36 Statement: IF LPAR Expr RPAR Statement_or_error ELSE . Statement_or_error
+
+    error    shift, and go to state 142
+    REALLIT  shift, and go to state 28
+    INTLIT   shift, and go to state 29
+    CHRLIT   shift, and go to state 30
+    WHILE    shift, and go to state 53
+    IF       shift, and go to state 54
+    RETURN   shift, and go to state 55
+    LBRACE   shift, and go to state 56
+    LPAR     shift, and go to state 31
+    MINUS    shift, and go to state 32
+    NOT      shift, and go to state 33
+    PLUS     shift, and go to state 34
+    SEMI     shift, and go to state 58
+    ID       shift, and go to state 35
+
+    Statement            go to state 143
+    Statement_or_error   go to state 148
+    Expr                 go to state 63
+    Assignment_expr      go to state 37
+    Logical_OR_expr      go to state 38
+    Logical_AND_expr     go to state 39
+    Inclusive_OR_expr    go to state 40
+    Exclusive_OR_expr    go to state 41
+    AND_expr             go to state 42
+    Equality_expr        go to state 43
+    Relational_expr      go to state 44
+    Additive_expr        go to state 45
+    Multiplicative_expr  go to state 46
+    Unary_expression     go to state 47
+    Postfix_expr         go to state 48
+    Primary_expr         go to state 49
+
+
+State 148
+
+   36 Statement: IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error .
+
+    $default  reduce using rule 36 (Statement)

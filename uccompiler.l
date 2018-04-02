@@ -21,6 +21,11 @@
     //garantir reserved
     //\n, \t \\, \’, \" e \ooo
 %}
+
+/*god help*/
+%option nounput
+%option noinput
+
 numero                                              [0-9] 
 reserved                                            \[|\]|\+\+|\-\-|auto|break|case|const|continue|default|do|enum|extern|float|for|goto|inline|long|register|restrict|signed|sizeof|static|struct|switch|typedef|union|unsigned|volatile|_Bool|_Complex|_Imaginary
 chrlitconst                                         \\([0-7][0-7]?[0-7]?|n|t|\\|\'|\")|[^'\n\\]
@@ -129,8 +134,4 @@ void handleError(int errorCode){
         printf("Line %d, col %d: illegal character (%s)\n", line, column, yytext);
         column += yyleng;
     }
-}
-
-void yyerror (char *s){
-    printf ("%s\n", s);
 }

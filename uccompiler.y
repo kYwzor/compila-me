@@ -3,15 +3,26 @@
     #include <stdio.h>
     #include <string.h>
     #define DEBUG 1
+    extern int line;
+    extern int yyleng;
+    extern int column;
+    extern char* yytext;
+    extern char flag;
     int yylex(void);
     void pprint(char* string);
     void yyerror (const char *s);
 %}
 
+
+
 %token REALLIT  INTLIT  CHRLIT  CHAR  ELSE  WHILE  IF  INT  SHORT  DOUBLE  RETURN  VOID  BITWISEAND  BITWISEOR  BITWISEXOR  AND  ASSIGN  MUL  COMMA  DIV  EQ  GE  GT  LBRACE  LE  LPAR  LT  MINUS  MOD  NE  NOT  OR  PLUS  RBRACE  RPAR  SEMI  RESERVED  ID
+
 
 /*Precendencia como definidas no C em si*/
 %left LPAR  RPAR
+
+/*Este nao esta nas precedencias do C mas parece-me necessario*/
+%nonassoc ELSE
  
 %right NOT
 
@@ -28,195 +39,198 @@
 %left AND
 %left OR
 
-%left COMMA
+%right ASSIGN
 
-%union{
-    char* value;
-}
+%left COMMA
 
 %%
 
-functions_and_declarations:
-    functions_and_declarations_mandatory functions_and_declarations_none_or_more
+Functions_and_declarations:
+    Functions_and_declarations_mandatory Functions_and_declarations_none_or_more
     ;
 
-functions_and_declarations_mandatory:
-    function_definition
-    | function_declaration
-    | declaration
+Functions_and_declarations_mandatory:
+    Function_definition
+    | Function_declaration
+    | Declaration
     ;
 
-functions_and_declarations_none_or_more:
-    functions_and_declarations_mandatory functions_and_declarations_none_or_more
+Functions_and_declarations_none_or_more:
+    Functions_and_declarations_mandatory Functions_and_declarations_none_or_more
     | 
     ;
 
-function_definition:
-    type_spec function_declarator function_body
+Function_definition:
+    Type_spec Function_declarator Function_body
     ;
 
-function_body:
-    LBRACE declarations_and_statements RBRACE
+Function_body:
+    LBRACE Declarations_and_statements RBRACE
     | LBRACE RBRACE
     ;
 
-declarations_and_statements:
-    statement declarations_and_statements
-    | declaration declarations_and_statements
-    | statement
-    | declaration
+Declarations_and_statements:
+    Statement Declarations_and_statements
+    | Declaration Declarations_and_statements
+    | Statement
+    | Declaration
     ;
 
-function_declaration:
-    type_spec function_declarator SEMI
+Function_declaration:
+    Type_spec Function_declarator SEMI
     ;
 
-function_declarator:
-    ID LPAR parameter_list RPAR
+Function_declarator:
+    ID LPAR Parameter_list RPAR
     ;
 
-parameter_list:
-    parameter_declaration parameter_declaration_none_or_more 
+Parameter_list:
+    Parameter_declaration Parameter_declaration_none_or_more 
     ;
 
-parameter_declaration_none_or_more:
-    COMMA parameter_declaration
+Parameter_declaration_none_or_more:
+    COMMA Parameter_declaration
     |
     ;
 
-parameter_declaration:
-    type_spec ID
-    | type_spec
+Parameter_declaration:
+    Type_spec ID
+    | Type_spec
     ;
 
-declaration:
-    type_spec declarator declarator_none_or_more SEMI
+Declaration:
+    Type_spec Declarator Declarator_none_or_more SEMI
+    | error SEMI {printf("Erro declaration\n");}
     ;
     
-declarator_none_or_more:
-    COMMA declarator
+Declarator_none_or_more:
+    COMMA Declarator
     |
     ;
 
-declarator:
-    ID ASSIGN expr
+Declarator:
+    ID ASSIGN Expr
     | ID
     ;
 
-type_spec: 
-    INT {pprint("Int");}
-    | CHAR {pprint("Char");}
-    | VOID {pprint("Void");}
-    | SHORT {pprint("Short");}
-    | DOUBLE {pprint("Double");}
+Type_spec: 
+    INT {;}
+    | CHAR {;}
+    | VOID {;}
+    | SHORT {;}
+    | DOUBLE {;}
     ;
 
-statement:
-    expr SEMI {;}
-    | SEMI {;}
-    | LBRACE statement_none_or_more RBRACE {;}
-    | IF LPAR expr RPAR statement ELSE statement {;}
-    | IF LPAR expr RPAR statement {;}
-    | WHILE LPAR expr RPAR statement{;}
-    | RETURN expr SEMI {;}
+Statement:
+    SEMI {;}
+    | Expr SEMI {;}
+    | LBRACE Statement_none_or_more RBRACE {;}
+    | LBRACE error RBRACE {printf("error Statement ()\n");}
+    | IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error {;}
+    | IF LPAR Expr RPAR Statement_or_error {;}
+    | WHILE LPAR Expr RPAR Statement_or_error{;}
+    | RETURN Expr SEMI {;}
     | RETURN SEMI {;}
     ;
 
-statement_none_or_more:
-    statement statement_none_or_more {;}
+Statement_or_error:
+    Statement {;}
+    | error SEMI {printf("Error semi statement\n");}
+    ;
+
+Statement_none_or_more:
+    Statement Statement_none_or_more {;}
     |
     ;
 
-expr:
-    assignment_expr {;}
-    | expr COMMA assignment_expr {;}
+Expr:
+    Assignment_expr {;}
+    | Expr COMMA Assignment_expr {;}
     ;
     
-assignment_expr:
-    logical_OR_expr {;}
-    | ASSIGN  assignment_expr {;}
+Assignment_expr:
+    Logical_OR_expr {;}
+    | Unary_expression ASSIGN  Assignment_expr {;}
     ;
 
 
-logical_OR_expr:
-    logical_AND_expr {;}
-    | logical_OR_expr OR logical_AND_expr {;}
+Logical_OR_expr:
+    Logical_AND_expr {;}
+    | Logical_OR_expr OR Logical_AND_expr {;}
     ;
 
-logical_AND_expr:
-    inclusive_OR_expr {;}
-    | logical_AND_expr AND inclusive_OR_expr {;}
+Logical_AND_expr:
+    Inclusive_OR_expr {;}
+    | Logical_AND_expr AND Inclusive_OR_expr {;}
     ;
 
-inclusive_OR_expr:
-    exclusive_OR_expr {;}
-    | inclusive_OR_expr BITWISEOR exclusive_OR_expr {;}
+Inclusive_OR_expr:
+    Exclusive_OR_expr {;}
+    | Inclusive_OR_expr BITWISEOR Exclusive_OR_expr {;}
     ;
 
-exclusive_OR_expr:
+Exclusive_OR_expr:
     AND_expr {;}
-    | exclusive_OR_expr BITWISEXOR AND_expr {;}
+    | Exclusive_OR_expr BITWISEXOR AND_expr {;}
     ;
 
 AND_expr:
-    equality_expr {;}
-    | AND_expr BITWISEAND equality_expr {;}
+    Equality_expr {;}
+    | AND_expr BITWISEAND Equality_expr {;}
     ;
 
-equality_expr:
-    relational_expr {;}
-    | equality_expr EQ relational_expr{;}
-    | equality_expr NE relational_expr {;}
+Equality_expr:
+    Relational_expr {;}
+    | Equality_expr EQ Relational_expr{;}
+    | Equality_expr NE Relational_expr {;}
     ;
 
-relational_expr:
-    additive_expr {;}
-    | relational_expr LT  additive_expr {;}
-    | relational_expr GT additive_expr {;}
-    | relational_expr LE additive_expr {;}
-    | relational_expr GE additive_expr {;}
+Relational_expr:
+    Additive_expr {;}
+    | Relational_expr LT  Additive_expr {;}
+    | Relational_expr GT Additive_expr {;}
+    | Relational_expr LE Additive_expr {;}
+    | Relational_expr GE Additive_expr {;}
     ;
 
-additive_expr:
-    multiplicative_expr {;}
-    | additive_expr PLUS multiplicative_expr {;}
-    | additive_expr MINUS multiplicative_expr {;}
+Additive_expr:
+    Multiplicative_expr {;}
+    | Additive_expr PLUS Multiplicative_expr {;}
+    | Additive_expr MINUS Multiplicative_expr {;}
     ;
 
-multiplicative_expr:
-    unary_expression {;}
-    | multiplicative_expr MUL unary_expression{;}
-    | multiplicative_expr DIV unary_expression{;}
-    | multiplicative_expr MOD unary_expression {;}
+Multiplicative_expr:
+    Unary_expression {;}
+    | Multiplicative_expr MUL Unary_expression{;}
+    | Multiplicative_expr DIV Unary_expression{;}
+    | Multiplicative_expr MOD Unary_expression {;}
     ;
 
-
-unary_expression:
-    postfix_expr {;}
-    | PLUS unary_expression {;}
-    | MINUS unary_expression {;}
-    | NOT unary_expression {;}
+Unary_expression:
+    Postfix_expr {;}
+    | PLUS Unary_expression {;}
+    | MINUS Unary_expression {;}
+    | NOT Unary_expression {;}
     ;
 
-
-
-argument_expr_list:
-    assignment_expr {;}
-    | argument_expr_list COMMA assignment_expr {;}
+Argument_expr_list:
+    Assignment_expr {;}
+    | Argument_expr_list COMMA Assignment_expr {;}
     ;
 
-postfix_expr:
-    primary_expr {;}
-    | postfix_expr LPAR argument_expr_list RPAR {;}
-    | postfix_expr LPAR RPAR  {;}
+Postfix_expr:
+    Primary_expr {;}
+    | Postfix_expr LPAR Argument_expr_list RPAR {;}
+    | Postfix_expr LPAR RPAR  {;}
     ;
 
-primary_expr:
+Primary_expr:
     ID {;}
     | INTLIT {;}
     | CHRLIT {;}
     | REALLIT {;}
-    | LPAR expr RPAR {;}
+    | LPAR Expr RPAR {;}
+    | LPAR error RPAR {printf("error primary expression\n");}
     ;
 
 %%
@@ -225,3 +239,7 @@ void pprint(char* string){
     //printf("%s\n", string);
 }
 
+
+void yyerror (const char *s) {
+	printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
+}
