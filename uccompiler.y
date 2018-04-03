@@ -15,8 +15,9 @@
 
 
 
-%token REALLIT  INTLIT  CHRLIT  CHAR  ELSE  WHILE  IF  INT  SHORT  DOUBLE  RETURN  VOID  BITWISEAND  BITWISEOR  BITWISEXOR  AND  ASSIGN  MUL  COMMA  DIV  EQ  GE  GT  LBRACE  LE  LPAR  LT  MINUS  MOD  NE  NOT  OR  PLUS  RBRACE  RPAR  SEMI  RESERVED  ID
+%token REALLIT  INTLIT  CHRLIT  CHAR  ELSE  WHILE  IF  INT  SHORT  DOUBLE  RETURN  VOID  BITWISEAND  BITWISEOR  BITWISEXOR  AND  ASSIGN  MUL  COMMA  DIV  EQ  GE  GT  LBRACE  LE  LPAR  LT  MINUS  MOD  NE  NOT  OR  PLUS  RBRACE  RPAR  SEMI  ID
 
+%left RPAR
 %nonassoc ELSE
 
 %%
@@ -76,7 +77,7 @@ Parameter_declaration:
 
 Declaration:
     Type_spec Declarator_list SEMI
-    | error SEMI {printf("Erro declaration\n");}
+    | error SEMI {;}//printf("Erro declaration\n");}
     ;
 
 Declarator_list:
@@ -89,7 +90,7 @@ Declarator_none_or_more:
     ;
 
 Declarator:
-    ID ASSIGN Expr
+    ID ASSIGN Assignment_expr
     | ID
     ;
 
@@ -105,7 +106,7 @@ Statement:
     SEMI {;}
     | Expr SEMI {;}
     | LBRACE Statement_none_or_more RBRACE {;}
-    | LBRACE error RBRACE {printf("error Statement ()\n");}
+    | LBRACE error RBRACE {;}//printf("error Statement ()\n");}
     | IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error {;}
     | IF LPAR Expr RPAR Statement_or_error {;}
     | WHILE LPAR Expr RPAR Statement_or_error{;}
@@ -115,7 +116,7 @@ Statement:
 
 Statement_or_error:
     Statement {;}
-    | error SEMI {printf("Error semi statement\n");}
+    | error SEMI {;}//printf("Error semi statement\n");}
     ;
 
 Statement_none_or_more:
@@ -130,9 +131,8 @@ Expr:
     
 Assignment_expr:
     Logical_OR_expr {;}
-    | Unary_expression ASSIGN  Assignment_expr {;}
+    | Unary_expression ASSIGN Assignment_expr {;}
     ;
-
 
 Logical_OR_expr:
     Logical_AND_expr {;}
@@ -161,13 +161,13 @@ AND_expr:
 
 Equality_expr:
     Relational_expr {;}
-    | Equality_expr EQ Relational_expr{;}
+    | Equality_expr EQ Relational_expr {;}
     | Equality_expr NE Relational_expr {;}
     ;
 
 Relational_expr:
     Additive_expr {;}
-    | Relational_expr LT  Additive_expr {;}
+    | Relational_expr LT Additive_expr {;}
     | Relational_expr GT Additive_expr {;}
     | Relational_expr LE Additive_expr {;}
     | Relational_expr GE Additive_expr {;}
@@ -181,8 +181,8 @@ Additive_expr:
 
 Multiplicative_expr:
     Unary_expression {;}
-    | Multiplicative_expr MUL Unary_expression{;}
-    | Multiplicative_expr DIV Unary_expression{;}
+    | Multiplicative_expr MUL Unary_expression {;}
+    | Multiplicative_expr DIV Unary_expression {;}
     | Multiplicative_expr MOD Unary_expression {;}
     ;
 
@@ -210,7 +210,7 @@ Primary_expr:
     | CHRLIT {;}
     | REALLIT {;}
     | LPAR Expr RPAR {;}
-    | LPAR error RPAR {printf("error primary expression\n");}
+    | LPAR error RPAR {;}//printf("error primary expression\n");}
     ;
 
 %%

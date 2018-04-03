@@ -84,7 +84,7 @@ void                                                {handleKeyword("VOID"); retu
 \}                                                  {handleKeyword("RBRACE"); return RBRACE;}
 \)                                                  {handleKeyword("RPAR"); return RPAR;}
 \;                                                  {handleKeyword("SEMI"); return SEMI;}
-({reserved})                                        {handleToken("RESERVED"); return RESERVED;}
+({reserved})                                        {handleToken("RESERVED");}
 [a-zA-Z_][a-zA-Z_0-9]*                              {handleToken("ID"); return ID;}
 ({separator})                                       {column += yyleng;}
 ({terminator})                                      {line++; column = 1;}
