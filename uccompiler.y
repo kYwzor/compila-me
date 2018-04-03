@@ -221,5 +221,5 @@ void pprint(char* string){
 
 
 void yyerror (const char *s) {
-	printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
+    if(!flag) printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
 }
