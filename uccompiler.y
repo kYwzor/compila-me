@@ -17,31 +17,7 @@
 
 %token REALLIT  INTLIT  CHRLIT  CHAR  ELSE  WHILE  IF  INT  SHORT  DOUBLE  RETURN  VOID  BITWISEAND  BITWISEOR  BITWISEXOR  AND  ASSIGN  MUL  COMMA  DIV  EQ  GE  GT  LBRACE  LE  LPAR  LT  MINUS  MOD  NE  NOT  OR  PLUS  RBRACE  RPAR  SEMI  RESERVED  ID
 
-
-/*Precendencia como definidas no C em si*/
-%left LPAR  RPAR
-
-/*Este nao esta nas precedencias do C mas parece-me necessario*/
 %nonassoc ELSE
- 
-%right NOT
-
-%left MUL  DIV  MOD
-%left PLUS  MINUS
-
-%left GE  GT  LE  LT
-%left EQ  NE
-
-%left BITWISEAND
-%left BITWISEXOR
-%left BITWISEOR
-
-%left AND
-%left OR
-
-%right ASSIGN
-
-%left COMMA
 
 %%
 
@@ -85,11 +61,11 @@ Function_declarator:
     ;
 
 Parameter_list:
-    Parameter_declaration Parameter_declaration_none_or_more 
+    Parameter_declaration Parameter_list_none_or_more 
     ;
 
-Parameter_declaration_none_or_more:
-    COMMA Parameter_declaration
+Parameter_list_none_or_more:
+    COMMA Parameter_list
     |
     ;
 
@@ -99,12 +75,16 @@ Parameter_declaration:
     ;
 
 Declaration:
-    Type_spec Declarator Declarator_none_or_more SEMI
+    Type_spec Declarator_list SEMI
     | error SEMI {printf("Erro declaration\n");}
     ;
-    
+
+Declarator_list:
+	Declarator Declarator_none_or_more
+	;
+
 Declarator_none_or_more:
-    COMMA Declarator
+    COMMA Declarator_list
     |
     ;
 
