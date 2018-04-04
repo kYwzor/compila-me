@@ -77,9 +77,13 @@ double main(char in,int,void,double, int);
           gets();  
       }  
 
+        1 = 'a';
+        int 1 = 'a';
+        int a = 'a', 1 = 23;
       if (a) {  
           i;   
       }  
+
   }  
 
 

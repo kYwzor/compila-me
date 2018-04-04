@@ -218,6 +218,7 @@ Postfix_expr:
     Primary_expr {;}
     | ID LPAR Argument_expr_list RPAR {;}
     | ID LPAR RPAR  {;}
+    | ID LPAR error RPAR {;}
     ;
 
 Primary_expr:
