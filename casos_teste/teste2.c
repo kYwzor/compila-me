@@ -105,6 +105,8 @@ double main(char in,int,void,double, int);
 	int what = -'a' + -i *2%39%-1;
 	char a = 3, b = 4;
 	short c = -3.5*+123-(23+5)*2+-22;
+	1 = 1;
+	(23*-(254+(2/3+(+(23^232*(-54+(2%(3*(45/(433)+232)*21)/2)+1)--2)/2)+1)-!1)*2);
  } 
 
 //chamadas dentro de chamadas
