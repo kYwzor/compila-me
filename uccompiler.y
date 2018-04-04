@@ -209,14 +209,9 @@ Unary_expression:
     | NOT Unary_expression {;}
     ;
 
-Argument_expr_list:
-    Assignment_expr {;}
-    | Argument_expr_list COMMA Assignment_expr {;}
-    ;
-
 Postfix_expr:
     Primary_expr {;}
-    | ID LPAR Argument_expr_list RPAR {;}
+    | ID LPAR Expr RPAR {;}
     | ID LPAR RPAR  {;}
     | ID LPAR error RPAR {;}
     ;
