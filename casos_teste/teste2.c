@@ -1,6 +1,4 @@
 int main(void, char ) {
-    int a, b = c; d = 2 = 'a';
-    char a = 1A;
     int a = b2 != x;
 }
 
