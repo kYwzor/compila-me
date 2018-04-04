@@ -18,7 +18,7 @@
 
 %token CHAR ELSE WHILE IF INT SHORT DOUBLE RETURN VOID BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LPAR LT MINUS MOD NE NOT OR PLUS RBRACE RPAR SEMI RESERVED
 
-%nonassoc RPAR
+%nonassoc NOELSE
 %nonassoc ELSE
 
 %union{
@@ -124,8 +124,11 @@ Statement:
     | LBRACE Statement_none_or_more RBRACE {;}
     | LBRACE error RBRACE {;}
     | IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error {;}
-    | IF LPAR Expr RPAR Statement_or_error {;}
+    | IF LPAR error RPAR Statement_or_error ELSE Statement_or_error {;}
+    | IF LPAR Expr RPAR Statement_or_error %prec NOELSE {;}
+    | IF LPAR error RPAR Statement_or_error %prec NOELSE {;}
     | WHILE LPAR Expr RPAR Statement_or_error{;}
+    | WHILE LPAR error RPAR Statement_or_error{;}
     | RETURN Expr SEMI {;}
     | RETURN SEMI {;}
     ;
