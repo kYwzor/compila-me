@@ -168,17 +168,17 @@ Logical_AND_expr:
 
 Inclusive_OR_expr:
     Exclusive_OR_expr {$$ = $1;}
-    | Inclusive_OR_expr BITWISEOR Exclusive_OR_expr {$$ = createNode("BitwiseOr", NULL); addChild($$, $1); addBrother($1, $3);}
+    | Inclusive_OR_expr BITWISEOR Exclusive_OR_expr {$$ = createNode("BitWiseOr", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Exclusive_OR_expr:
     AND_expr {$$ = $1;}
-    | Exclusive_OR_expr BITWISEXOR AND_expr {$$ = createNode("BitwiseXor", NULL); addChild($$, $1); addBrother($1, $3);}
+    | Exclusive_OR_expr BITWISEXOR AND_expr {$$ = createNode("BitWiseXor", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 AND_expr:
     Equality_expr {$$ = $1;}
-    | AND_expr BITWISEAND Equality_expr {$$ = createNode("BitwiseAnd", NULL); addChild($$, $1); addBrother($1, $3);}
+    | AND_expr BITWISEAND Equality_expr {$$ = createNode("BitWiseAnd", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Equality_expr:
