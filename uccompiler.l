@@ -79,7 +79,7 @@ void                                                {handleKeyword("VOID"); retu
 \)                                                  {handleKeyword("RPAR"); return RPAR;}
 \;                                                  {handleKeyword("SEMI"); return SEMI;}
 ({reserved})                                        {handleToken("RESERVED"); return RESERVED;}
-[a-zA-Z_][a-zA-Z_0-9]*                              {handleToken("ID"); return ID;}
+[a-zA-Z_][a-zA-Z_0-9]*                              {handleToken("ID"); yylval.value = strdup(yytext); return ID;}
 ({separator})                                       {column += yyleng;}
 ({terminator})                                      {line++; column = 1;}
 <<EOF>>                                             {column++; return 0;}

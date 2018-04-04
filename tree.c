@@ -5,8 +5,7 @@ Node createNode(char *label, char *value){
 
 	newNode->label = strdup(label);
 
-	if (value!= NULL) newNode->value = strdup(value);
-	else newNode->value = NULL;
+	newNode->value = value; //value is either NULL or comes from yylval.value which was strduped
 	
 	newNode->child = NULL;
 	newNode->brother = NULL;

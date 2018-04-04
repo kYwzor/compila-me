@@ -27,7 +27,7 @@
 }
 
 %token <value> REALLIT INTLIT CHRLIT ID
-%type <node> Program Functions_and_declarations Functions_and_declarations_mandatory Functions_and_declarations_none_or_more Function_definition Function_body Function_declaration Parameter_declaration Declaration Type_spec Function_declarator
+%type <node> Program Functions_and_declarations Functions_and_declarations_mandatory Functions_and_declarations_none_or_more Function_definition Function_body Declarations_and_statements Function_declaration Function_declarator Parameter_list Parameter_list_none_or_more Parameter_declaration Declaration Declarator_list Declarator_none_or_more Declarator Type_spec
 
 %%
 Program:
@@ -41,7 +41,7 @@ Functions_and_declarations:
 Functions_and_declarations_mandatory:
     Function_definition     {$$ = createNode("FuncDefinition", NULL); addChild($$, $1);}
     | Function_declaration  {$$ = createNode("FuncDeclaration", NULL); addChild($$, $1);}
-    | Declaration           {$$ = createNode("FuncDefinition", NULL); addChild($$, $1);}
+    | Declaration           {$$ = createNode("Declaration", NULL); addChild($$, $1);}
     ;
 
 Functions_and_declarations_none_or_more:
@@ -56,56 +56,58 @@ Function_definition:
     ;
 
 Function_body:
-    LBRACE Declarations_and_statements RBRACE   {$$=createNode("temporary delete later", NULL); /*$$=$2;*/}
+    LBRACE Declarations_and_statements RBRACE   {$$=$2;}
     | LBRACE RBRACE                             {$$=NULL;}
     ;
 
 Declarations_and_statements:
-    Statement Declarations_and_statements
-    | Declaration Declarations_and_statements
-    | Statement
-    | Declaration
+    Statement Declarations_and_statements       {$$=createNode("I don't understand statements", NULL); /*addChild($$, $1);*/ addBrother($$, $2);}
+    | Declaration Declarations_and_statements   {$$=createNode("Declaration", NULL); addChild($$, $1); addBrother($$, $2);}
+    | Statement                                 {$$=createNode("I don't understand statements", NULL); /*addChild($$, $1);*/}
+    | Declaration                               {$$=createNode("Declaration", NULL); addChild($$, $1);}
     ;
 
 Function_declaration:
-    Type_spec Function_declarator SEMI  {$$=createNode("temporary delete later", NULL);}
+    Type_spec Function_declarator SEMI  {$$=$1; addBrother($1, $2);}
     ;
 
 Function_declarator:
-    ID LPAR Parameter_list RPAR {$$=createNode("temporary delete later", NULL);}
+    ID LPAR Parameter_list RPAR {$$=createNode("Id", $1);
+                                aux = createNode("ParamList", NULL); addChild(aux, $3);
+                                addBrother($$, aux);}
     ;
 
 Parameter_list:
-    Parameter_declaration Parameter_list_none_or_more 
+    Parameter_declaration Parameter_list_none_or_more   {$$ = createNode("ParamDeclaration", NULL); addChild($$, $1); addBrother($$, $2);}
     ;
 
 Parameter_list_none_or_more:
-    COMMA Parameter_list
-    |
+    COMMA Parameter_list    {$$ = $2;}
+    |                       {$$ = NULL;}
     ;
 
 Parameter_declaration:
-    Type_spec ID    {$$=createNode("temporary delete later", NULL);}
-    | Type_spec     {$$=createNode("temporary delete later", NULL);}
+    Type_spec ID    {$$=$1; addBrother($1, createNode("Id", $2));}
+    | Type_spec     {$$=$1;}
     ;
 
 Declaration:
-    Type_spec Declarator_list SEMI  {$$=createNode("temporary delete later", NULL);}
+    Type_spec Declarator_list SEMI  {$$=$1; addBrother($1, $2);}
     | error SEMI {;}
     ;
 
 Declarator_list:
-	Declarator Declarator_none_or_more
+	Declarator Declarator_none_or_more {$$=$1; addBrother($1, $2);}
 	;
 
 Declarator_none_or_more:
-    COMMA Declarator_list
-    |
+    COMMA Declarator_list   {$$=$2;}
+    |                       {$$=NULL;}
     ;
 
 Declarator:
-    ID ASSIGN Assignment_expr
-    | ID
+    ID ASSIGN Assignment_expr   {$$= createNode("Declarator WIP", NULL);}
+    | ID                        {$$= createNode("Declarator WIP", NULL);}
     ;
 
 Type_spec: 
