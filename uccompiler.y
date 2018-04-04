@@ -21,6 +21,9 @@
 %nonassoc NOELSE
 %nonassoc ELSE
 
+%left COMMA
+%nonassoc DECL
+
 %union{
     char *value;
     Node node;
@@ -106,7 +109,7 @@ Declarator_none_or_more:
     ;
 
 Declarator:
-    ID ASSIGN Assignment_expr   {$$= createNode("Declarator WIP", NULL);}
+    ID ASSIGN Expr 	%prec DECL  {$$= createNode("Declarator WIP", NULL);}
     | ID                        {$$= createNode("Declarator WIP", NULL);}
     ;
 
@@ -142,7 +145,7 @@ Statement_none_or_more:
 
 Expr:
     Assignment_expr {;}
-    | Expr COMMA Assignment_expr {;}
+    | Expr COMMA Assignment_expr %prec NODECL {;}
     ;
     
 Assignment_expr:
