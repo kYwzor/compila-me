@@ -30,7 +30,7 @@
 }
 
 %token <value> REALLIT INTLIT CHRLIT ID
-%type <node> Program Functions_and_declarations Functions_and_declarations_mandatory Functions_and_declarations_none_or_more Function_definition Function_body Declarations_and_statements Function_declaration Function_declarator Parameter_list Parameter_list_none_or_more Parameter_declaration Declaration Declarator_list Declarator_none_or_more Declarator Type_spec Statement Statement_or_error Statement_one_or_more Expr Assignment_expr Logical_OR_expr Logical_AND_expr Inclusive_OR_expr Exclusive_OR_expr AND_expr Equality_expr Relational_expr Additive_expr Multiplicative_expr Unary_expression Postfix_expr Primary_expr
+%type <node> Program Functions_and_declarations Functions_and_declarations_mandatory Functions_and_declarations_none_or_more Function_definition Function_body Declarations_and_statements Function_declaration Function_declarator Parameter_list Parameter_list_none_or_more Parameter_declaration Declaration Declarator_list Declarator_none_or_more Declarator Type_spec Statement Statement_or_error Statement_one_or_more Expr Assignment_expr Logical_OR_expr Logical_AND_expr Inclusive_OR_expr Exclusive_OR_expr AND_expr Equality_expr Relational_expr Additive_expr Multiplicative_expr Unary_expression Argument_expr_list Postfix_expr Primary_expr
 
 %%
 Program:
@@ -147,79 +147,83 @@ Statement_one_or_more:
     ;
 
 Expr:
-    Assignment_expr {$$ = $1;}
-    | Expr COMMA Assignment_expr {$$ = createNode("Comma", NULL); addChild($$, $1); addBrother($1, $3);}
+    Assignment_expr                 {$$ = $1;}
+    | Expr COMMA Assignment_expr    {$$ = createNode("Comma", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
     
 Assignment_expr:
-    Logical_OR_expr {$$ = $1;}
-    | Unary_expression ASSIGN Assignment_expr {$$ = createNode("Store", NULL); addChild($$, $1); addBrother($1, $3);}
+    Logical_OR_expr                             {$$ = $1;}
+    | Unary_expression ASSIGN Assignment_expr   {$$ = createNode("Store", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Logical_OR_expr:
-    Logical_AND_expr {$$ = $1;}
-    | Logical_OR_expr OR Logical_AND_expr {$$ = createNode("Or", NULL); addChild($$, $1); addBrother($1, $3);}
+    Logical_AND_expr                        {$$ = $1;}
+    | Logical_OR_expr OR Logical_AND_expr   {$$ = createNode("Or", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Logical_AND_expr:
-    Inclusive_OR_expr {$$ = $1;}
-    | Logical_AND_expr AND Inclusive_OR_expr {$$ = createNode("And", NULL); addChild($$, $1); addBrother($1, $3);}
+    Inclusive_OR_expr                           {$$ = $1;}
+    | Logical_AND_expr AND Inclusive_OR_expr    {$$ = createNode("And", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Inclusive_OR_expr:
-    Exclusive_OR_expr {$$ = $1;}
-    | Inclusive_OR_expr BITWISEOR Exclusive_OR_expr {$$ = createNode("BitwiseOr", NULL); addChild($$, $1); addBrother($1, $3);}
+    Exclusive_OR_expr                               {$$ = $1;}
+    | Inclusive_OR_expr BITWISEOR Exclusive_OR_expr {$$ = createNode("BitWiseOr", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Exclusive_OR_expr:
-    AND_expr {$$ = $1;}
-    | Exclusive_OR_expr BITWISEXOR AND_expr {$$ = createNode("BitwiseXor", NULL); addChild($$, $1); addBrother($1, $3);}
+    AND_expr                                {$$ = $1;}
+    | Exclusive_OR_expr BITWISEXOR AND_expr {$$ = createNode("BitWiseXor", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 AND_expr:
-    Equality_expr {$$ = $1;}
-    | AND_expr BITWISEAND Equality_expr {$$ = createNode("BitwiseAnd", NULL); addChild($$, $1); addBrother($1, $3);}
+    Equality_expr                       {$$ = $1;}
+    | AND_expr BITWISEAND Equality_expr {$$ = createNode("BitWiseAnd", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Equality_expr:
-    Relational_expr {$$ = $1;}
-    | Equality_expr EQ Relational_expr {$$ = createNode("Eq", NULL); addChild($$, $1); addBrother($1, $3);}
-    | Equality_expr NE Relational_expr {$$ = createNode("Ne", NULL); addChild($$, $1); addBrother($1, $3);}
+    Relational_expr                     {$$ = $1;}
+    | Equality_expr EQ Relational_expr  {$$ = createNode("Eq", NULL); addChild($$, $1); addBrother($1, $3);}
+    | Equality_expr NE Relational_expr  {$$ = createNode("Ne", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Relational_expr:
-    Additive_expr {$$ = $1;}
-    | Relational_expr LT Additive_expr {$$ = createNode("Lt", NULL); addChild($$, $1); addBrother($1, $3);}
-    | Relational_expr GT Additive_expr {$$ = createNode("Gt", NULL); addChild($$, $1); addBrother($1, $3);}
-    | Relational_expr LE Additive_expr {$$ = createNode("Le", NULL); addChild($$, $1); addBrother($1, $3);}
-    | Relational_expr GE Additive_expr {$$ = createNode("Ge", NULL); addChild($$, $1); addBrother($1, $3);}
+    Additive_expr                       {$$ = $1;}
+    | Relational_expr LT Additive_expr  {$$ = createNode("Lt", NULL); addChild($$, $1); addBrother($1, $3);}
+    | Relational_expr GT Additive_expr  {$$ = createNode("Gt", NULL); addChild($$, $1); addBrother($1, $3);}
+    | Relational_expr LE Additive_expr  {$$ = createNode("Le", NULL); addChild($$, $1); addBrother($1, $3);}
+    | Relational_expr GE Additive_expr  {$$ = createNode("Ge", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Additive_expr:
-    Multiplicative_expr {$$ = $1;}
-    | Additive_expr PLUS Multiplicative_expr {$$ = createNode("Add", NULL); addChild($$, $1); addBrother($1, $3);}
-    | Additive_expr MINUS Multiplicative_expr {$$ = createNode("Sub", NULL); addChild($$, $1); addBrother($1, $3);}
+    Multiplicative_expr                         {$$ = $1;}
+    | Additive_expr PLUS Multiplicative_expr    {$$ = createNode("Add", NULL); addChild($$, $1); addBrother($1, $3);}
+    | Additive_expr MINUS Multiplicative_expr   {$$ = createNode("Sub", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Multiplicative_expr:
-    Unary_expression {$$ = $1;}
-    | Multiplicative_expr MUL Unary_expression {$$ = createNode("Mul", NULL); addChild($$, $1); addBrother($1, $3);}
-    | Multiplicative_expr DIV Unary_expression {$$ = createNode("Div", NULL); addChild($$, $1); addBrother($1, $3);}
-    | Multiplicative_expr MOD Unary_expression {$$ = createNode("Mod", NULL); addChild($$, $1); addBrother($1, $3);}
+    Unary_expression                            {$$ = $1;}
+    | Multiplicative_expr MUL Unary_expression  {$$ = createNode("Mul", NULL); addChild($$, $1); addBrother($1, $3);}
+    | Multiplicative_expr DIV Unary_expression  {$$ = createNode("Div", NULL); addChild($$, $1); addBrother($1, $3);}
+    | Multiplicative_expr MOD Unary_expression  {$$ = createNode("Mod", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Unary_expression:
-    Postfix_expr {$$ = $1;}
-    | PLUS Unary_expression {$$ = createNode("Plus", NULL); addChild($$, $2);}
-    | MINUS Unary_expression {$$ = createNode("Minus", NULL); addChild($$, $2);}
-    | NOT Unary_expression {$$ = createNode("Not", NULL); addChild($$, $2);}
+    Postfix_expr                {$$ = $1;}
+    | PLUS Unary_expression     {$$ = createNode("Plus", NULL); addChild($$, $2);}
+    | MINUS Unary_expression    {$$ = createNode("Minus", NULL); addChild($$, $2);}
+    | NOT Unary_expression      {$$ = createNode("Not", NULL); addChild($$, $2);}
     ;
 
+Argument_expr_list:
+    Assignment_expr                             {$$ = $1;}
+    | Argument_expr_list COMMA Assignment_expr  {$$ = $1; addBrother($1, $3);}
+
 Postfix_expr:
-    Primary_expr {$$ = $1;}
-    | ID LPAR Expr RPAR {$$ = createNode("Call", NULL); addChild($$, $3);}
-    | ID LPAR RPAR  {$$ = createNode("Call", NULL); aux = createNode("Null", NULL); addChild($$, aux);}
-    | ID LPAR error RPAR {$$ = createNode("Call", NULL); aux = createNode("Null", NULL); addChild($$, aux);}
+    Primary_expr                        {$$ = $1;}
+    | ID LPAR RPAR                      {$$ = createNode("Call", NULL); addChild($$, createNode("Id", $1));}
+    | ID LPAR Argument_expr_list RPAR   {$$ = createNode("Call", NULL); aux = createNode("Id", $1); addChild($$, aux); addBrother(aux, $3);}
+    | ID LPAR error RPAR                {$$ = createNode("Call", NULL); addChild($$, createNode("Id", $1)); /*maybe node null instead?*/}
     ;
 
 Primary_expr:
