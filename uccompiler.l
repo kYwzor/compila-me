@@ -83,6 +83,7 @@ void                                                {handleKeyword("VOID"); retu
 [a-zA-Z_][a-zA-Z_0-9]*                              {handleToken("ID"); return ID;}
 ({separator})                                       {column += yyleng;}
 ({terminator})                                      {line++; column = 1;}
+<<EOF>>                                             {column++; return 0;}
 .                                                   {handleError(ILLEGAL_CHAR);}
 
 %%
