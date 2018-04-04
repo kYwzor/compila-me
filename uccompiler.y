@@ -30,7 +30,7 @@
 }
 
 %token <value> REALLIT INTLIT CHRLIT ID
-%type <node> Program Functions_and_declarations Functions_and_declarations_mandatory Functions_and_declarations_none_or_more Function_definition Function_body Declarations_and_statements Function_declaration Function_declarator Parameter_list Parameter_list_none_or_more Parameter_declaration Declaration Declarator_list Declarator_none_or_more Declarator Type_spec
+%type <node> Program Functions_and_declarations Functions_and_declarations_mandatory Functions_and_declarations_none_or_more Function_definition Function_body Declarations_and_statements Function_declaration Function_declarator Parameter_list Parameter_list_none_or_more Parameter_declaration Declaration Declarator_list Declarator_none_or_more Declarator Type_spec Statement Statement_or_error Statement_one_or_more Expr
 
 %%
 Program:
@@ -64,9 +64,9 @@ Function_body:
     ;
 
 Declarations_and_statements:
-    Statement Declarations_and_statements       {$$=createNode("I don't understand statements", NULL); /*addChild($$, $1);*/ addBrother($$, $2);}
+    Statement Declarations_and_statements       {$$=$1; addBrother($$, $2);}
     | Declaration Declarations_and_statements   {$$=createNode("Declaration", NULL); addChild($$, $1); addBrother($$, $2);}
-    | Statement                                 {$$=createNode("I don't understand statements", NULL); /*addChild($$, $1);*/}
+    | Statement                                 {$$=$1;}
     | Declaration                               {$$=createNode("Declaration", NULL); addChild($$, $1);}
     ;
 
@@ -96,7 +96,7 @@ Parameter_declaration:
 
 Declaration:
     Type_spec Declarator_list SEMI  {$$=$1; addBrother($1, $2);}
-    | error SEMI {;}
+    | error SEMI {$$=createNode("Null", NULL);}
     ;
 
 Declarator_list:
@@ -114,38 +114,41 @@ Declarator:
     ;
 
 Type_spec: 
-    INT {$$=createNode("Int", NULL);}
-    | CHAR {$$=createNode("Char", NULL);}
-    | VOID {$$=createNode("Void", NULL);}
-    | SHORT {$$=createNode("Short", NULL);}
-    | DOUBLE {$$=createNode("Double", NULL);}
+    INT         {$$=createNode("Int", NULL);}
+    | CHAR      {$$=createNode("Char", NULL);}
+    | VOID      {$$=createNode("Void", NULL);}
+    | SHORT     {$$=createNode("Short", NULL);}
+    | DOUBLE    {$$=createNode("Double", NULL);}
     ;
 
 Statement:
-    SEMI {;}
-    | Expr SEMI {;}
-    | LBRACE Statement_none_or_more RBRACE {;}
-    | LBRACE error RBRACE {;}
-    | IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error {;}
-    | IF LPAR Expr RPAR Statement_or_error %prec NOELSE {;}
-    | WHILE LPAR Expr RPAR Statement_or_error{;}
-    | RETURN Expr SEMI {;}
-    | RETURN SEMI {;}
+    SEMI                                                                    {$$=NULL;}
+    | Expr SEMI                                                             {$$=$1;}
+    | LBRACE RBRACE                                                         {$$=NULL;}
+    | LBRACE Statement_one_or_more RBRACE                                   {$$=$2;}
+    | LBRACE error RBRACE                                                   {$$=createNode("Null", NULL);}
+    | IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error          {$$=createNode("If", NULL); addChild($$, $3); addBrother($3, $5); addBrother($5, $7);}
+    | IF LPAR Expr RPAR Statement_or_error %prec NOELSE                     {$$=createNode("If", NULL); addChild($$, $3); addBrother($3, $5); addBrother($5, createNode("Null", NULL));}
+    | WHILE LPAR Expr RPAR Statement_or_error                               {$$=createNode("While", NULL); addChild($$, $3); addBrother($3, $5);}
+    | RETURN Expr SEMI                                                      {$$=createNode("Return", NULL); addChild($$, $2);}
+    | RETURN SEMI                                                           {$$=createNode("Return", NULL); addChild($$, createNode("Null", NULL));}
     ;
 
 Statement_or_error:
-    Statement {;}
-    | error SEMI {;}
+    Statement       {$$=$1;}
+    | error SEMI    {$$=createNode("Null", NULL);}
     ;
 
-Statement_none_or_more:
-    Statement_or_error Statement_none_or_more {;}
-    | {;}
+Statement_one_or_more:
+    Statement_or_error Statement_one_or_more    {$$=createNode("StatList", NULL); addChild($$, $1);
+                                                if (strcmp("StatList", $2->label) == 0){addBrother($1, $2->child); free($2->label); free($2);}
+                                                else addBrother($1, $2);}
+    | Statement_or_error                        {$$=$1;}
     ;
 
 Expr:
-    Assignment_expr {;}
-    | Expr COMMA Assignment_expr %prec NODECL {;}
+    Assignment_expr {$$=createNode("Fake Exp", NULL);}
+    | Expr COMMA Assignment_expr {$$=createNode("Fake Exp", NULL);}
     ;
     
 Assignment_expr:
