@@ -124,11 +124,8 @@ Statement:
     | LBRACE Statement_none_or_more RBRACE {;}
     | LBRACE error RBRACE {;}
     | IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error {;}
-    | IF LPAR error RPAR Statement_or_error ELSE Statement_or_error {;}
     | IF LPAR Expr RPAR Statement_or_error %prec NOELSE {;}
-    | IF LPAR error RPAR Statement_or_error %prec NOELSE {;}
     | WHILE LPAR Expr RPAR Statement_or_error{;}
-    | WHILE LPAR error RPAR Statement_or_error{;}
     | RETURN Expr SEMI {;}
     | RETURN SEMI {;}
     ;
@@ -139,8 +136,8 @@ Statement_or_error:
     ;
 
 Statement_none_or_more:
-    Statement Statement_none_or_more {;}
-    |
+    Statement_or_error Statement_none_or_more {;}
+    | {;}
     ;
 
 Expr:
