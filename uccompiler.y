@@ -21,6 +21,9 @@
 %nonassoc NOELSE
 %nonassoc ELSE
 
+%left COMMA
+%nonassoc DECL
+
 %union{
     char *value;
     Node node;
@@ -142,7 +145,7 @@ Statement_none_or_more:
 
 Expr:
     Assignment_expr {;}
-    | Expr COMMA Assignment_expr {;}
+    | Expr COMMA Assignment_expr %prec NODECL {;}
     ;
     
 Assignment_expr:
