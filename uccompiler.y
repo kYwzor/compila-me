@@ -2,6 +2,7 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include <string.h>
+    #include "tree.h"
     #define DEBUG 1
     extern int line;
     extern int yyleng;
@@ -15,35 +16,48 @@
 
 
 
-%token REALLIT  INTLIT  CHRLIT  CHAR  ELSE  WHILE  IF  INT  SHORT  DOUBLE  RETURN  VOID  BITWISEAND  BITWISEOR  BITWISEXOR  AND  ASSIGN  MUL  COMMA  DIV  EQ  GE  GT  LBRACE  LE  LPAR  LT  MINUS  MOD  NE  NOT  OR  PLUS  RBRACE  RPAR  SEMI  ID RESERVED
+%token CHAR ELSE WHILE IF INT SHORT DOUBLE RETURN VOID BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LPAR LT MINUS MOD NE NOT OR PLUS RBRACE RPAR SEMI RESERVED
 
 %nonassoc RPAR
 %nonassoc ELSE
 
+%union{
+    char *value;
+    Node node;
+}
+
+%token <value> REALLIT INTLIT CHRLIT ID
+%type <node> Program Functions_and_declarations Functions_and_declarations_mandatory Functions_and_declarations_none_or_more Function_definition Function_body Function_declaration Parameter_declaration Declaration Type_spec Function_declarator
+
 %%
+Program:
+    Functions_and_declarations  {treeRoot = createNode("Program", NULL); addChild(treeRoot, $1);}
+    ;    
 
 Functions_and_declarations:
-    Functions_and_declarations_mandatory Functions_and_declarations_none_or_more
+    Functions_and_declarations_mandatory Functions_and_declarations_none_or_more    {$$=$1; addBrother($1, $2);}
     ;
 
 Functions_and_declarations_mandatory:
-    Function_definition
-    | Function_declaration
-    | Declaration
+    Function_definition     {$$ = createNode("FuncDefinition", NULL); addChild($$, $1);}
+    | Function_declaration  {$$ = createNode("FuncDeclaration", NULL); addChild($$, $1);}
+    | Declaration           {$$ = createNode("FuncDefinition", NULL); addChild($$, $1);}
     ;
 
 Functions_and_declarations_none_or_more:
-    Functions_and_declarations_mandatory Functions_and_declarations_none_or_more
-    | 
+    Functions_and_declarations_mandatory Functions_and_declarations_none_or_more    {$$=$1; addBrother($1, $2);}
+    |                                                                               {$$=NULL;}
     ;
 
 Function_definition:
-    Type_spec Function_declarator Function_body
+    Type_spec Function_declarator Function_body     {$$=$1; addBrother($1, $2);
+                                                    aux = createNode("FuncBody", NULL); addChild(aux, $3);
+                                                    addBrother($2, aux);}
     ;
 
 Function_body:
-    LBRACE Declarations_and_statements RBRACE
-    | LBRACE RBRACE
+    LBRACE Declarations_and_statements RBRACE   {$$=createNode("temporary delete later", NULL); /*$$=$2;*/}
+    | LBRACE RBRACE                             {$$=NULL;}
     ;
 
 Declarations_and_statements:
@@ -54,11 +68,11 @@ Declarations_and_statements:
     ;
 
 Function_declaration:
-    Type_spec Function_declarator SEMI
+    Type_spec Function_declarator SEMI  {$$=createNode("temporary delete later", NULL);}
     ;
 
 Function_declarator:
-    ID LPAR Parameter_list RPAR
+    ID LPAR Parameter_list RPAR {$$=createNode("temporary delete later", NULL);}
     ;
 
 Parameter_list:
@@ -71,12 +85,12 @@ Parameter_list_none_or_more:
     ;
 
 Parameter_declaration:
-    Type_spec ID
-    | Type_spec
+    Type_spec ID    {$$=createNode("temporary delete later", NULL);}
+    | Type_spec     {$$=createNode("temporary delete later", NULL);}
     ;
 
 Declaration:
-    Type_spec Declarator_list SEMI
+    Type_spec Declarator_list SEMI  {$$=createNode("temporary delete later", NULL);}
     | error SEMI {;}
     ;
 
@@ -95,11 +109,11 @@ Declarator:
     ;
 
 Type_spec: 
-    INT {;}
-    | CHAR {;}
-    | VOID {;}
-    | SHORT {;}
-    | DOUBLE {;}
+    INT {$$=createNode("Int", NULL);}
+    | CHAR {$$=createNode("Char", NULL);}
+    | VOID {$$=createNode("Void", NULL);}
+    | SHORT {$$=createNode("Short", NULL);}
+    | DOUBLE {$$=createNode("Double", NULL);}
     ;
 
 Statement:
@@ -221,5 +235,5 @@ void pprint(char* string){
 
 
 void yyerror (const char *s) {
-    if(!flag) printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
+    if(flag!=1) printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
 }

@@ -6,8 +6,7 @@
     #define ILLEGAL_CHAR 4
     /*Pedro Carvalho 2015232484
     Tiago Gomes 2015238615*/
-    #include "stdio.h"
-    #include "ctype.h"
+    #include "tree.h"
     #include "y.tab.h"
     int flag = 0;
     int line = 1;
@@ -89,8 +88,12 @@ void                                                {handleKeyword("VOID"); retu
 %%
 int main(int argc, char** argv)
 {
-    if(argc == 2 && strcmp(argv[1],"-l") == 0) flag = 1;
+    if(argc == 2){
+        if (strcmp(argv[1],"-l") == 0) flag = 1;
+        else if (strcmp(argv[1],"-t") == 0) flag = 2;
+    }
     yyparse();
+    if (flag == 2) printTreeAndFree(treeRoot, 0);
     return 0;
 }
 
@@ -100,14 +103,14 @@ int yywrap()
 }
 
 void handleKeyword(char* keyword){
-    if(flag){
+    if(flag==1){
         printf("%s\n", keyword);
     }
     column += yyleng;
 }
 
 void handleToken(char* token_val){
-    if(flag){
+    if(flag==1){
         printf("%s(%s)\n", token_val, yytext);
     }
     column += yyleng;

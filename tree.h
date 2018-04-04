@@ -14,3 +14,6 @@ Node createNode(char *label, char *value);
 void addChild(Node father, Node child);
 void addBrother(Node older, Node newer);
 void printTreeAndFree(Node current, int depth);
+
+Node treeRoot;
+Node aux;

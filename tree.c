@@ -16,14 +16,15 @@ Node createNode(char *label, char *value){
 
 void addChild(Node father, Node child){
 	father->child = child;
-	// maybe addBrother if child exists already?
 }
 
 void addBrother(Node older, Node newer){
-	while(older->brother!=NULL)
-		older = older->brother;
+	if(older!=NULL && newer!=NULL){
+		while(older->brother!=NULL)
+			older = older->brother;
 
-	older->brother = newer;
+		older->brother = newer;
+	}
 }
 
 void printTreeAndFree(Node current, int depth){
