@@ -28,9 +28,9 @@ terminator                                          \r\n|\n|\r
 separator                                           \t|" "|\s|\b|\f
 %%
 \/\/.*                                              {column+=yyleng;};
-({numero})+                                         {handleToken("INTLIT"); return INTLIT;}
-(({numero})*\.?({numero})+|({numero})+\.?({numero})*)((e|E)[\-\+]?({numero})+)?       {handleToken("REALLIT"); return REALLIT;} 
-'({chrlitconst})'                                   {handleToken("CHRLIT"); return CHRLIT;}
+({numero})+                                         {handleToken("INTLIT"); yylval.value = strdup(yytext); return INTLIT;}
+(({numero})*\.?({numero})+|({numero})+\.?({numero})*)((e|E)[\-\+]?({numero})+)?       {handleToken("REALLIT"); yylval.value = strdup(yytext); return REALLIT;} 
+'({chrlitconst})'                                   {handleToken("CHRLIT"); yylval.value = strdup(yytext); return CHRLIT;}
 '([^'\n\r\\]|(\\.))*'                               {handleError(INVALID_CHARLIT);}
 '([^'\n\r\\]|(\\.))*\\?                             {handleError(UNTERM_CHARLIT);}
 \/\*                                                {BEGIN COMMENT; 
