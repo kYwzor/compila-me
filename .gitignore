@@ -1,3 +1,9 @@
+# Scripts
+*.py
+
+# Test Output
+*.log
+
 # LEX/YACC stuff
 lex.yy.c
 y.tab.c

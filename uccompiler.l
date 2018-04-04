@@ -17,6 +17,7 @@
     void handleKeyword(char* keyword);
     void handleToken(char* token_val);
 %}
+
 %option nounput
 %option noinput
 
@@ -26,7 +27,7 @@ chrlitconst                                         \\([0-7][0-7]?[0-7]?|n|t|\\|
 terminator                                          \r\n|\n|\r
 separator                                           \t|" "|\s|\b|\f
 %%
-\/\/.*                                              ;
+\/\/.*                                              {column+=yyleng;};
 ({numero})+                                         {handleToken("INTLIT"); return INTLIT;}
 (({numero})*\.?({numero})+|({numero})+\.?({numero})*)((e|E)[\-\+]?({numero})+)?       {handleToken("REALLIT"); return REALLIT;} 
 '({chrlitconst})'                                   {handleToken("CHRLIT"); return CHRLIT;}
