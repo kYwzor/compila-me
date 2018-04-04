@@ -17,12 +17,7 @@
     void handleError(int errorCode);
     void handleKeyword(char* keyword);
     void handleToken(char* token_val);
-    //reserved ["auto"|"break"|"case"|"char"|"const"|"continue"|"default"|"do"|"double"|"else"|"enum"|"extern"|"float"|"for"|"goto"|"if"|"int"|"long"|"register"|"return"|"short"|"signed"|"sizeof"|"static"|"struct"|"switch"|"typedef"|"union"|"unsigned"|"void"|"volatile"|"while"]
-    //garantir reserved
-    //\n, \t \\, \’, \" e \ooo
 %}
-
-/*god help*/
 %option nounput
 %option noinput
 
@@ -84,7 +79,7 @@ void                                                {handleKeyword("VOID"); retu
 \}                                                  {handleKeyword("RBRACE"); return RBRACE;}
 \)                                                  {handleKeyword("RPAR"); return RPAR;}
 \;                                                  {handleKeyword("SEMI"); return SEMI;}
-({reserved})                                        {handleToken("RESERVED");}
+({reserved})                                        {handleToken("RESERVED"); return RESERVED;}
 [a-zA-Z_][a-zA-Z_0-9]*                              {handleToken("ID"); return ID;}
 ({separator})                                       {column += yyleng;}
 ({terminator})                                      {line++; column = 1;}
@@ -118,19 +113,19 @@ void handleToken(char* token_val){
 }
 
 void handleError(int errorCode){
-    if(errorCode == 1){
+    if(errorCode == INVALID_CHARLIT){
         printf("Line %d, col %d: invalid char constant (%s)\n", line, column, yytext);
         column += yyleng;
     }
-    else if(errorCode == 2){
+    else if(errorCode == UNTERM_COMMENT){
         printf("Line %d, col %d: unterminated comment\n", line, column);
         column_memory += yyleng;
     }
-    else if(errorCode == 3){
+    else if(errorCode == UNTERM_CHARLIT){
         printf("Line %d, col %d: unterminated char constant\n", line, column);
         column += yyleng;
     }
-    else if(errorCode == 4){
+    else if(errorCode == ILLEGAL_CHAR){
         printf("Line %d, col %d: illegal character (%s)\n", line, column, yytext);
         column += yyleng;
     }
