@@ -119,7 +119,7 @@ Type_spec:
     | VOID {$$=createNode("Void", NULL);}
     | SHORT {$$=createNode("Short", NULL);}
     | DOUBLE {$$=createNode("Double", NULL);}
-    ;
+    ; 
 
 Statement:
     SEMI {;}
@@ -207,25 +207,25 @@ Multiplicative_expr:
 
 Unary_expression:
     Postfix_expr {$$ = $1;}
-    | PLUS Unary_expression {$$ = createNode("Plus", NULL); addChild($$, $1);}
-    | MINUS Unary_expression {$$ = createNode("Minus", NULL); addChild($$, $1);}
-    | NOT Unary_expression {$$ = createNode("Not", NULL); addChild($$, $1);}
+    | PLUS Unary_expression {$$ = createNode("Plus", NULL); addChild($$, $2);}
+    | MINUS Unary_expression {$$ = createNode("Minus", NULL); addChild($$, $2);}
+    | NOT Unary_expression {$$ = createNode("Not", NULL); addChild($$, $2);}
     ;
 
 Postfix_expr:
     Primary_expr {$$ = $1;}
     | ID LPAR Expr RPAR {$$ = createNode("Call", NULL); addChild($$, $3);}
-    | ID LPAR RPAR  {$$ = createNode("Call", NULL); aux = createNode("Node", NULL); addChild($$, aux);}
-    | ID LPAR error RPAR {$$ = createNode("Call", NULL); aux = createNode("Node", NULL); addChild($$, aux);}
+    | ID LPAR RPAR  {$$ = createNode("Call", NULL); aux = createNode("Null", NULL); addChild($$, aux);}
+    | ID LPAR error RPAR {$$ = createNode("Call", NULL); aux = createNode("Null", NULL); addChild($$, aux);}
     ;
 
 Primary_expr:
-    ID {;}
-    | INTLIT {;}
-    | CHRLIT {;}
-    | REALLIT {;}
-    | LPAR Expr RPAR {;}
-    | LPAR error RPAR {;}
+    ID {$$ = createNode("Id", $1);}
+    | INTLIT {$$ = createNode("IntLit", $1);}
+    | CHRLIT {$$ = createNode("ChrLit", $1);}
+    | REALLIT {$$ = createNode("RealLit", $1);}
+    | LPAR Expr RPAR {$$ = $2;}
+    | LPAR error RPAR {$$ = createNode("Null", NULL);}
     ;
 
 %%
