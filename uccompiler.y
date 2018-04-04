@@ -216,8 +216,8 @@ Argument_expr_list:
 
 Postfix_expr:
     Primary_expr {;}
-    | Postfix_expr LPAR Argument_expr_list RPAR {;}
-    | Postfix_expr LPAR RPAR  {;}
+    | ID LPAR Argument_expr_list RPAR {;}
+    | ID LPAR RPAR  {;}
     ;
 
 Primary_expr:

@@ -98,6 +98,9 @@ double main(char in,int,void,double, int);
 	char l = -'b'+'a';
 	int aa = -4+2-2*(-5)+2*43/10+(42)-2;
 	x(x(d()));
+	int what = -'a' + -i *2%39%-1;
+	char a = 3, b = 4;
+	short c = -3.5*+123-(23+5)*2+-22;
  } 
 
 //chamadas dentro de chamadas
