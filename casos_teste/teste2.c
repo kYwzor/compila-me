@@ -78,7 +78,7 @@ double main(char in,int,void,double, int);
       }  
 
       if (a) {  
-          i;  
+          i;   
       }  
   }  
 
@@ -93,5 +93,12 @@ double main(char in,int,void,double, int);
 
  int x(int x){
     char a = b, r 23123 = a -b; 
-    2123123 putchar(x=a,a+v,c-d,!b,+a,-b); 
+    2123123 putchar(x=a,a+v,c-d,!b,+a,-b);
+	int f = 53*3+2%9(2);
+	char l = -'b'+'a';
+	int aa = -4+2-2*(-5)+2*43/10+(42)-2;
+	x(x(d()));
  } 
+
+//chamadas dentro de chamadas
+//unario misturado
