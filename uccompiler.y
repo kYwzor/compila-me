@@ -106,8 +106,8 @@ Declarator_none_or_more:
     ;
 
 Declarator:
-    ID ASSIGN Assignment_expr   {$$= createNode("Declarator WIP", NULL);}
-    | ID                        {$$= createNode("Declarator WIP", NULL);}
+    ID ASSIGN Assignment_expr   {$$ = createNode("Store", NULL); aux = createNode("Id", $1); addChild($$, aux); addBrother(aux, $3);}
+    | ID                        {$$ = createNode("Id", $1);}
     ;
 
 Type_spec: 
