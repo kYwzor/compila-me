@@ -109,8 +109,8 @@ Declarator_none_or_more:
     ;
 
 Declarator:
-    ID ASSIGN Assignment_expr   {$$ = createNode("Store", NULL); aux = createNode("Id", $1); addChild($$, aux); addBrother(aux, $3);}
-    | ID                        {$$ = createNode("Id", $1);}
+    ID ASSIGN Assignment_expr   %prec DECL  {$$ = createNode("Store", NULL); aux = createNode("Id", $1); addChild($$, aux); addBrother(aux, $3);}
+    | ID                                    {$$ = createNode("Id", $1);}
     ;
 
 Type_spec: 
@@ -243,5 +243,8 @@ void pprint(char* string){
 
 
 void yyerror (char *s) {
-    if(flag!=1) printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
+    if(flag!=1){
+        printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
+        errorFlag = 1;
+    }
 }
