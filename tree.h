@@ -20,3 +20,4 @@ Node treeRoot;
 Node aux;
 Node aux2;
 int errorFlag;
+int flag;

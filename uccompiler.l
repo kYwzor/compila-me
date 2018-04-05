@@ -8,7 +8,6 @@
     Tiago Gomes 2015238615*/
     #include "tree.h"
     #include "y.tab.h"
-    int flag = 0;
     int line = 1;
     int column = 1;
     int line_memory;
@@ -89,12 +88,15 @@ void                                                {handleKeyword("VOID"); retu
 %%
 int main(int argc, char** argv)
 {
+    flag = 0;
+    errorFlag = 0;
+    treeRoot = NULL;
     if(argc == 2){
         if (strcmp(argv[1],"-l") == 0) flag = 1;
         else if (strcmp(argv[1],"-t") == 0) flag = 2;
     }
     yyparse();
-    if (flag == 2) printTreeAndFree(treeRoot, 0);
+    if(treeRoot!=NULL) printTreeAndFree(treeRoot, 0);
     return 0;
 }
 

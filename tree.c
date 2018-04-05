@@ -38,7 +38,7 @@ int countBrothers(Node n){
 void printTreeAndFree(Node current, int depth){
 	int i;
 
-	if(!errorFlag){
+	if(errorFlag!=1 && flag == 2){
 		for(i=0; i<depth; i++)
 			printf("..");
 

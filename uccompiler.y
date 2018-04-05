@@ -8,7 +8,6 @@
     extern int yyleng;
     extern int column;
     extern char* yytext;
-    extern char flag;
     int yylex(void);
     void pprint(char* string);
     void yyerror (char *s);
@@ -270,8 +269,6 @@ void pprint(char* string){
 
 
 void yyerror (char *s) {
-    if(flag!=1){
-        printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
-        errorFlag = 1;
-    }
+    if(flag!=1) printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
+    errorFlag = 1;
 }
