@@ -93,7 +93,6 @@ int main(int argc, char** argv)
         if (strcmp(argv[1],"-l") == 0) flag = 1;
         else if (strcmp(argv[1],"-t") == 0) flag = 2;
     }
-    errorFlag = 0;
     yyparse();
     if (flag == 2) printTreeAndFree(treeRoot, 0);
     return 0;

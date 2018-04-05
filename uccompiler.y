@@ -17,6 +17,7 @@
 
 
 %token CHAR ELSE WHILE IF INT SHORT DOUBLE RETURN VOID BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LPAR LT MINUS MOD NE NOT OR PLUS RBRACE RPAR SEMI RESERVED
+%token <value> REALLIT INTLIT CHRLIT ID
 
 %nonassoc NOELSE
 %nonassoc ELSE
@@ -29,7 +30,6 @@
     Node node;
 }
 
-%token <value> REALLIT INTLIT CHRLIT ID
 %type <node> Program Functions_and_declarations Functions_and_declarations_mandatory Functions_and_declarations_none_or_more Function_definition Function_body Declarations_and_statements Function_declaration Function_declarator Parameter_list Parameter_list_none_or_more Parameter_declaration Declaration Declarator_list Declarator_none_or_more Declarator Type_spec Statement Statement_or_error Statement_one_or_more Expr Assignment_expr Logical_OR_expr Logical_AND_expr Inclusive_OR_expr Exclusive_OR_expr AND_expr Equality_expr Relational_expr Additive_expr Multiplicative_expr Unary_expression Argument_expr_list Postfix_expr Primary_expr
 
 %%
@@ -95,12 +95,12 @@ Parameter_declaration:
     ;
 
 Declaration:
-    Type_spec Declarator_list SEMI  {$1->brother = $2->child;
+    Type_spec Declarator_list SEMI  {addBrother($1, $2->child);
                                     $2->child = $1;
                                     aux = $2->brother;
                                     while(aux!=NULL){
-                                        aux2 = createNode(strdup($1->label), NULL);
-                                        aux2->brother = aux->child;
+                                        aux2 = createNode($1->label, NULL);
+                                        addBrother(aux2, aux->child);
                                         aux->child = aux2;
                                         aux = aux->brother;
                                     }
@@ -136,11 +136,31 @@ Statement:
     SEMI                                                                    {$$=NULL;}
     | Expr SEMI                                                             {$$=$1;}
     | LBRACE RBRACE                                                         {$$=NULL;}
-    | LBRACE Statement_one_or_more RBRACE                                   {$$=$2;}
+
+    | LBRACE Statement_one_or_more RBRACE                                   {aux = $2;
+                                                                            if (countBrothers($2)>=2){
+                                                                                $$ = createNode("StatList", NULL);
+                                                                                addChild($$, $2);
+                                                                            }
+                                                                            else $$ = $2;}
+
     | LBRACE error RBRACE                                                   {$$=createNode("Null", NULL);}
-    | IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error          {$$=createNode("If", NULL); addChild($$, $3); addBrother($3, $5); addBrother($5, $7);}
-    | IF LPAR Expr RPAR Statement_or_error %prec NOELSE                     {$$=createNode("If", NULL); addChild($$, $3); addBrother($3, $5); addBrother($5, createNode("Null", NULL));}
-    | WHILE LPAR Expr RPAR Statement_or_error                               {$$=createNode("While", NULL); addChild($$, $3); addBrother($3, $5);}
+
+    | IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error          {$$=createNode("If", NULL); addChild($$, $3);
+                                                                            if ($5==NULL) addBrother($3, createNode("Null", NULL));
+                                                                            else addBrother($3, $5);
+                                                                            if ($7==NULL) addBrother($3, createNode("Null", NULL));
+                                                                            else addBrother($3, $7);}
+
+    | IF LPAR Expr RPAR Statement_or_error %prec NOELSE                     {$$=createNode("If", NULL); addChild($$, $3);
+                                                                            if ($5==NULL) addBrother($3, createNode("Null", NULL));
+                                                                            else addBrother($3, $5);
+                                                                            addBrother($3, createNode("Null", NULL));}
+
+    | WHILE LPAR Expr RPAR Statement_or_error                               {$$=createNode("While", NULL); addChild($$, $3);
+                                                                            if ($5==NULL) addBrother($3, createNode("Null", NULL));
+                                                                            else addBrother($3, $5);}
+
     | RETURN Expr SEMI                                                      {$$=createNode("Return", NULL); addChild($$, $2);}
     | RETURN SEMI                                                           {$$=createNode("Return", NULL); addChild($$, createNode("Null", NULL));}
     ;
@@ -151,9 +171,7 @@ Statement_or_error:
     ;
 
 Statement_one_or_more:
-    Statement_or_error Statement_one_or_more    {$$=createNode("StatList", NULL); addChild($$, $1);
-                                                if (strcmp("StatList", $2->label) == 0){addBrother($1, $2->child); free($2->label); free($2);}
-                                                else addBrother($1, $2);}
+    Statement_or_error Statement_one_or_more    {$$=$1; addBrother($1, $2);}
     | Statement_or_error                        {$$=$1;}
     ;
 
@@ -234,16 +252,16 @@ Postfix_expr:
     Primary_expr                        {$$ = $1;}
     | ID LPAR RPAR                      {$$ = createNode("Call", NULL); addChild($$, createNode("Id", $1));}
     | ID LPAR Argument_expr_list RPAR   {$$ = createNode("Call", NULL); aux = createNode("Id", $1); addChild($$, aux); addBrother(aux, $3);}
-    | ID LPAR error RPAR                {$$ = createNode("Call", NULL); addChild($$, createNode("Id", $1)); /*maybe node null instead?*/}
+    | ID LPAR error RPAR                {$$ = createNode("Null", NULL); free($1); /*maybe node null instead?*/}
     ;
 
 Primary_expr:
-    ID {$$ = createNode("Id", $1);}
-    | INTLIT {$$ = createNode("IntLit", $1);}
-    | CHRLIT {$$ = createNode("ChrLit", $1);}
-    | REALLIT {$$ = createNode("RealLit", $1);}
-    | LPAR Expr RPAR {$$ = $2;}
-    | LPAR error RPAR {$$ = createNode("Null", NULL);}
+    ID                  {$$ = createNode("Id", $1);}
+    | INTLIT            {$$ = createNode("IntLit", $1);}
+    | CHRLIT            {$$ = createNode("ChrLit", $1);}
+    | REALLIT           {$$ = createNode("RealLit", $1);}
+    | LPAR Expr RPAR    {$$ = $2;}
+    | LPAR error RPAR   {$$ = createNode("Null", NULL);}
     ;
 
 %%

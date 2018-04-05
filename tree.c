@@ -26,6 +26,15 @@ void addBrother(Node older, Node newer){
 	}
 }
 
+int countBrothers(Node n){
+	int i = 0;
+	while(n!=NULL){
+		i++;
+		n=n->brother;
+	}
+	return i;
+}
+
 void printTreeAndFree(Node current, int depth){
 	int i;
 
@@ -36,7 +45,7 @@ void printTreeAndFree(Node current, int depth){
 		if(current->value!=NULL) printf("%s(%s)\n", current->label, current->value);
 		else printf("%s\n", current->label);
 	}
-	
+
 	if(current->child != NULL) printTreeAndFree(current->child, depth+1);
 	if(current->brother != NULL) printTreeAndFree(current->brother, depth);
 

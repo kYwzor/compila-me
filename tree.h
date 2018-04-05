@@ -13,6 +13,7 @@ typedef struct node_s{
 Node createNode(char *label, char *value);
 void addChild(Node father, Node child);
 void addBrother(Node older, Node newer);
+int countBrothers(Node n);
 void printTreeAndFree(Node current, int depth);
 
 Node treeRoot;
