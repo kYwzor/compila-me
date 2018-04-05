@@ -26,15 +26,6 @@ void addBrother(Node older, Node newer){
 	}
 }
 
-int countBrothers(Node n){
-	int i = 0;
-	while(n!=NULL){
-		i++;
-		n=n->brother;
-	}
-	return i;
-}
-
 void printTreeAndFree(Node current, int depth){
 	int i;
 

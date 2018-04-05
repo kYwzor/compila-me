@@ -128,7 +128,7 @@ Statement:
     | Expr SEMI                                                             {$$=$1;}
     | LBRACE RBRACE                                                         {$$=NULL;}
 
-    | LBRACE Statement_one_or_more RBRACE                                   {if (countBrothers($2)>=2){
+    | LBRACE Statement_one_or_more RBRACE                                   {if ($2!=NULL && $2->brother!=NULL){
                                                                                 $$ = createNode("StatList", NULL);
                                                                                 addChild($$, $2);
                                                                             }
