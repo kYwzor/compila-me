@@ -128,8 +128,7 @@ Statement:
     | Expr SEMI                                                             {$$=$1;}
     | LBRACE RBRACE                                                         {$$=NULL;}
 
-    | LBRACE Statement_one_or_more RBRACE                                   {aux = $2;
-                                                                            if (countBrothers($2)>=2){
+    | LBRACE Statement_one_or_more RBRACE                                   {if (countBrothers($2)>=2){
                                                                                 $$ = createNode("StatList", NULL);
                                                                                 addChild($$, $2);
                                                                             }
@@ -162,7 +161,7 @@ Statement_or_error:
     ;
 
 Statement_one_or_more:
-    Statement_or_error Statement_one_or_more    {$$=$1; addBrother($1, $2);}
+    Statement_one_or_more Statement_or_error    {$$=$1; addBrother($1, $2);}
     | Statement_or_error                        {$$=$1;}
     ;
 
@@ -243,7 +242,7 @@ Postfix_expr:
     Primary_expr                        {$$ = $1;}
     | ID LPAR RPAR                      {$$ = createNode("Call", NULL); addChild($$, createNode("Id", $1));}
     | ID LPAR Argument_expr_list RPAR   {$$ = createNode("Call", NULL); aux = createNode("Id", $1); addChild($$, aux); addBrother(aux, $3);}
-    | ID LPAR error RPAR                {$$ = createNode("Null", NULL); free($1); /*maybe node null instead?*/}
+    | ID LPAR error RPAR                {$$ = createNode("Null", NULL); free($1);}
     ;
 
 Primary_expr:
