@@ -44,7 +44,7 @@ Functions_and_declarations:
 Functions_and_declarations_mandatory:
     Function_definition     {$$ = createNode("FuncDefinition", NULL); addChild($$, $1);}
     | Function_declaration  {$$ = createNode("FuncDeclaration", NULL); addChild($$, $1);}
-    | Declaration           {$$ = createNode("Declaration", NULL); addChild($$, $1);}
+    | Declaration           {$$ = $1;}
     ;
 
 Functions_and_declarations_none_or_more:
