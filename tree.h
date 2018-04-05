@@ -17,4 +17,5 @@ void printTreeAndFree(Node current, int depth);
 
 Node treeRoot;
 Node aux;
+Node aux2;
 int errorFlag;

@@ -64,10 +64,10 @@ Function_body:
     ;
 
 Declarations_and_statements:
-    Statement Declarations_and_statements       {$$=$1; addBrother($$, $2);}
-    | Declaration Declarations_and_statements   {$$=createNode("Declaration", NULL); addChild($$, $1); addBrother($$, $2);}
+    Statement Declarations_and_statements       {$$=$1; addBrother($1, $2);}
+    | Declaration Declarations_and_statements   {$$=$1; addBrother($1, $2);}
     | Statement                                 {$$=$1;}
-    | Declaration                               {$$=createNode("Declaration", NULL); addChild($$, $1);}
+    | Declaration                               {$$=$1;}
     ;
 
 Function_declaration:
@@ -95,12 +95,23 @@ Parameter_declaration:
     ;
 
 Declaration:
-    Type_spec Declarator_list SEMI  {$$=$1; addBrother($1, $2);}
+    Type_spec Declarator_list SEMI  {$1->brother = $2->child;
+                                    $2->child = $1;
+                                    aux = $2->brother;
+                                    while(aux!=NULL){
+                                        aux2 = createNode(strdup($1->label), NULL);
+                                        aux2->brother = aux->child;
+                                        aux->child = aux2;
+                                        aux = aux->brother;
+                                    }
+                                    $$=$2;}
+                                    
+                                    
     | error SEMI {$$=createNode("Null", NULL);}
     ;
 
 Declarator_list:
-	Declarator Declarator_none_or_more {$$=$1; addBrother($1, $2);}
+	Declarator Declarator_none_or_more {$$=createNode("Declaration", NULL); addChild($$, $1); addBrother($$, $2);}
 	;
 
 Declarator_none_or_more:
@@ -109,8 +120,8 @@ Declarator_none_or_more:
     ;
 
 Declarator:
-    ID ASSIGN Assignment_expr   %prec DECL  {$$ = createNode("Store", NULL); aux = createNode("Id", $1); addChild($$, aux); addBrother(aux, $3);}
-    | ID                                    {$$ = createNode("Id", $1);}
+    ID ASSIGN Expr %prec DECL   {$$ = createNode("Id", $1); addBrother($$, $3);}
+    | ID                        {$$ = createNode("Id", $1);}
     ;
 
 Type_spec: 
