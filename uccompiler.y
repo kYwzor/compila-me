@@ -22,7 +22,7 @@
 %nonassoc ELSE
 
 %left COMMA
-%nonassoc DECL
+%right ASSIGN
 
 %union{
     char *value;
@@ -111,7 +111,7 @@ Declarator_none_or_more:
     ;
 
 Declarator:
-    ID ASSIGN Expr %prec DECL   {$$ = createNode("Id", $1); addBrother($$, $3);}
+    ID ASSIGN Expr              {$$ = createNode("Id", $1); addBrother($$, $3);}
     | ID                        {$$ = createNode("Id", $1);}
     ;
 
@@ -172,7 +172,7 @@ Expr:
     
 Assignment_expr:
     Logical_OR_expr                             {$$ = $1;}
-    | Unary_expression ASSIGN Assignment_expr   {$$ = createNode("Store", NULL); addChild($$, $1); addBrother($1, $3);}
+    | Logical_OR_expr ASSIGN Assignment_expr   {$$ = createNode("Store", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Logical_OR_expr:
