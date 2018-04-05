@@ -29,7 +29,7 @@
     Node node;
 }
 
-%type <node> Program Functions_and_declarations Functions_and_declarations_mandatory Functions_and_declarations_none_or_more Function_definition Function_body Declarations_and_statements Function_declaration Function_declarator Parameter_list Parameter_list_none_or_more Parameter_declaration Declaration Declarator_list Declarator_none_or_more Declarator Type_spec Statement Statement_or_error Statement_one_or_more Expr Assignment_expr Logical_OR_expr Logical_AND_expr Inclusive_OR_expr Exclusive_OR_expr AND_expr Equality_expr Relational_expr Additive_expr Multiplicative_expr Unary_expression Argument_expr_list Postfix_expr Primary_expr
+%type <node> Program Functions_and_declarations Functions_and_declarations_mandatory Functions_and_declarations_none_or_more Function_definition Function_body Declarations_and_statements Function_declaration Function_declarator Parameter_list Parameter_declaration Declaration Declarator_list Declarator_none_or_more Declarator Type_spec Statement Statement_or_error Statement_one_or_more Expr Assignment_expr Logical_OR_expr Logical_AND_expr Inclusive_OR_expr Exclusive_OR_expr AND_expr Equality_expr Relational_expr Additive_expr Multiplicative_expr Unary_expression Argument_expr_list Postfix_expr Primary_expr
 
 %%
 Program:
@@ -61,8 +61,8 @@ Function_body:
     ;
 
 Declarations_and_statements:
-    Statement Declarations_and_statements       {$$=$1; addBrother($1, $2);}
-    | Declaration Declarations_and_statements   {$$=$1; addBrother($1, $2);}
+    Declarations_and_statements Statement       {$$=$1; addBrother($1, $2);}
+    | Declarations_and_statements Declaration   {$$=$1; addBrother($1, $2);}
     | Statement                                 {$$=$1;}
     | Declaration                               {$$=$1;}
     ;
@@ -72,23 +72,17 @@ Function_declaration:
     ;
 
 Function_declarator:
-    ID LPAR Parameter_list RPAR {$$=createNode("Id", $1);
-                                aux = createNode("ParamList", NULL); addChild(aux, $3);
-                                addBrother($$, aux);}
+    ID LPAR Parameter_list RPAR {$$=createNode("Id", $1); aux = createNode("ParamList",NULL); addBrother($$, aux); addChild(aux, $3);}
     ;
 
 Parameter_list:
-    Parameter_declaration Parameter_list_none_or_more   {$$ = createNode("ParamDeclaration", NULL); addChild($$, $1); addBrother($$, $2);}
-    ;
-
-Parameter_list_none_or_more:
-    COMMA Parameter_list    {$$ = $2;}
-    |                       {$$ = NULL;}
+    Parameter_declaration  {$$ = $1;}
+    | Parameter_list COMMA Parameter_declaration {$$ = $1; addBrother($$, $3);}
     ;
 
 Parameter_declaration:
-    Type_spec ID    {$$=$1; addBrother($1, createNode("Id", $2));}
-    | Type_spec     {$$=$1;}
+    Type_spec ID    {$$=createNode("ParamDeclaration",NULL); addChild($$, $1); addBrother($1, createNode("Id", $2));}
+    | Type_spec     {$$=createNode("ParamDeclaration",NULL); addChild($$, $1);}
     ;
 
 Declaration:
