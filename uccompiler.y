@@ -42,8 +42,8 @@ Functions_and_declarations:
     ;
 
 Functions_and_declarations_mandatory:
-    Function_definition     {$$ = createNode("FuncDefinition", NULL); addChild($$, $1);}
-    | Function_declaration  {$$ = createNode("FuncDeclaration", NULL); addChild($$, $1);}
+    Function_definition     {$$ = $1;}
+    | Function_declaration  {$$ = $1;}
     | Declaration           {$$ = $1;}
     ;
 
@@ -53,14 +53,12 @@ Functions_and_declarations_none_or_more:
     ;
 
 Function_definition:
-    Type_spec Function_declarator Function_body     {$$=$1; addBrother($1, $2);
-                                                    aux = createNode("FuncBody", NULL); addChild(aux, $3);
-                                                    addBrother($2, aux);}
+    Type_spec Function_declarator Function_body     {$$=createNode("FuncDefinition", NULL); addChild($$,$1); addBrother($1, $2); addBrother($1, $3);}
     ;
 
 Function_body:
-    LBRACE Declarations_and_statements RBRACE   {$$=$2;}
-    | LBRACE RBRACE                             {$$=NULL;}
+    LBRACE Declarations_and_statements RBRACE   {$$=createNode("FuncBody", NULL); addChild($$, $2);}
+    | LBRACE RBRACE                             {$$=createNode("FuncBody", NULL);}
     ;
 
 Declarations_and_statements:
@@ -71,7 +69,7 @@ Declarations_and_statements:
     ;
 
 Function_declaration:
-    Type_spec Function_declarator SEMI  {$$=$1; addBrother($1, $2);}
+    Type_spec Function_declarator SEMI  {$$=createNode("FuncDeclaration", NULL); addChild($$, $1); addBrother($1, $2);}
     ;
 
 Function_declarator:
