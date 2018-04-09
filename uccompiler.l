@@ -24,7 +24,7 @@ numero                                              [0-9]
 reserved                                            \[|\]|\+\+|\-\-|auto|break|case|const|continue|default|do|enum|extern|float|for|goto|inline|long|register|restrict|signed|sizeof|static|struct|switch|typedef|union|unsigned|volatile|_Bool|_Complex|_Imaginary
 chrlitconst                                         \\([0-7][0-7]?[0-7]?|n|t|\\|\'|\")|[^'\n\\]
 terminator                                          \r\n|\n|\r
-separator                                           \t|" "|\s|\b|\f
+separator                                           \t|" "|\v|\f
 %%
 \/\/.*                                              {column+=yyleng;};
 ({numero})+                                         {handleToken("INTLIT"); yylval.value = strdup(yytext); return INTLIT;}
