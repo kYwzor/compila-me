@@ -13,8 +13,6 @@
     void yyerror (char *s);
 %}
 
-
-
 %token CHAR ELSE WHILE IF INT SHORT DOUBLE RETURN VOID BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LPAR LT MINUS MOD NE NOT OR PLUS RBRACE RPAR SEMI RESERVED
 %token <value> REALLIT INTLIT CHRLIT ID
 
@@ -68,7 +66,9 @@ Declarations_and_statements:
     ;
 
 Function_declaration:
-    Type_spec Function_declarator SEMI  {$$=createNode("FuncDeclaration", NULL); addChild($$, $1); addBrother($1, $2);}
+    Type_spec Function_declarator SEMI  {$$=createNode("FuncDeclaration", NULL); 
+                                        addChild($$, $1); 
+                                        addBrother($1, $2);}
     ;
 
 Function_declarator:
@@ -172,7 +172,7 @@ Expr:
     
 Assignment_expr:
     Logical_OR_expr                             {$$ = $1;}
-    | Logical_OR_expr ASSIGN Assignment_expr   {$$ = createNode("Store", NULL); addChild($$, $1); addBrother($1, $3);}
+    | Logical_OR_expr ASSIGN Assignment_expr    {$$ = createNode("Store", NULL); addChild($$, $1); addBrother($1, $3);}
     ;
 
 Logical_OR_expr:
