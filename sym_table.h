@@ -1,27 +1,25 @@
-
-typedef _sym_table * Sym_table;
-
+typedef struct _t1* Sym_table;
 typedef struct _t1{
+  //TODO Mudar este nome para id
 	char* name;
 	Label type;
-	Sym_table next;
+  Sym_table next;
 }_sym_table;
 
-typedef _table_list *Table_list;
 
+typedef struct _tl* Table_list;
 typedef struct _tl{
-  Sym_table node;
+  Sym_table table_node;
   Table_list next;
-  Arg_list arg_list;
+  struct _tl* arg_list;
 }_table_list;
 
-typedef _arg_list* Arg_list;
-
+typedef struct _al* Arg_list;
 typedef struct _al{
   Label type;
-  Arg_list next;
-}_arg_list;
+  struct _al* next;
+}_arg_list; 
+int insert_symbol();
 
-void insert_symbol();
 Table_list list;
 Sym_table current_table;
