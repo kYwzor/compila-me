@@ -1,6 +1,5 @@
 #include "tree.h"
-
-Node createNode(Label label, char *value){
+Node create_node(Label label, char *value){
 	Node newNode = malloc(sizeof(Node_t));
 
 	newNode->label = label;
@@ -13,11 +12,11 @@ Node createNode(Label label, char *value){
 	return newNode;
 }
 
-void addChild(Node father, Node child){
+void add_child(Node father, Node child){
 	father->child = child;
 }
 
-void addBrother(Node older, Node newer){
+void add_brother(Node older, Node newer){
 	if(older!=NULL && newer!=NULL){
 		while(older->brother!=NULL)
 			older = older->brother;
@@ -26,25 +25,26 @@ void addBrother(Node older, Node newer){
 	}
 }
 
-void printTreeAndFree(Node current, int depth){
+void print_tree_and_free(Node current, int depth){
 	int i;
 
 	if(errorFlag!=1 && flag == 2){
 		for(i=0; i<depth; i++)
 			printf("..");
-		printNode(current);
+    if(current->value!=NULL) printf("%s(%s)\n", get_label_string(current->label), current->value);
+    else printf("%s\n", get_label_string(current->label));
 	}
 
-	if(current->child != NULL) printTreeAndFree(current->child, depth+1);
-	if(current->brother != NULL) printTreeAndFree(current->brother, depth);
+	if(current->child != NULL) print_tree_and_free(current->child, depth+1);
+	if(current->brother != NULL) print_tree_and_free(current->brother, depth);
 
 	free(current->value);
 	free(current);
 }
 
-void printNode(Node current){
+char* get_label_string(Label label){
 	char* s;
-	switch (current->label){
+	switch (label){
 		case Program:
 			s = "Program";
 			break;
@@ -175,6 +175,5 @@ void printNode(Node current){
 			s = "Null";
 			break;
 	}
-	if(current->value!=NULL) printf("%s(%s)\n", s, current->value);
-	else printf("%s\n", s);
+  return s;
 }

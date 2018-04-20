@@ -1,13 +1,22 @@
-#include <stdlib.h>
 #include "semantics.h"
+
 #define ERROR -1
 
-int handle_node(Node node);
 
 void semantic_analysis(Node node){
   handle_node(node);
   if(node->child != NULL)
     semantic_analysis(node->child);
+}
+
+void print_tables(){
+  while(list != NULL){
+    printf("===== Function %s Symbol Table =====\n", list->table_node->name);
+    while(list->table_node != NULL){
+      char* s = get_label_string(list->table_node->type);
+      printf("%s\t%s", list->table_node->name, s); 
+    }
+  }
 }
 
 int handle_node(Node node){
@@ -131,7 +140,6 @@ int handle_node(Node node){
       else
         id = NULL;
       }
-      //TODO: Acabar esta funcao, parece me que um parametro pode ou nao ter um id, agora e uma questao de acrescentar as cenas adequedamente.
   }
   return 1;
 }

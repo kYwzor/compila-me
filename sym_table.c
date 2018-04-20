@@ -1,4 +1,3 @@
-#include "tree.h"
 #include "sym_table.h"
 
 int insert_symbol(Sym_table table, char* name, Label type){
