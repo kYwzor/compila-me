@@ -10,8 +10,9 @@ typedef enum _label{
 
 typedef struct node_s *Node;
 typedef struct node_s{
-	Label label;
-	Label type;
+	Label label; //ESTA MERDA E O QUE E AVALIADO PELA SEMANTICA
+	Label type; //ESTA MERDA E O RESULTADO DAS OPERACOES
+  //PUTA QUE PARIU QUE TILT
 	char *value;
 	Node child;
 	Node brother;
@@ -21,7 +22,7 @@ typedef struct _t1* Sym_table;
 typedef struct _t1{
   //TODO Mudar este nome para id
 	char* name;
-	Label type;
+	Label label; 
   Sym_table next;
 }_sym_table;
 
@@ -35,7 +36,7 @@ typedef struct _tl{
 }_table_list;
 
 typedef struct _al{
-  Label type;
+  Label label;
   char* name; 
   struct _al* next;
 }_arg_list; 

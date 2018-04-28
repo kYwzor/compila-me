@@ -1,6 +1,6 @@
 #include "sym_table.h"
 
-int insert_symbol(Sym_table table, char* name, Label type){
+int insert_symbol(Sym_table table, char* name, Label label){
   //Nao protegido para table == null
 
   char* table_name = table->name;
@@ -15,7 +15,7 @@ int insert_symbol(Sym_table table, char* name, Label type){
 
   Sym_table new_node = (Sym_table)malloc(sizeof(_sym_table));
   new_node->name = name;
-  new_node->type = type;
+  new_node->label = label;
   new_node->next = NULL;
   table->next = new_node;
   if(DEBUG) printf("Adding %s to %s table\n", new_node->name, table_name);

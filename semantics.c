@@ -8,7 +8,7 @@ void print_tables(){
   Sym_table aux_node = aux->table_node;
   if(aux != NULL){
     while(aux_node != NULL){
-      char* s = get_label_string(aux_node->type);
+      char* s = get_label_string(aux_node->label);
       printf("%s\t%s\n", aux_node->name, s); 
       aux_node = aux_node->next;
     }
@@ -19,15 +19,16 @@ void print_tables(){
   while(aux != NULL){
     printf("===== Function %s Symbol Table =====\n", aux->table_node->name);
     aux_node = aux->table_node;
-    printf("%s\t%s\n", "return", get_label_string(aux->table_node->type));
+    printf("%s\t%s\n", "return", get_label_string(aux->table_node->label));
     Arg_list aux_args = aux->arg_list;
     while(aux_args != NULL){
-      //TODO: complete this
-      printf("%s\t%s/tparams\n", aux_args->name, get_label_string(aux_args->type)); 
+      //TODO: complete this?
+      printf("%s\t%s/tparams\n", aux_args->name, get_label_string(aux_args->label)); 
+      aux_args = aux_args->next;
     }
     aux_node = aux_node->next;
     while(aux_node != NULL){
-      char* s = get_label_string(aux_node->type);
+      char* s = get_label_string(aux_node->label);
       printf("%s\t%s\n", aux_node->name, s); 
       aux_node = aux_node->next;
     }
@@ -38,13 +39,15 @@ void print_tables(){
 
 int handle_node(Node node){
   if(DEBUG) printf("Handling %s %s\n", node->value, get_label_string(node->label));
+
   switch(node->label){
     case Program:
       {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(Program));
         list = (Table_list) malloc(sizeof(_table_list));
         Sym_table new_node = (Sym_table) malloc(sizeof(_sym_table));
         new_node->name = "Global";
-        new_node->type = -1;
+        new_node->label = -1;
         new_node->next = NULL;
         list->table_node = new_node;
         list->next = NULL;
@@ -57,6 +60,7 @@ int handle_node(Node node){
 
     case FuncDefinition:
       {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDefinition));
         Node typeSpec;
         Node id;
         Node paramList;
@@ -89,7 +93,7 @@ int handle_node(Node node){
         if(typeSpec->label != Char && typeSpec->label != Double && typeSpec->label != Short && typeSpec->label != Int && typeSpec->label != Void)
           return ERROR;
         else
-          current_table->type = typeSpec->label;
+          current_table->label = typeSpec->label;
 
         if(id->label != Id)
           return ERROR;
@@ -100,10 +104,10 @@ int handle_node(Node node){
         if(funcBody->label != FuncBody) return ERROR;
 
         add_table(current_table);
-        insert_symbol(global_table, current_table->name, current_table->type);
+        insert_symbol(global_table, current_table->name, current_table->label);
 
         if(node->child != NULL) 
-          handle_node(node->child);
+
         current_table = global_table;
         if(node->brother != NULL) 
           handle_node(node->brother);
@@ -112,6 +116,7 @@ int handle_node(Node node){
 
     case FuncDeclaration:
       {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDeclaration));
         Node typeSpec;
         Node id;
         Node paramList;
@@ -140,7 +145,7 @@ int handle_node(Node node){
           return ERROR;
         }
         else{
-          new_table->type = typeSpec->label;
+          new_table->label = typeSpec->label;
         }
 
         if(id->label != Id)
@@ -157,12 +162,15 @@ int handle_node(Node node){
       }
 
     case ParamList:
-      full_expand(node);
-      break;
+      {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(ParamList));
+        full_expand(node);
+        break;
+      }
 
     case ParamDeclaration: 
       {
-        printf("%s is %s\n", get_label_string(node->type), get_label_string(ParamDeclaration));
+        printf("%s is %s\n", get_label_string(node->label), get_label_string(ParamDeclaration));
         Node typeSpec;
         Node id;
 
@@ -183,185 +191,388 @@ int handle_node(Node node){
         full_expand(node);
         break;
       }
-  }
-  return 1;
-}
 
-void add_table(Sym_table table){
-  //Verificar se ja esta na tabela
-  Table_list aux = list;
-  while(aux->next != NULL){
-    if(strcmp(aux->next->table_node->name, table->name) == 0)
-      return;
-    aux = aux->next;
-  }
-  Table_list new_node = (Table_list) malloc(sizeof(_table_list));
-  new_node->next = NULL;
-  new_node->table_node = table;
-  new_node->arg_list = NULL;
-  aux->next = new_node;
-  if(DEBUG) printf("Adding a new symbol table: %s\n", new_node->table_node->name);
-}
+      case Declaration:
+      {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
+        full_expand(node);
+        break;
+      }
 
-void add_parameter(Node type_spec, Node id){
-  Table_list aux = list;
-  printf("1\n");
-  while(strcmp(aux->table_node->name, current_table->name) != 0){
-    aux = aux->next;
-  }
-  printf("2\n");
-  Arg_list args = aux->arg_list;
-  while(args->next != NULL)
-    args = args->next;
-  printf("3\n");
-  Arg_list new_arg= (Arg_list) malloc(sizeof(_arg_list));
-  new_arg->type = type_spec->type;
-  printf("4\n");
-  if(id != NULL) new_arg->name = id->value;
-  new_arg->next = NULL;
-  printf("5\n");
-  args->next = new_arg;
-}
-
-char* get_label_string(Label label){
-  char* s;
-  switch (label){
-    case Program:
-      s = "Program";
-      break;
-    case Declaration:
-      s = "Declaration";
-      break;
-    case FuncDeclaration:
-      s = "FuncDeclaration";
-      break;
-    case FuncDefinition:
-      s = "FuncDefinition";
-      break;
-    case ParamList:
-      s = "ParamList";
-      break;
     case FuncBody:
-      s = "FuncBody";
-      break;
-    case ParamDeclaration:
-      s = "ParamDeclaration";
-      break;
+      {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncBody));
+        full_expand(node);
+        break;
+      }
+
     case StatList:
-      s = "StatList";
-      break;
+      {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(StatList));
+        full_expand(node);
+        break;
+      }
+
     case If:
-      s = "If";
-      break;
+      {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(If));
+        full_expand(node);
+        break;
+      }
+
     case While:
-      s = "While";
-      break;
+      {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(While));
+        full_expand(node);
+        break;
+      }
     case Return:
-      s = "Return";
-      break;
+      {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(Return));
+        full_expand(node);
+        break;
+      }
     case Or:
-      s = "Or";
-      break;
+      {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(Or));
+        full_expand(node);
+        break;
+      }
     case And:
-      s = "And";
-      break;
+      {
+        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(And));
+        full_expand(node);
+        break;
+      }
     case Eq:
-      s = "Eq";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Ne:
-      s = "Ne";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Lt:
-      s = "Lt";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Gt:
-      s = "Gt";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Le:
-      s = "Le";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Ge:
-      s = "Ge";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Add:
-      s = "Add";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Sub:
-      s = "Sub";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Mul:
-      s = "Mul";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Div:
-      s = "Div";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Mod:
-      s = "Mod";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Not:
-      s = "Not";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Minus:
-      s = "Minus";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Plus:
-      s = "Plus";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Store:
-      s = "Store";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Comma:
-      s = "Comma";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Call:
-      s = "Call";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case BitWiseAnd:
-      s = "BitWiseAnd";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case BitWiseXor:
-      s = "BitWiseXor";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case BitWiseOr:
-      s = "BitWiseOr";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Char:
-      s = "Char";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case ChrLit:
-      s = "ChrLit";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Id:
-      s = "Id";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Int:
-      s = "Int";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Short:
-      s = "Short";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case IntLit:
-      s = "IntLit";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Double:
-      s = "Double";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case RealLit:
-      s = "RealLit";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Void:
-      s = "Void";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
     case Null:
-      s = "Null";
-      break;
+      {
+        full_expand(node);
+        break;
+      }
   }
-  return s;
+      return 1;
 }
 
-void full_expand(Node node){
-  if(node->child != NULL)
-    handle_node(node->child);
-  if(node->brother != NULL)
-    handle_node(node->brother);
-}
+  void add_table(Sym_table table){
+    //Verificar se ja esta na tabela
+    Table_list aux = list;
+    while(aux->next != NULL){
+      if(strcmp(aux->next->table_node->name, table->name) == 0)
+        return;
+      aux = aux->next;
+    }
+    Table_list new_node = (Table_list) malloc(sizeof(_table_list));
+    new_node->next = NULL;
+    new_node->table_node = table;
+    new_node->arg_list = NULL;
+    aux->next = new_node;
+    if(DEBUG) printf("Adding a new symbol table: %s\n", new_node->table_node->name);
+  }
+
+  void add_parameter(Node type_spec, Node id){
+    Table_list aux = list;
+    printf("1\n");
+    while(strcmp(aux->table_node->name, current_table->name) != 0){
+      aux = aux->next;
+    }
+    printf("2\n");
+    Arg_list args = aux->arg_list;
+    while(args->next != NULL)
+      args = args->next;
+    printf("3\n");
+    Arg_list new_arg= (Arg_list) malloc(sizeof(_arg_list));
+    new_arg->label = type_spec->label;
+    printf("4\n");
+    if(id != NULL) new_arg->name = id->value;
+    new_arg->next = NULL;
+    printf("5\n");
+    args->next = new_arg;
+  }
+
+  char* get_label_string(Label label){
+    char* s;
+    switch (label){
+      case Program:
+        s = "Program";
+        break;
+      case Declaration:
+        s = "Declaration";
+        break;
+      case FuncDeclaration:
+        s = "FuncDeclaration";
+        break;
+      case FuncDefinition:
+        s = "FuncDefinition";
+        break;
+      case ParamList:
+        s = "ParamList";
+        break;
+      case FuncBody:
+        s = "FuncBody";
+        break;
+      case ParamDeclaration:
+        s = "ParamDeclaration";
+        break;
+      case StatList:
+        s = "StatList";
+        break;
+      case If:
+        s = "If";
+        break;
+      case While:
+        s = "While";
+        break;
+      case Return:
+        s = "Return";
+        break;
+      case Or:
+        s = "Or";
+        break;
+      case And:
+        s = "And";
+        break;
+      case Eq:
+        s = "Eq";
+        break;
+      case Ne:
+        s = "Ne";
+        break;
+      case Lt:
+        s = "Lt";
+        break;
+      case Gt:
+        s = "Gt";
+        break;
+      case Le:
+        s = "Le";
+        break;
+      case Ge:
+        s = "Ge";
+        break;
+      case Add:
+        s = "Add";
+        break;
+      case Sub:
+        s = "Sub";
+        break;
+      case Mul:
+        s = "Mul";
+        break;
+      case Div:
+        s = "Div";
+        break;
+      case Mod:
+        s = "Mod";
+        break;
+      case Not:
+        s = "Not";
+        break;
+      case Minus:
+        s = "Minus";
+        break;
+      case Plus:
+        s = "Plus";
+        break;
+      case Store:
+        s = "Store";
+        break;
+      case Comma:
+        s = "Comma";
+        break;
+      case Call:
+        s = "Call";
+        break;
+      case BitWiseAnd:
+        s = "BitWiseAnd";
+        break;
+      case BitWiseXor:
+        s = "BitWiseXor";
+        break;
+      case BitWiseOr:
+        s = "BitWiseOr";
+        break;
+      case Char:
+        s = "Char";
+        break;
+      case ChrLit:
+        s = "ChrLit";
+        break;
+      case Id:
+        s = "Id";
+        break;
+      case Int:
+        s = "Int";
+        break;
+      case Short:
+        s = "Short";
+        break;
+      case IntLit:
+        s = "IntLit";
+        break;
+      case Double:
+        s = "Double";
+        break;
+      case RealLit:
+        s = "RealLit";
+        break;
+      case Void:
+        s = "Void";
+        break;
+      case Null:
+        s = "Null";
+        break;
+    }
+    return s;
+  }
+
+  void full_expand(Node node){
+    if(node->child != NULL)
+      handle_node(node->child);
+    if(node->brother != NULL)
+      handle_node(node->brother);
+  }
