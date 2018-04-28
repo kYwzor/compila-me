@@ -6,7 +6,7 @@
     #define ILLEGAL_CHAR 4
     /*Pedro Carvalho 2015232484
     Tiago Gomes 2015238615*/
-    #include "semantics.h"
+    #include "tree.h"
     #include "y.tab.h"
     int line = 1;
     int column = 1;
@@ -90,14 +90,20 @@ int main(int argc, char** argv)
 {
     flag = 0;
     errorFlag = 0;
+    int print_tree = 1;
     treeRoot = NULL;
     if(argc == 2){
         if (strcmp(argv[1],"-l") == 0) flag = 1;
         else if (strcmp(argv[1],"-t") == 0) flag = 2;
+        else if (strcmp(argv[1],"-t") == 0){
+        flag = 2;
+        print_tree = 0;
+}
     }
     yyparse();
-    handle_node(treeRoot);
-    if(treeRoot!=NULL) print_tree_and_free(treeRoot, 0);
+    if(treeRoot!=NULL) handle_node(treeRoot);
+    print_tables();
+    if(treeRoot!=NULL && print_tree) print_tree_and_free(treeRoot, 0);
     return 0;
 }
 
