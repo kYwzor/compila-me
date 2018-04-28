@@ -3,7 +3,7 @@ int main(void){
          int ae;
      }
      if (x > y & z > y || z != x) { 
-         while (1 == 1){{ 
+         while(1 == 1){{ 
              return 1; 
          } 
      } 

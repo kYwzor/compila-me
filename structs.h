@@ -11,7 +11,7 @@ typedef enum _label{
 typedef struct node_s *Node;
 typedef struct node_s{
 	Label label; //ESTA MERDA E O QUE E AVALIADO PELA SEMANTICA
-	Label type; //ESTA MERDA E O RESULTADO DAS OPERACOES
+	//Label type; //ESTA MERDA SO ENTRA NA ARVORE ANOTADA 
   //PUTA QUE PARIU QUE TILT
 	char *value;
 	Node child;
