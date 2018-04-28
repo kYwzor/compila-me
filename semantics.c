@@ -23,7 +23,7 @@ void print_tables(){
     Arg_list aux_args = aux->arg_list;
     while(aux_args != NULL){
       //TODO: complete this?
-      printf("%s\t%s/tparams\n", aux_args->name, get_label_string(aux_args->label)); 
+      printf("%s\t%s\tparams\n", aux_args->name, get_label_string(aux_args->label)); 
       aux_args = aux_args->next;
     }
     aux_node = aux_node->next;
@@ -107,6 +107,7 @@ int handle_node(Node node){
         insert_symbol(global_table, current_table->name, current_table->label);
 
         if(node->child != NULL) 
+          handle_node(node->child);
 
         current_table = global_table;
         if(node->brother != NULL) 
@@ -186,7 +187,9 @@ int handle_node(Node node){
         else
           id = NULL;
 
+        printf("Before add param");
         add_parameter(typeSpec, id);
+        printf("After add param");
 
         full_expand(node);
         break;
@@ -422,8 +425,10 @@ int handle_node(Node node){
     }
     printf("2\n");
     Arg_list args = aux->arg_list;
-    while(args->next != NULL)
-      args = args->next;
+    if(args != NULL){
+      while(args->next != NULL)
+        args = args->next;
+    }
     printf("3\n");
     Arg_list new_arg= (Arg_list) malloc(sizeof(_arg_list));
     new_arg->label = type_spec->label;
@@ -431,7 +436,10 @@ int handle_node(Node node){
     if(id != NULL) new_arg->name = id->value;
     new_arg->next = NULL;
     printf("5\n");
-    args->next = new_arg;
+    if(args != NULL)
+      args->next = new_arg;
+    else
+      aux->arg_list = new_arg;
   }
 
   char* get_label_string(Label label){
