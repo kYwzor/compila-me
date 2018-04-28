@@ -169,6 +169,7 @@ int handle_node(Node node){
 
         if(paramList->label != ParamList) return ERROR;
         add_table(new_table);
+        insert_symbol(global_table, id->name, type_spec-label);
 
         full_expand(node);
 
@@ -208,7 +209,10 @@ int handle_node(Node node){
 
     case Declaration:
       {
-        if(DEBUG) printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
+        if(DEBUG) printf("%s is %s\n", get_label_sting(node->label), get_label_string(Declaration));
+        Node type_spec = node->child;
+        Node id = type_spec->brother;
+        insert_symbol(current_table, id->name, type_spec->label);
         full_expand(node);
         break;
       }
