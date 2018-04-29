@@ -16,13 +16,19 @@ void add_child(Node father, Node child){
 	father->child = child;
 }
 
-void add_brother(Node older, Node newer){
-	if(older!=NULL && newer!=NULL){
-		while(older->brother!=NULL)
-			older = older->brother;
-
-		older->brother = newer;
+Node add_brother(Node older, Node newer){
+	if(older==NULL){
+		return newer;
 	}
+	if(newer==NULL){
+		return older;
+	}
+	Node aux = older;
+	while(aux->brother!=NULL)
+		aux = aux->brother;
+
+	aux->brother = newer;
+	return older;
 }
 
 void print_tree_and_free(Node current, int depth){

@@ -26,7 +26,7 @@
 %union{
     char *value;
     Node node;
- }
+}
 
 %type <node> Program Functions_and_declarations Functions_and_declarations_mandatory Functions_and_declarations_none_or_more Function_definition Function_body Declarations_and_statements Function_declaration Function_declarator Parameter_list Parameter_declaration Declaration Declarator_list Declarator_none_or_more Declarator Type_spec Statement Statement_or_error Statement_one_or_more Expr Assignment_expr Logical_OR_expr Logical_AND_expr Inclusive_OR_expr Exclusive_OR_expr AND_expr Equality_expr Relational_expr Additive_expr Multiplicative_expr Unary_expression Argument_expr_list Postfix_expr Primary_expr
 
@@ -36,7 +36,7 @@ Program:
     ;    
 
 Functions_and_declarations:
-    Functions_and_declarations_mandatory Functions_and_declarations_none_or_more    {$$=$1; add_brother($1, $2);}
+    Functions_and_declarations_mandatory Functions_and_declarations_none_or_more    {$$ = add_brother($1, $2);}
     ;
 
 Functions_and_declarations_mandatory:
@@ -46,42 +46,42 @@ Functions_and_declarations_mandatory:
     ;
 
 Functions_and_declarations_none_or_more:
-    Functions_and_declarations_mandatory Functions_and_declarations_none_or_more    {$$=$1; add_brother($1, $2);}
-    |                                                                               {$$=NULL;}
+    Functions_and_declarations_mandatory Functions_and_declarations_none_or_more    {$$ = add_brother($1, $2);}
+    |                                                                               {$$ = NULL;}
     ;
 
 Function_definition:
-    Type_spec Function_declarator Function_body     {$$=create_node(FuncDefinition, NULL); add_child($$,$1); add_brother($1, $2); add_brother($1, $3);}
+    Type_spec Function_declarator Function_body     {$$ = create_node(FuncDefinition, NULL); add_child($$,$1); add_brother($1, $2); add_brother($1, $3);}
     ;
 
 Function_body:
-    LBRACE Declarations_and_statements RBRACE   {$$=create_node(FuncBody, NULL); add_child($$, $2);}
-    | LBRACE RBRACE                             {$$=create_node(FuncBody, NULL);}
+    LBRACE Declarations_and_statements RBRACE   {$$ = create_node(FuncBody, NULL); add_child($$, $2);}
+    | LBRACE RBRACE                             {$$ = create_node(FuncBody, NULL);}
     ;
 
 Declarations_and_statements:
-    Declarations_and_statements Statement       {$$=$1; add_brother($1, $2);}
-    | Declarations_and_statements Declaration   {$$=$1; add_brother($1, $2);}
-    | Statement                                 {$$=$1;}
-    | Declaration                               {$$=$1;}
+    Declarations_and_statements Statement       {$$ = add_brother($1, $2);}
+    | Declarations_and_statements Declaration   {$$ = add_brother($1, $2);}
+    | Statement                                 {$$ = $1;}
+    | Declaration                               {$$ = $1;}
     ;
 
 Function_declaration:
-    Type_spec Function_declarator SEMI  {$$=create_node(FuncDeclaration, NULL); add_child($$, $1); add_brother($1, $2);}
+    Type_spec Function_declarator SEMI  {$$ = create_node(FuncDeclaration, NULL); add_child($$, $1); add_brother($1, $2);}
     ;
 
 Function_declarator:
-    ID LPAR Parameter_list RPAR {$$=create_node(Id, $1); aux = create_node(ParamList,NULL); add_brother($$, aux); add_child(aux, $3);}
+    ID LPAR Parameter_list RPAR {$$ = create_node(Id, $1); aux = create_node(ParamList,NULL); add_brother($$, aux); add_child(aux, $3);}
     ;
 
 Parameter_list:
     Parameter_declaration  {$$ = $1;}
-    | Parameter_list COMMA Parameter_declaration {$$ = $1; add_brother($$, $3);}
+    | Parameter_list COMMA Parameter_declaration {$$ = add_brother($$, $3);}
     ;
 
 Parameter_declaration:
-    Type_spec ID    {$$=create_node(ParamDeclaration,NULL); add_child($$, $1); add_brother($1, create_node(Id, $2));}
-    | Type_spec     {$$=create_node(ParamDeclaration,NULL); add_child($$, $1);}
+    Type_spec ID    {$$ = create_node(ParamDeclaration,NULL); add_child($$, $1); add_brother($1, create_node(Id, $2));}
+    | Type_spec     {$$ = create_node(ParamDeclaration,NULL); add_child($$, $1);}
     ;
 
 Declaration:
@@ -94,19 +94,19 @@ Declaration:
                                         aux->child = aux2;
                                         aux = aux->brother;
                                     }
-                                    $$=$2;}
+                                    $$ = $2;}
                                     
                                     
-    | error SEMI {$$=create_node(Null, NULL);}
+    | error SEMI {$$ = create_node(Null, NULL);}
     ;
 
 Declarator_list:
-	Declarator Declarator_none_or_more {$$=create_node(Declaration, NULL); add_child($$, $1); add_brother($$, $2);}
+	Declarator Declarator_none_or_more {$$ = create_node(Declaration, NULL); add_child($$, $1); add_brother($$, $2);}
 	;
 
 Declarator_none_or_more:
-    COMMA Declarator_list   {$$=$2;}
-    |                       {$$=NULL;}
+    COMMA Declarator_list   {$$ = $2;}
+    |                       {$$ = NULL;}
     ;
 
 Declarator:
@@ -115,17 +115,17 @@ Declarator:
     ;
 
 Type_spec: 
-    INT         {$$=create_node(Int, NULL);}
-    | CHAR      {$$=create_node(Char, NULL);}
-    | VOID      {$$=create_node(Void, NULL);}
-    | SHORT     {$$=create_node(Short, NULL);}
-    | DOUBLE    {$$=create_node(Double, NULL);}
+    INT         {$$ = create_node(Int, NULL);}
+    | CHAR      {$$ = create_node(Char, NULL);}
+    | VOID      {$$ = create_node(Void, NULL);}
+    | SHORT     {$$ = create_node(Short, NULL);}
+    | DOUBLE    {$$ = create_node(Double, NULL);}
     ;
 
 Statement:
-    SEMI                                                                    {$$=NULL;}
-    | Expr SEMI                                                             {$$=$1;}
-    | LBRACE RBRACE                                                         {$$=NULL;}
+    SEMI                                                                    {$$ = NULL;}
+    | Expr SEMI                                                             {$$ = $1;}
+    | LBRACE RBRACE                                                         {$$ = NULL;}
 
     | LBRACE Statement_one_or_more RBRACE                                   {if ($2!=NULL && $2->brother!=NULL){
                                                                                 $$ = create_node(StatList, NULL);
@@ -133,35 +133,35 @@ Statement:
                                                                             }
                                                                             else $$ = $2;}
 
-    | LBRACE error RBRACE                                                   {$$=create_node(Null, NULL);}
+    | LBRACE error RBRACE                                                   {$$ = create_node(Null, NULL);}
 
-    | IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error          {$$=create_node(If, NULL); add_child($$, $3);
+    | IF LPAR Expr RPAR Statement_or_error ELSE Statement_or_error          {$$ = create_node(If, NULL); add_child($$, $3);
                                                                             if ($5==NULL) add_brother($3, create_node(Null, NULL));
                                                                             else add_brother($3, $5);
                                                                             if ($7==NULL) add_brother($3, create_node(Null, NULL));
                                                                             else add_brother($3, $7);}
 
-    | IF LPAR Expr RPAR Statement_or_error %prec NOELSE                     {$$=create_node(If, NULL); add_child($$, $3);
+    | IF LPAR Expr RPAR Statement_or_error %prec NOELSE                     {$$ = create_node(If, NULL); add_child($$, $3);
                                                                             if ($5==NULL) add_brother($3, create_node(Null, NULL));
                                                                             else add_brother($3, $5);
                                                                             add_brother($3, create_node(Null, NULL));}
 
-    | WHILE LPAR Expr RPAR Statement_or_error                               {$$=create_node(While, NULL); add_child($$, $3);
+    | WHILE LPAR Expr RPAR Statement_or_error                               {$$ = create_node(While, NULL); add_child($$, $3);
                                                                             if ($5==NULL) add_brother($3, create_node(Null, NULL));
                                                                             else add_brother($3, $5);}
 
-    | RETURN Expr SEMI                                                      {$$=create_node(Return, NULL); add_child($$, $2);}
-    | RETURN SEMI                                                           {$$=create_node(Return, NULL); add_child($$, create_node(Null, NULL));}
+    | RETURN Expr SEMI                                                      {$$ = create_node(Return, NULL); add_child($$, $2);}
+    | RETURN SEMI                                                           {$$ = create_node(Return, NULL); add_child($$, create_node(Null, NULL));}
     ;
 
 Statement_or_error:
-    Statement       {$$=$1;}
-    | error SEMI    {$$=create_node(Null, NULL);}
+    Statement       {$$ = $1;}
+    | error SEMI    {$$ = create_node(Null, NULL);}
     ;
 
 Statement_one_or_more:
-    Statement_one_or_more Statement_or_error    {$$=$1; add_brother($1, $2);}
-    | Statement_or_error                        {$$=$1;}
+    Statement_one_or_more Statement_or_error    {$$ = add_brother($1, $2);}
+    | Statement_or_error                        {$$ = $1;}
     ;
 
 Expr:
@@ -170,7 +170,7 @@ Expr:
     ;
     
 Assignment_expr:
-    Logical_OR_expr                             {$$ = $1;}
+    Logical_OR_expr                            {$$ = $1;}
     | Logical_OR_expr ASSIGN Assignment_expr   {$$ = create_node(Store, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
 
@@ -235,7 +235,7 @@ Unary_expression:
 
 Argument_expr_list:
     Assignment_expr                             {$$ = $1;}
-    | Argument_expr_list COMMA Assignment_expr  {$$ = $1; add_brother($1, $3);}
+    | Argument_expr_list COMMA Assignment_expr  {$$ = add_brother($1, $3);}
 
 Postfix_expr:
     Primary_expr                        {$$ = $1;}

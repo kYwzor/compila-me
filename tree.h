@@ -2,7 +2,7 @@
 
 Node create_node(Label label, char *value);
 void add_child(Node father, Node child);
-void add_brother(Node older, Node newer);
+Node add_brother(Node older, Node newer);
 void print_tree_and_free(Node current, int depth);
 
 Node treeRoot;
