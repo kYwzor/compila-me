@@ -101,7 +101,7 @@ int main(int argc, char** argv)
         }
     }
     yyparse();
-    if(treeRoot!=NULL) {
+    if(treeRoot!=NULL && !errorFlag) {
         handle_node(treeRoot);
         print_tables();
     }

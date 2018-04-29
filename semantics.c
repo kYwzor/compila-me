@@ -41,7 +41,7 @@ void print_tables()
         while (aux_args != NULL)
         {
           if (aux_args->label != Void)
-            printf("%s\t%s\tparams\n", aux_args->name, get_string_for_tables(aux_args->label));
+            printf("%s\t%s\tparam\n", aux_args->name, get_string_for_tables(aux_args->label));
           aux_args = aux_args->next;
         }
         aux_node = aux_node->next;
@@ -472,7 +472,14 @@ void add_parameter(Node type_spec, Node id)
   Table_list aux = list;
   while (strcmp(aux->table_node->name, current_table->name) != 0)
   {
+    if(DEBUG)printf("%s---%s\n", aux->table_node->name, current_table->name);
     aux = aux->next;
+    if(DEBUG)printf("Problem in table node\n");
+    Sym_table a = aux->table_node;
+    if(DEBUG)printf("Problem in table node name\n");
+    char* b = a->name;
+    if(DEBUG)printf("Problem in table\n");
+    b = current_table->name;
   }
   Arg_list args = aux->arg_list;
   if (args != NULL)

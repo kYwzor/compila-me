@@ -9,14 +9,14 @@ typedef enum _label{
 }Label;
 
 typedef struct node_s *Node;
-typedef struct node_s{
-	Label label; //ESTA MERDA E O QUE E AVALIADO PELA SEMANTICA
-	//Label type; //ESTA MERDA SO ENTRA NA ARVORE ANOTADA 
-  //PUTA QUE PARIU QUE TILT
-	char *value;
-	Node child;
-	Node brother;
-}Node_t;
+typedef struct node_s
+{
+  Label label;
+  //Label type;
+  char *value;
+  Node child;
+  Node brother;
+} Node_t;
 
 typedef struct _t1* Sym_table;
 typedef struct _t1{
