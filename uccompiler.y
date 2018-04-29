@@ -3,7 +3,6 @@
     #include <stdio.h>
     #include <string.h>
     #include "tree.h"
-    #define DEBUG 1
     extern int line;
     extern int yyleng;
     extern int column;

@@ -1,5 +1,6 @@
 #include "sym_table.h"
 
+char* get_string_for_tables(Label label);
 int handle_node(Node node); 
 void semantic_analysis(Node node);
 void add_table(Sym_table table); 

@@ -96,13 +96,15 @@ int main(int argc, char** argv)
         if (strcmp(argv[1],"-l") == 0) flag = 1;
         else if (strcmp(argv[1],"-t") == 0) flag = 2;
         else if (strcmp(argv[1],"-t") == 0){
-        flag = 2;
-        print_tree = 0;
-}
+            flag = 2;
+            print_tree = 0;
+        }
     }
     yyparse();
-    if(treeRoot!=NULL) handle_node(treeRoot);
-    print_tables();
+    if(treeRoot!=NULL) {
+        handle_node(treeRoot);
+        print_tables();
+    }
     if(treeRoot!=NULL && print_tree) print_tree_and_free(treeRoot, 0);
     return 0;
 }
