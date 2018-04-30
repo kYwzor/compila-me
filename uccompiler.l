@@ -94,14 +94,11 @@ int main(int argc, char** argv)
     treeRoot = NULL;
     if(argc == 2){
         if (strcmp(argv[1],"-l") == 0) flag = 1;
-        else if (strcmp(argv[1],"-t" || strcmp(argv[1], "-2")) == 0) flag = 2;
-        else if (strcmp(argv[1],"-s") == 0){
-            flag = 3;
-            print_tree = 0;
-        }
+        else if (strcmp(argv[1],"-t") == 0 || strcmp(argv[1], "-2") == 0) flag = 2;
+        else if (strcmp(argv[1],"-s") == 0) flag = 3;
     }
     yyparse();
-    if(treeRoot!=NULL && !errorFlag && flag = 3) {
+    if(treeRoot!=NULL && !errorFlag && flag == 3) {
         handle_node(treeRoot);
         print_tables();
     }

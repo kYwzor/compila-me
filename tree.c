@@ -34,11 +34,11 @@ Node add_brother(Node older, Node newer){
 void print_tree_and_free(Node current, int depth){
 	int i;
 
-	if(errorFlag!=1 && flag == 2){
+	if(errorFlag!=1 && flag > 1){
 		for(i=0; i<depth; i++)
 			printf("..");
-    if(current->value!=NULL) printf("%s(%s)\n", get_label_string(current->label), current->value);
-    else printf("%s\n", get_label_string(current->label));
+		if(current->value!=NULL) printf("%s(%s)\n", get_label_string(current->label), current->value);
+		else printf("%s\n", get_label_string(current->label));
 	}
 
 	if(current->child != NULL) print_tree_and_free(current->child, depth+1);
