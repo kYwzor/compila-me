@@ -1,6 +1,6 @@
-#include "sym_table.h"
+#include "sym_list.h"
 
-int insert_symbol(Sym_table table, char* name, Label label){
+int insert_symbol(Sym_list table, char* name, Label label){
   //Nao protegido para table == null
 
   char* table_name = table->name;
@@ -13,7 +13,7 @@ int insert_symbol(Sym_table table, char* name, Label label){
     }
   }
 
-  Sym_table new_node = (Sym_table)malloc(sizeof(_sym_table));
+  Sym_list new_node = (Sym_list)malloc(sizeof(_Sym_list));
   new_node->name = name;
   new_node->label = label;
   new_node->next = NULL;
@@ -23,6 +23,6 @@ int insert_symbol(Sym_table table, char* name, Label label){
 }
 
 char* find_function_entry(char* id){
-  //TODO
   return NULL;
 }
+

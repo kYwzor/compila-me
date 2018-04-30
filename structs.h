@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define DEBUG 0
+#define DEBUG 1
 #define ERROR -1
 
 typedef enum _label{
@@ -18,21 +18,22 @@ typedef struct node_s
   Node brother;
 } Node_t;
 
-typedef struct _t1* Sym_table;
+typedef struct _t1* Sym_list;
 typedef struct _t1{
   //TODO Mudar este nome para id
 	char* name;
 	Label label; 
-  Sym_table next;
-}_sym_table;
+  Sym_list next;
+}_Sym_list;
 
 
 typedef struct _tl* Table_list;
 typedef struct _al* Arg_list;
 typedef struct _tl{
-  Sym_table table_node;
+  Sym_list table_node;
   Table_list next;
   Arg_list arg_list;
+  int is_defined;
 }_table_list;
 
 typedef struct _al{

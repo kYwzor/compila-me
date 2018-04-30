@@ -3,58 +3,55 @@
 void print_tables()
 {
   printf("===== Global Symbol Table =====\n");
-  printf("putchar\tint(int)\n");
-  printf("getchar\tint(void)\n");
   Table_list aux = list;
-  if (aux != NULL)
-  {
-    aux = aux->next;
-    if (aux != NULL)
-    {
-      Sym_table aux_node = aux->table_node;
-      while (aux != NULL)
-      {
-        Sym_table aux_node2 = aux->table_node;
-        char *s = get_string_for_tables(aux_node2->label);
-        printf("%s\t%s(", aux_node2->name, s);
-        Arg_list aux_args = aux->arg_list;
-        while (aux_args != NULL)
-        {
-          printf("%s", get_string_for_tables(aux_args->label));
-          aux_args = aux_args->next;
-          if (aux_args != NULL)
-            printf(", ");
-        }
-        printf(")\n");
-        aux = aux->next;
-      }
-
-      printf("\n");
-      aux = list;
-      aux = aux->next;
-      while (aux != NULL)
-      {
-        printf("===== Function %s Symbol Table =====\n", aux->table_node->name);
-        aux_node = aux->table_node;
-        printf("%s\t%s\n", "return", get_string_for_tables(aux->table_node->label));
-        Arg_list aux_args = aux->arg_list;
-        while (aux_args != NULL)
-        {
-          if (aux_args->label != Void)
-            printf("%s\t%s\tparam\n", aux_args->name, get_string_for_tables(aux_args->label));
-          aux_args = aux_args->next;
-        }
-        aux_node = aux_node->next;
-        while (aux_node != NULL)
-        {
-          char *s = get_string_for_tables(aux_node->label);
-          printf("%s\t%s\n", aux_node->name, s);
-          aux_node = aux_node->next;
-        }
-        aux = aux->next;
-        printf("\n");
-      }
+  Sym_list global_aux = global_table->next;
+  while(global_aux != NULL){
+    char *s = get_string_for_tables(global_aux->label);
+    Arg_list aux_args = get_function_args(global_aux->name);
+    if(aux_args == NULL){
+      printf("%s\t%s\n", global_aux->name, s);
     }
+    else{
+      printf("%s\t%s(", global_aux->name, s);
+      while (aux_args != NULL)
+      {
+        printf("%s", get_string_for_tables(aux_args->label));
+        aux_args = aux_args->next;
+        if (aux_args != NULL)
+          printf(", ");
+      }
+      printf(")\n");
+    }
+    global_aux = global_aux->next;
+  }
+  aux = aux->next;
+  printf("\n");
+  aux = list;
+  aux = aux->next;
+  while (aux != NULL)
+  {
+    if(aux->is_defined)
+    {
+      printf("===== Function %s Symbol Table =====\n", aux->table_node->name);
+      Sym_list aux_node = aux->table_node;
+      printf("%s\t%s\n", "return", get_string_for_tables(aux->table_node->label));
+      Arg_list aux_args = aux->arg_list;
+      while (aux_args != NULL)
+      {
+        if (aux_args->label != Void)
+          printf("%s\t%s\tparam\n", aux_args->name, get_string_for_tables(aux_args->label));
+        aux_args = aux_args->next;
+      }
+      aux_node = aux_node->next;
+      while (aux_node != NULL)
+      {
+        char *s = get_string_for_tables(aux_node->label);
+        printf("%s\t%s\n", aux_node->name, s);
+        aux_node = aux_node->next;
+      }
+      printf("\n");
+    }
+    aux = aux->next;
   }
 }
 
@@ -70,7 +67,7 @@ int handle_node(Node node)
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Program));
     list = (Table_list)malloc(sizeof(_table_list));
-    Sym_table new_node = (Sym_table)malloc(sizeof(_sym_table));
+    Sym_list new_node = (Sym_list)malloc(sizeof(_Sym_list));
     new_node->name = "Global";
     new_node->label = -1;
     new_node->next = NULL;
@@ -79,11 +76,34 @@ int handle_node(Node node)
 
     current_table = new_node;
     global_table = new_node;
-    /*TODO: Ver isto depois com o Tiago, print ficou hardcoded
-         * para encontrar o print faz-se search de foobar
-         insert_symbol(new_node, "putchar", Int);
-         insert_symbol(new_node, "getchar", Int);
-         */
+
+    insert_symbol(new_node, "putchar", Int);
+    Sym_list put_char_table = (Sym_list)malloc(sizeof(_Sym_list));
+    put_char_table->label = Int;
+    put_char_table->name = "putchar";
+    put_char_table->next = NULL;
+    current_table = put_char_table;
+    Node type_spec = (Node)malloc(sizeof(Node_t));
+    type_spec->label = Int;
+    Node id = (Node)malloc(sizeof(Node_t));
+    id->value = "a";
+    add_table(put_char_table, 0);
+    add_parameter(type_spec, id);
+
+    insert_symbol(new_node, "getchar", Int);
+    Sym_list get_char_table = (Sym_list)malloc(sizeof(_Sym_list));
+    get_char_table->label = Int;
+    get_char_table->name = "getchar";
+    get_char_table->next = NULL;
+    current_table = get_char_table;
+    type_spec->label = Void;
+    id->value = NULL;
+    add_table(get_char_table, 0);
+    add_parameter(type_spec, id);
+
+    free(id);
+    free(type_spec);
+
     full_expand(node);
     break;
   }
@@ -118,7 +138,7 @@ int handle_node(Node node)
     else
       return ERROR;
 
-    current_table = (Sym_table)malloc(sizeof(_sym_table));
+    current_table = (Sym_list)malloc(sizeof(_Sym_list));
 
     //Check if children are adequate
     if (type_spec->label != Char && type_spec->label != Double && type_spec->label != Short && type_spec->label != Int && type_spec->label != Void)
@@ -136,7 +156,7 @@ int handle_node(Node node)
     if (funcBody->label != FuncBody)
       return ERROR;
 
-    add_table(current_table);
+    add_table(current_table, 1);
     insert_symbol(global_table, id->value, type_spec->label);
 
     if (node->child != NULL)
@@ -172,7 +192,7 @@ int handle_node(Node node)
     else
       return ERROR;
 
-    Sym_table new_table = (Sym_table)malloc(sizeof(_sym_table));
+    current_table = (Sym_list)malloc(sizeof(_Sym_list));
 
     //Check if children are adequate
     if (type_spec->label != Char && type_spec->label != Double && type_spec->label != Short && type_spec->label != Int && type_spec->label != Void)
@@ -181,20 +201,27 @@ int handle_node(Node node)
     }
     else
     {
-      new_table->label = type_spec->label;
+      current_table->label = type_spec->label;
     }
 
     if (id->label != Id)
       return ERROR;
     else
-      new_table->name = id->value;
+      current_table->name = id->value;
 
     if (paramList->label != ParamList)
       return ERROR;
-    add_table(new_table);
+
+    add_table(current_table, 0);
     insert_symbol(global_table, id->value, type_spec->label);
 
-    full_expand(node);
+    if (node->child != NULL)
+      handle_node(node->child);
+
+    current_table = global_table;
+
+    if (node->brother != NULL)
+      handle_node(node->brother);
 
     break;
   }
@@ -448,7 +475,7 @@ int handle_node(Node node)
   return 1;
 }
 
-void add_table(Sym_table table)
+void add_table(Sym_list table, int is_defined)
 {
   //Verificar se ja esta na tabela
   Table_list aux = list;
@@ -461,6 +488,7 @@ void add_table(Sym_table table)
   Table_list new_node = (Table_list)malloc(sizeof(_table_list));
   new_node->next = NULL;
   new_node->table_node = table;
+  new_node->is_defined = is_defined;
   new_node->arg_list = NULL;
   aux->next = new_node;
   if (DEBUG)
@@ -472,13 +500,17 @@ void add_parameter(Node type_spec, Node id)
   Table_list aux = list;
   while (strcmp(aux->table_node->name, current_table->name) != 0)
   {
-    if(DEBUG)printf("%s---%s\n", aux->table_node->name, current_table->name);
+    if (DEBUG)
+      printf("%s---%s\n", aux->table_node->name, current_table->name);
     aux = aux->next;
-    if(DEBUG)printf("Problem in table node\n");
-    Sym_table a = aux->table_node;
-    if(DEBUG)printf("Problem in table node name\n");
-    char* b = a->name;
-    if(DEBUG)printf("Problem in table\n");
+    if (DEBUG)
+      printf("Problem in table node\n");
+    Sym_list a = aux->table_node;
+    if (DEBUG)
+      printf("Problem in table node name\n");
+    char *b = a->name;
+    if (DEBUG)
+      printf("Problem in table\n");
     b = current_table->name;
   }
   Arg_list args = aux->arg_list;
@@ -646,7 +678,7 @@ void full_expand(Node node)
 
 char *get_string_for_tables(Label label)
 {
-  char *s;
+  char *s = NULL;
   switch (label)
   {
   case Char:
@@ -666,117 +698,20 @@ char *get_string_for_tables(Label label)
   case Program:
     s = "void";
     break;
-  case Declaration:
-    s = "Declaration";
-    break;
-  case FuncDeclaration:
-    s = "FuncDeclaration";
-    break;
-  case FuncDefinition:
-    s = "FuncDefinition";
-    break;
-  case ParamList:
-    s = "ParamList";
-    break;
-  case FuncBody:
-    s = "FuncBody";
-    break;
-  case ParamDeclaration:
-    s = "ParamDeclaration";
-    break;
-  case StatList:
-    s = "StatList";
-    break;
-  case If:
-    s = "If";
-    break;
-  case While:
-    s = "While";
-    break;
-  case Return:
-    s = "Return";
-    break;
-  case Or:
-    s = "Or";
-    break;
-  case And:
-    s = "And";
-    break;
-  case Eq:
-    s = "Eq";
-    break;
-  case Ne:
-    s = "Ne";
-    break;
-  case Lt:
-    s = "Lt";
-    break;
-  case Gt:
-    s = "Gt";
-    break;
-  case Le:
-    s = "Le";
-    break;
-  case Ge:
-    s = "Ge";
-    break;
-  case Add:
-    s = "Add";
-    break;
-  case Sub:
-    s = "Sub";
-    break;
-  case Mul:
-    s = "Mul";
-    break;
-  case Div:
-    s = "Div";
-    break;
-  case Mod:
-    s = "Mod";
-    break;
-  case Not:
-    s = "Not";
-    break;
-  case Minus:
-    s = "Minus";
-    break;
-  case Plus:
-    s = "Plus";
-    break;
-  case Store:
-    s = "Store";
-    break;
-  case Comma:
-    s = "Comma";
-    break;
-  case Call:
-    s = "Call";
-    break;
-  case BitWiseAnd:
-    s = "BitWiseAnd";
-    break;
-  case BitWiseXor:
-    s = "BitWiseXor";
-    break;
-  case BitWiseOr:
-    s = "BitWiseOr";
-    break;
-  case ChrLit:
-    s = "ChrLit";
-    break;
-  case Id:
-    s = "Id";
-    break;
-  case IntLit:
-    s = "IntLit";
-    break;
-  case RealLit:
-    s = "RealLit";
-    break;
-  case Null:
-    s = "Null";
+  default:
+    printf("never ever pc cucks");
     break;
   }
   return s;
+}
+
+Arg_list get_function_args(char * name){
+  Table_list aux = list;
+  while(aux != NULL){
+    if(strcmp(aux->table_node->name, name) == 0){
+      return aux->arg_list;
+    }
+    aux = aux->next;
+  }
+  return NULL;
 }

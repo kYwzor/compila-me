@@ -1,0 +1,142 @@
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+readint	int(void)
+printint	void(int)
+main	int(void)
+
+===== Function readint Symbol Table =====
+return	int
+read	int
+sign	int
+c	char
+
+===== Function printint Symbol Table =====
+return	void
+n	int	param
+
+===== Function main Symbol Table =====
+return	int
+i	int
+
+Program
+..FuncDefinition
+....Int
+....Id(readint)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Declaration
+........Int
+........Id(read)
+........IntLit(0)
+......Declaration
+........Int
+........Id(sign)
+........IntLit(1)
+......Declaration
+........Char
+........Id(c)
+........Call
+..........Id(getchar)
+......If
+........Eq
+..........Id(c)
+..........ChrLit('-')
+........Store
+..........Id(sign)
+..........Minus
+............IntLit(1)
+........Null
+......While
+........Ne
+..........Id(c)
+..........ChrLit('\n')
+........StatList
+..........If
+............Ne
+..............Id(c)
+..............ChrLit('-')
+............Store
+..............Id(read)
+..............Sub
+................Add
+..................Mul
+....................Id(read)
+....................IntLit(10)
+..................Id(c)
+................ChrLit('0')
+............Null
+..........Store
+............Id(c)
+............Call
+..............Id(getchar)
+......Return
+........Mul
+..........Id(sign)
+..........Id(read)
+..FuncDefinition
+....Void
+....Id(printint)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(n)
+....FuncBody
+......If
+........Lt
+..........Id(n)
+..........IntLit(0)
+........StatList
+..........Call
+............Id(putchar)
+............ChrLit('-')
+..........Store
+............Id(n)
+............Minus
+..............Id(n)
+........Null
+......If
+........Div
+..........Id(n)
+..........IntLit(10)
+........Call
+..........Id(printint)
+..........Div
+............Id(n)
+............IntLit(10)
+........Null
+......Call
+........Id(putchar)
+........Add
+..........Mod
+............Id(n)
+............IntLit(10)
+..........ChrLit('0')
+..FuncDefinition
+....Int
+....Id(main)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Declaration
+........Int
+........Id(i)
+........IntLit(1)
+......While
+........Ne
+..........Id(i)
+..........IntLit(0)
+........StatList
+..........Store
+............Id(i)
+............Call
+..............Id(readint)
+..........Call
+............Id(printint)
+............Id(i)
+..........Call
+............Id(putchar)
+............ChrLit('\n')
