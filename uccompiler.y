@@ -8,7 +8,6 @@
     extern int column;
     extern char* yytext;
     int yylex(void);
-    void pprint(char* string);
     void yyerror (char *s);
 %}
 
@@ -254,11 +253,6 @@ Primary_expr:
     ;
 
 %%
-
-void pprint(char* string){
-    //printf("%s\n", string);
-}
-
 
 void yyerror (char *s) {
     if(flag!=1) printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
