@@ -15,5 +15,6 @@ y.output
 uccompiler
 *.zip
 
+.vscode/
 
 password.txt
