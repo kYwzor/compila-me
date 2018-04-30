@@ -1,11 +1,6 @@
- int main(int x, int y, int z) { 
-         while (){{ 
-             return 1; 
-         } 
-     } 
- } 
-
-  int short(void) {  
-      int a = 1;
-  }  
-  }
+int main(int a){}
+int eue(short a, double b); 
+double esefer(void);
+int eue(short a, double b){}
+void aaaa(int a);
+short hm(double hm);

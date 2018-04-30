@@ -22,7 +22,4 @@ int insert_symbol(Sym_list table, char* name, Label label){
   return 1;
 }
 
-char* find_function_entry(char* id){
-  return NULL;
-}
 

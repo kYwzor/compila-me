@@ -5,20 +5,23 @@ void print_tables()
   printf("===== Global Symbol Table =====\n");
   Table_list aux = list;
   Sym_list global_aux = global_table->next;
-  while(global_aux != NULL){
+  while (global_aux != NULL)
+  {
     char *s = get_string_for_tables(global_aux->label);
     Arg_list aux_args = get_function_args(global_aux->name);
-    if(aux_args == NULL){
+    if (aux_args == NULL)
+    {
       printf("%s\t%s\n", global_aux->name, s);
     }
-    else{
+    else
+    {
       printf("%s\t%s(", global_aux->name, s);
       while (aux_args != NULL)
       {
         printf("%s", get_string_for_tables(aux_args->label));
         aux_args = aux_args->next;
         if (aux_args != NULL)
-          printf(", ");
+          printf(",");
       }
       printf(")\n");
     }
@@ -30,7 +33,7 @@ void print_tables()
   aux = aux->next;
   while (aux != NULL)
   {
-    if(aux->is_defined)
+    if (aux->is_defined)
     {
       printf("===== Function %s Symbol Table =====\n", aux->table_node->name);
       Sym_list aux_node = aux->table_node;
@@ -101,9 +104,10 @@ int handle_node(Node node)
     add_table(get_char_table, 0);
     add_parameter(type_spec, id);
 
+    current_table = global_table;
+
     free(id);
     free(type_spec);
-
     full_expand(node);
     break;
   }
@@ -115,48 +119,15 @@ int handle_node(Node node)
     Node type_spec;
     Node id;
     Node paramList;
-    Node funcBody;
 
-    //Check if all the children exist
-    if (node->child != NULL)
-      type_spec = node->child;
-    else
-      return ERROR;
+    type_spec = node->child;
 
-    if (type_spec->brother != NULL)
-      id = type_spec->brother;
-    else
-      return ERROR;
+    id = type_spec->brother;
 
-    if (id->brother != NULL)
-      paramList = id->brother;
-    else
-      return ERROR;
+    paramList = id->brother;
 
-    if (paramList->brother != NULL)
-      funcBody = paramList->brother;
-    else
-      return ERROR;
+    current_table = find_function_entry(list, type_spec->label, id->value);
 
-    current_table = (Sym_list)malloc(sizeof(_Sym_list));
-
-    //Check if children are adequate
-    if (type_spec->label != Char && type_spec->label != Double && type_spec->label != Short && type_spec->label != Int && type_spec->label != Void)
-      return ERROR;
-    else
-      current_table->label = type_spec->label;
-
-    if (id->label != Id)
-      return ERROR;
-    else
-      current_table->name = id->value;
-
-    if (paramList->label != ParamList)
-      return ERROR;
-    if (funcBody->label != FuncBody)
-      return ERROR;
-
-    add_table(current_table, 1);
     insert_symbol(global_table, id->value, type_spec->label);
 
     if (node->child != NULL)
@@ -177,40 +148,18 @@ int handle_node(Node node)
     Node paramList;
 
     //Check if all the children exist
-    if (node->child != NULL)
       type_spec = node->child;
-    else
-      return ERROR;
 
-    if (type_spec->brother != NULL)
       id = type_spec->brother;
-    else
-      return ERROR;
 
-    if (id->brother != NULL)
       paramList = id->brother;
-    else
-      return ERROR;
 
     current_table = (Sym_list)malloc(sizeof(_Sym_list));
 
     //Check if children are adequate
-    if (type_spec->label != Char && type_spec->label != Double && type_spec->label != Short && type_spec->label != Int && type_spec->label != Void)
-    {
-      return ERROR;
-    }
-    else
-    {
       current_table->label = type_spec->label;
-    }
 
-    if (id->label != Id)
-      return ERROR;
-    else
       current_table->name = id->value;
-
-    if (paramList->label != ParamList)
-      return ERROR;
 
     add_table(current_table, 0);
     insert_symbol(global_table, id->value, type_spec->label);
@@ -242,10 +191,7 @@ int handle_node(Node node)
     Node id;
 
     //Check if param has type
-    if (node->child != NULL)
       type_spec = node->child;
-    else
-      return ERROR;
 
     if (type_spec->brother != NULL)
       id = type_spec->brother;
@@ -705,13 +651,35 @@ char *get_string_for_tables(Label label)
   return s;
 }
 
-Arg_list get_function_args(char * name){
+Arg_list get_function_args(char *name)
+{
   Table_list aux = list;
-  while(aux != NULL){
-    if(strcmp(aux->table_node->name, name) == 0){
+  while (aux != NULL)
+  {
+    if (strcmp(aux->table_node->name, name) == 0)
+    {
       return aux->arg_list;
     }
     aux = aux->next;
   }
   return NULL;
+}
+
+Sym_list find_function_entry(Table_list list, Label label, char *value)
+{
+  Table_list aux = list;
+  while (aux != NULL)
+  {
+    if (strcmp(aux->table_node->name, value) == 0)
+    {
+      aux->is_defined = 1;
+      return aux->table_node;
+    }
+    aux = aux->next;
+  }
+  Sym_list new_list = (Sym_list)malloc(sizeof(_Sym_list));
+  new_list->label = label;
+  new_list->name = value;
+  add_table(new_list, 1);
+  return new_list;
 }

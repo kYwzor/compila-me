@@ -9,6 +9,7 @@ char* get_label_string(Label label);
 void add_parameter(Node type_spec, Node id);
 void full_expand(Node node);
 Arg_list get_function_args(char * name);
+Sym_list find_function_entry(Table_list list, Label label, char *value);
 
 
 Table_list list;
