@@ -118,6 +118,15 @@ int meta3(int xd, char lmao, double ups, short huehue) {
 int f2(char, char);
 int f6(char, int);
 
+void __(int, double, double, char, char, double, int e);
+void __(int e, double z, double a, char b, char c, double d, int t){
+    int a;
+    double e;
+    short b;
+    int y;
+    int h = f2('a', 'c');
+    return 2;
+}
 int f3 (char x);
 
 int f3 (char x) {
