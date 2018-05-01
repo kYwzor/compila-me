@@ -231,17 +231,25 @@ int handle_node(Node node)
 
     case RealLit:
     {
-      node->type = RealLit;
+      //TODO: double check this
+      node->type = Double;
       full_expand(node);
     }
     case IntLit:
     {
-      node->type = IntLit;
+      node->type = Int;
       full_expand(node);
     }
     case ChrLit:
     {
-      node->type = ChrLit;
+      node->type = Int;
+      full_expand(node);
+    }
+
+    case Add:
+    {
+      //TODO: E possivel que isto de problemas com expressions encadeadas em que temos de testar types em vez de labels
+      node->type = resolve_label(node->child->label, node->child->brother->label);
       full_expand(node);
     }
 
