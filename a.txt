@@ -8,6 +8,18 @@ expressions	int(void)
 statements	int(void)
 oi	int(int,int)
 huehue	int(int)
+meta3	int(int,char,double,short)
+f2	int(char,char)
+f3	int(char)
+f	int(char,void)
+b	int(char,void)
+k	int
+v	int
+a	int
+teste	int(void)
+rekt	void(void)
+help	int(int,int)
+asd	int(void)
 
 ===== Function x Symbol Table =====
 return	int
@@ -25,13 +37,22 @@ b	int
 c	int
 d	int
 e	int
+m	int
 
 ===== Function expressions Symbol Table =====
 return	int
-variable	char
+i	int
+a	int
+b	int
+c	int
+d	int
+variable	int
+x	double
+y	char
 
 ===== Function statements Symbol Table =====
 return	int
+x	int
 
 ===== Function oi Symbol Table =====
 return	int
@@ -49,6 +70,56 @@ return	int
 x	int	param
 a	char
 r	char
+
+===== Function meta3 Symbol Table =====
+return	int
+xd	int	param
+lmao	char	param
+ups	double	param
+huehue	short	param
+v	double
+
+===== Function f3 Symbol Table =====
+return	int
+x	char	param
+
+===== Function f Symbol Table =====
+return	int
+x	char	param
+b	void
+n	int
+c	int
+
+===== Function b Symbol Table =====
+return	int
+x	int
+b	int
+
+===== Function teste Symbol Table =====
+return	int
+b	int
+
+===== Function ê¥: Symbol Table =====
+return	void
+
+===== Function rekt Symbol Table =====
+return	void
+
+===== Function help Symbol Table =====
+return	int
+x	int	param
+y	int	param
+upsu	void
+h	char
+wgdsg	int
+gsfrgs	char
+teste	void
+
+===== Function ÷: Symbol Table =====
+return	int
+
+===== Function asd Symbol Table =====
+return	int
 
 Program
 ..FuncDefinition
@@ -69,15 +140,16 @@ Program
 ......Declaration
 ........Int
 ........Id(c)
-......Store
-........Id(d)
-........IntLit(2)
-......Store
-........Id(a)
-........ChrLit('a')
+......Comma
+........Store
+..........Id(d)
+..........IntLit(2)
+........Store
+..........Id(a)
+..........ChrLit('a')
 ......Declaration
 ........Int
-........Id(–'ﬁ)
+........Id()
 ........Ne
 ..........Id(b2)
 ..........Id(x)
@@ -112,15 +184,15 @@ Program
 ....FuncBody
 ......Declaration
 ........Int
-........Id(0ﬁ)
+........Id( :)
 ........IntLit(1)
 ......Declaration
 ........Int
-........Id(†0ﬁ)
+........Id(–:)
 ........IntLit(2)
 ......Declaration
 ........Int
-........Id(P0ﬁ)
+........Id(Ä:)
 ......Declaration
 ........Int
 ........Id(a)
@@ -162,9 +234,58 @@ Program
 ........Void
 ....FuncBody
 ......Declaration
-........Char
+........Int
+........Id(i)
+........IntLit(2)
+......Declaration
+........Int
+........Id(a)
+........IntLit(3)
+......Declaration
+........Int
+........Id(b)
+........IntLit(4)
+......Declaration
+........Int
+........Id(c)
+......Declaration
+........Int
+........Id(d)
+......Declaration
+........Int
 ........Id(variable)
 ........IntLit(1)
+......Declaration
+........Double
+........Id(x)
+......Store
+........Id(variable)
+........Plus
+..........Id(variable)
+......Declaration
+........Char
+........Id(@!:)
+......Declaration
+........Char
+........Id(y)
+......Declaration
+........Int
+........Id())
+......Declaration
+........Int
+........Id(êO:)
+......BitWiseXor
+........Id(x)
+........Id(y)
+......Comma
+........Store
+..........Id(variable)
+..........IntLit(2)
+........Store
+..........BitWiseAnd
+............IntLit(3)
+............Id(a)
+..........IntLit(2)
 ......Store
 ........Id(variable)
 ........Add
@@ -235,7 +356,7 @@ Program
 ........IntLit(2)
 ......Store
 ........Id(i)
-........Store
+........Add
 ..........BitWiseXor
 ............Not
 ..............Id(i)
@@ -248,8 +369,79 @@ Program
 ..............Id(c)
 ..............Id(d)
 ......Store
+........Id(i)
+........And
+..........Add
+............BitWiseXor
+..............Id(a)
+..............IntLit(1)
+............Not
+..............Or
+................Mul
+..................Id(a)
+..................Id(b)
+................Mod
+..................Id(a)
+..................Id(c)
+..........Id(a)
+......Store
 ........Id(a)
 ........Id(b)
+......Comma
+........Comma
+..........Comma
+............Comma
+..............Store
+................Id(a)
+................Add
+..................Id(b)
+..................IntLit(1)
+..............Eq
+................Id(c)
+................Mod
+..................Div
+....................Id(d)
+....................Plus
+......................Minus
+........................Not
+..........................Id(x)
+..................IntLit(4)
+............Or
+..............Id(x)
+..............Id(a)
+..........BitWiseAnd
+............Id(y)
+............Id(b)
+........BitWiseXor
+..........Id(z)
+..........Id(d)
+......Call
+........Id(putchar)
+........Id(x)
+........Id(variable)
+......Call
+........Id(a)
+........IntLit(1)
+........IntLit(2)
+........Call
+..........Id(getchar)
+........Call
+..........Id(a)
+..........IntLit(1)
+..........IntLit(2)
+......Comma
+........Comma
+..........Comma
+............Comma
+..............Comma
+................IntLit(1)
+................IntLit(2)
+..............Id(a)
+............Id(b)
+..........Id(x)
+........Id(y)
+......Call
+........Id(putchar)
 ..FuncDefinition
 ....Int
 ....Id(statements)
@@ -257,25 +449,31 @@ Program
 ......ParamDeclaration
 ........Void
 ....FuncBody
-......While
+......Declaration
+........Int
+........Id(x)
 ........IntLit(1)
+......While
+........Comma
+..........IntLit(1)
+..........IntLit(2)
 ........If
 ..........Id(x)
 ..........If
 ............Id(x)
 ............StatList
 ..............Call
-................Id(printf)
+................Id(putchar)
 ................Id(x)
 ..............Return
 ................IntLit(1)
 ............If
 ..............IntLit(1)
 ..............Call
-................Id(printf)
+................Id(putchar)
 ................Id(x)
 ..............Call
-................Id(printf)
+................Id(putchar)
 ................Id(x)
 ..........While
 ............IntLit(1)
@@ -296,7 +494,7 @@ Program
 ........Not
 ..........Id(x)
 ........Call
-..........Id(printf)
+..........Id(putchar)
 ..........ChrLit('o')
 ........If
 ..........Comma
@@ -358,7 +556,7 @@ Program
 ......Declaration
 ........Char
 ........Id(a)
-........Id(b)
+........Id(x)
 ......Declaration
 ........Char
 ........Id(r)
@@ -382,3 +580,467 @@ Program
 ..........Id(a)
 ........Minus
 ..........Id(b)
+..FuncDefinition
+....Int
+....Id(meta3)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(xd)
+......ParamDeclaration
+........Char
+........Id(lmao)
+......ParamDeclaration
+........Double
+........Id(ups)
+......ParamDeclaration
+........Short
+........Id(huehue)
+....FuncBody
+......Declaration
+........Double
+........Id(v)
+........RealLit(2.4)
+......Eq
+........Id(xd)
+........Id(huehue)
+......Gt
+........Id(xd)
+........Id(huehue)
+......Lt
+........Id(xd)
+........Id(huehue)
+......Ge
+........Id(xd)
+........Id(huehue)
+......Le
+........Id(xd)
+........Id(huehue)
+......BitWiseOr
+........Id(xd)
+........Id(huehue)
+......BitWiseAnd
+........Id(xd)
+........Id(huehue)
+......Ne
+........Id(xd)
+........Id(huehue)
+......And
+........Id(xd)
+........Id(huehue)
+......Or
+........Id(xd)
+........Id(huehue)
+......BitWiseXor
+........Id(xd)
+........Id(huehue)
+......Store
+........Id(xd)
+........Mod
+..........Id(xd)
+..........Id(huehue)
+......Store
+........Id(xd)
+........Mul
+..........Id(xd)
+..........Id(huehue)
+......Store
+........Id(xd)
+........Div
+..........Id(xd)
+..........Id(huehue)
+......Not
+........Id(xd)
+......Plus
+........Id(xd)
+......Minus
+........Id(xd)
+......Store
+........Plus
+..........Id(xd)
+........Id(huehue)
+..FuncDeclaration
+....Int
+....Id(f2)
+....ParamList
+......ParamDeclaration
+........Char
+......ParamDeclaration
+........Char
+..FuncDeclaration
+....Int
+....Id(f2)
+....ParamList
+......ParamDeclaration
+........Char
+......ParamDeclaration
+........Int
+..FuncDeclaration
+....Int
+....Id(f3)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(x)
+..FuncDeclaration
+....Int
+....Id(f3)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(x)
+..FuncDefinition
+....Int
+....Id(f3)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(x)
+....FuncBody
+..FuncDefinition
+....Int
+....Id(f3)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(x)
+....FuncBody
+..FuncDeclaration
+....Int
+....Id(f)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(x)
+......ParamDeclaration
+........Void
+..FuncDefinition
+....Int
+....Id(f)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(x)
+......ParamDeclaration
+........Int
+........Id(y)
+....FuncBody
+......Declaration
+........Char
+........Id(†î:)
+........RealLit(2.3)
+..FuncDeclaration
+....Int
+....Id(b)
+....ParamList
+......ParamDeclaration
+........Char
+......ParamDeclaration
+........Void
+..FuncDefinition
+....Int
+....Id(b)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(c)
+......ParamDeclaration
+........Void
+........Id(d)
+....FuncBody
+......Declaration
+........Int
+........Id(x)
+........ChrLit('a')
+..FuncDeclaration
+....Int
+....Id(f)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(a)
+......ParamDeclaration
+........Int
+........Id(b)
+..FuncDefinition
+....Int
+....Id(f)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(a)
+......ParamDeclaration
+........Int
+........Id(b)
+....FuncBody
+......Declaration
+........Void
+........Id(b)
+......Declaration
+........Int
+........Id(n)
+......Declaration
+........Int
+........Id())
+......Declaration
+........Int
+........Id(¿†:)
+......Declaration
+........Int
+........Id(c)
+......Declaration
+........Int
+........Id(§:)
+..FuncDefinition
+....Int
+....Id(f)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(a)
+......ParamDeclaration
+........Int
+........Id(b)
+....FuncBody
+..Declaration
+....Int
+....Id(k)
+..Declaration
+....Char
+....Id(P¶:)
+..Declaration
+....Int
+....Id(v)
+..FuncDefinition
+....Int
+....Id(f)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(y)
+....FuncBody
+......Declaration
+........Char
+........Id()
+........Id(y)
+..FuncDeclaration
+....Int
+....Id(f3)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(x)
+......ParamDeclaration
+........Double
+........Id(x)
+..Declaration
+....Int
+....Id(a)
+..Declaration
+....Void
+....Id(`≠:)
+..FuncDefinition
+....Int
+....Id(teste)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Declaration
+........Int
+........Id(b)
+........Id(b)
+..Declaration
+....Void
+....Id(Ä∞:)
+..FuncDefinition
+....Void
+....Id(ê¥:)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Return
+........IntLit(5)
+..FuncDefinition
+....Int
+....Id(b)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Return
+........Call
+..........Id(rekt)
+..FuncDefinition
+....Void
+....Id(rekt)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+..Declaration
+....Int
+....Id(ê√:)
+..FuncDefinition
+....Void
+....Id(main)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Declaration
+........Int
+........Id(∞Ω:)
+......Declaration
+........Int
+........Id( π:)
+......Declaration
+........Int
+........Id(m)
+..FuncDefinition
+....Void
+....Id(rekt)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+..Declaration
+....Int
+....Id($)
+..Declaration
+....Char
+....Id($)
+..Declaration
+....Void
+....Id(∞Ω:)
+..FuncDeclaration
+....Int
+....Id(help)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(x)
+......ParamDeclaration
+........Int
+........Id(y)
+..FuncDeclaration
+....Int
+....Id(help)
+....ParamList
+......ParamDeclaration
+........Double
+........Id(x)
+..FuncDefinition
+....Void
+....Id(help)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(x)
+......ParamDeclaration
+........Char
+........Id(y)
+....FuncBody
+......Declaration
+........Void
+........Id(upsu)
+......Declaration
+........Char
+........Id(h)
+..FuncDefinition
+....Int
+....Id(help)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(x)
+......ParamDeclaration
+........Int
+........Id(y)
+....FuncBody
+......Declaration
+........Int
+........Id(wgdsg)
+......Declaration
+........Char
+........Id(gsfrgs)
+......Declaration
+........Void
+........Id(teste)
+..FuncDeclaration
+....Void
+....Id(f)
+....ParamList
+......ParamDeclaration
+........Void
+..FuncDefinition
+....Void
+....Id(f)
+....ParamList
+......ParamDeclaration
+........Void
+........Id(a)
+......ParamDeclaration
+........Void
+....FuncBody
+..Declaration
+....Double
+....Id(@œ:)
+....Id(sadsjadhsi)
+..FuncDefinition
+....Int
+....Id(b)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Declaration
+........Int
+........Id(b)
+..FuncDefinition
+....Void
+....Id(f)
+....ParamList
+......ParamDeclaration
+........Void
+........Id(a)
+......ParamDeclaration
+........Void
+....FuncBody
+......Declaration
+........Void
+........Id(÷:)
+........RealLit(2.3)
+..Declaration
+....Int
+....Id())
+..Declaration
+....Void
+....Id())
+..Declaration
+....Int
+....Id(Ä’:)
+..FuncDefinition
+....Int
+....Id(÷:)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+..FuncDefinition
+....Int
+....Id(asd)
+....ParamList
+......ParamDeclaration
+........Void
+........Id(a)
+....FuncBody
+..FuncDefinition
+....Int
+....Id(asd)
+....ParamList
+......ParamDeclaration
+........Void
+........Id(a)
+....FuncBody
