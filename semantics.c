@@ -84,17 +84,13 @@ int handle_node(Node node)
       aux->child->brother = NULL;
       Node type_spec = (Node)malloc(sizeof(Node_t));
       type_spec->label = Int;
-      Node id = (Node)malloc(sizeof(Node_t));
-      id->value = "a";
       aux->child->child = type_spec;
-      type_spec->brother = id;
-      create_function_entry("putchar", Int, aux);
+      type_spec->brother = NULL;
+      create_function_entry("putchar", Int, aux, 0);
 
       type_spec->label = Void;
-      id->value = NULL;
-      create_function_entry("getchar", Int, aux);
+      create_function_entry("getchar", Int, aux, 0);
 
-      free(id);
       free(type_spec);
       free(aux->child);
       free(aux);
@@ -112,12 +108,48 @@ int handle_node(Node node)
       Node paramList = id->brother;
 
       current_table = find_function_entry(id->value);
-      // TODO: We'll probably need to check if we aren't re-defining
       if (current_table == NULL)
-        current_table = create_function_entry(id->value, type_spec->label, paramList);  
+        current_table = create_function_entry(id->value, type_spec->label, paramList, 1);  
+      else {
+        // Ja foi declarada, temos que verificar parametros
+        Arg_list aux = current_table -> arg_list;
+        Node paramDec = paramList->child;
+        while(paramDec!=NULL){
+          Node type_spec = paramDec->child;
+          Node id = type_spec->brother;
+          if (DEBUG)
+            printf("Got label %s and name %s\n", get_label_string(type_spec->label), id->value);
+          if (aux == NULL){
+            if (DEBUG)
+              printf("error: there's more parameters on definition than on declaration\n");
+            break;
+          }
+          else{
+            if (DEBUG)
+              printf("Existing label is %s\n", get_label_string(aux->label));
+          }
+          if (type_spec->label == aux->label){
+            if(id != NULL)
+              aux->name = id->value;
+          }
+          else{
+            if (DEBUG)
+              printf("error: labels don't match\n");
+          }
+
+          paramDec = paramDec->brother;
+          aux = aux->next;
+        }
+
+        if(aux != NULL){
+          if (DEBUG)
+            printf("error: there's more parameters on declaration than on definition\n");
+        }
+        
+        current_table->is_defined = 1;
+      }
 
       handle_node(paramList->brother); //FuncBody
-      current_table->is_defined = 1;
 
       current_table = global_table;
 
@@ -137,7 +169,7 @@ int handle_node(Node node)
 
       // TODO: We'll need to do something about re-declaring (else)
       if (find_function_entry(id->value) == NULL)
-        create_function_entry(id->value, type_spec->label, paramList); 
+        create_function_entry(id->value, type_spec->label, paramList, 0); 
 
       if (node->brother != NULL)
         handle_node(node->brother);
@@ -373,6 +405,7 @@ char *get_string_for_tables(Label label)
     break;
   case Void:
     s = "void";
+    break;
   case Program:
     s = "void"; //hol up this is weird
     break;
@@ -409,7 +442,7 @@ Table_list find_function_entry(char* name)
   return NULL;
 }
 
-Table_list create_function_entry(char* name, Label label, Node paramList)
+Table_list create_function_entry(char* name, Label label, Node paramList, int is_definition)
 {
   // Assumes it's not already on the table
   Table_list aux = global_table;
@@ -418,7 +451,7 @@ Table_list create_function_entry(char* name, Label label, Node paramList)
 
   Table_list new_node = (Table_list)malloc(sizeof(_table_list));
   new_node->next = NULL;
-  new_node->is_defined = 0; // assumes not defined, easy to change on what is returned
+  new_node->is_defined = is_definition;
   
 
   Sym_list new_list = (Sym_list)malloc(sizeof(_Sym_list));
@@ -453,7 +486,7 @@ Table_list create_function_entry(char* name, Label label, Node paramList)
     Arg_list new_arg = (Arg_list)malloc(sizeof(_arg_list));
     new_arg->label = type_spec->label;
 
-    if (id != NULL)
+    if (id != NULL && is_definition)
       new_arg->name = id->value;
     else
       new_arg->name = NULL;
