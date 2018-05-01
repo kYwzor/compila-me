@@ -98,36 +98,7 @@ int handle_node(Node node)
       free(type_spec);
       free(aux->child);
       free(aux);
-      /*
-      insert_symbol(new_node, "putchar", Int);
-      Sym_list put_char_table = (Sym_list)malloc(sizeof(_Sym_list));
-      put_char_table->label = Int;
-      put_char_table->name = "putchar";
-      put_char_table->next = NULL;
-      current_table = put_char_table;
-      Node type_spec = (Node)malloc(sizeof(Node_t));
-      type_spec->label = Int;
-      Node id = (Node)malloc(sizeof(Node_t));
-      id->value = "a";
-      add_table(put_char_table, 0);
-      add_parameter(type_spec, id);
 
-      insert_symbol(new_node, "getchar", Int);
-      Sym_list get_char_table = (Sym_list)malloc(sizeof(_Sym_list));
-      get_char_table->label = Int;
-      get_char_table->name = "getchar";
-      get_char_table->next = NULL;
-      current_table = get_char_table;
-      type_spec->label = Void;
-      id->value = NULL;
-      add_table(get_char_table, 0);
-      add_parameter(type_spec, id);
-
-      current_table = global_table;
-
-      free(id);
-      free(type_spec);
-      */
       full_expand(node);
       break;
     }
@@ -235,10 +206,6 @@ int handle_node(Node node)
   }
   return 1;
 }
-
-
-
-
 
 char *get_label_string(Label label)
 {
