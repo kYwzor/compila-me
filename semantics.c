@@ -41,7 +41,7 @@ void print_tables()
       Arg_list aux_args = aux->arg_list;
       while (aux_args != NULL)
       {
-        if (aux_args->label != Void)
+        if (aux_args->label != Void && aux_args->name != NULL)
           printf("%s\t%s\tparam\n", aux_args->name, get_string_for_tables(aux_args->label));
         aux_args = aux_args->next;
       }
@@ -456,11 +456,10 @@ Table_list create_function_entry(char* name, Label label, Node paramList)
       new_arg->name = id->value;
     else
       new_arg->name = NULL;
-
+      
     new_arg->next = NULL;
     args->next = new_arg;
     args = new_arg;
-
     paramDec = paramDec->brother;
   }         
 
