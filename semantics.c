@@ -197,6 +197,23 @@ int handle_node(Node node)
       break;
     }
 
+    case RealLit:
+    {
+      node->type = RealLit;
+      full_expand(node);
+    }
+    case IntLit:
+    {
+      node->type = IntLit;
+      full_expand(node);
+    }
+    case ChrLit:
+    {
+      node->type = ChrLit;
+      full_expand(node);
+    }
+
+
     /* All operators, terminals and Null are defaulted for now */
     /* ParamList and ParamDeclaration are also defaulted, but they should never occur*/
     default:
@@ -411,6 +428,7 @@ Table_list find_function_entry(char* name)
 
 Table_list create_function_entry(char* name, Label label, Node paramList)
 {
+
   // Assumes it's not already on the table
   Table_list aux = global_table;
   while (aux->next != NULL)
@@ -471,4 +489,25 @@ Table_list create_function_entry(char* name, Label label, Node paramList)
   insert_symbol(global_table, name, label);
 
   return new_node;
+}
+
+Label resolve_label(Label label1, Label label2){
+  if(label1 == undef || label2 == undef){
+    return undef;
+  }
+  if(label1 == Double || label2 == Double){
+    return Double;
+  }
+  if(label1 == Int || label2 == Int){
+    return Int;
+  }
+  if(label1 == Short || label2 == Short){
+    return Short;
+  }
+  if(label1 == Char || label2 == Char){
+    return Char;
+  }
+  //if(DEBUG)
+   printf("There is a problem with the labels my dude\n");
+  return Char;
 }
