@@ -10,16 +10,29 @@ oi	int(int,int)
 huehue	int(int)
 meta3	int(int,char,double,short)
 f2	int(char,char)
+f6	int(char,int)
 f3	int(char)
-f	int(char,void)
-b	int(char,void)
+f4	int(char)
+f	int(char)
+f1	int(char,int)
+b	int(char)
+f5	int(char,int)
+f7	int(char,int)
 k	int
 v	int
-a	int
+f8	int(char)
+f9	int(int,double)
 teste	int(void)
+main1	void(void)
 rekt	void(void)
 help	int(int,int)
-asd	int(void)
+help1	void(int,char)
+help2	int(int,int)
+f10	void(void)
+c	int
+d	void
+e	int
+g	int(void)
 
 ===== Function x Symbol Table =====
 return	int
@@ -37,7 +50,6 @@ b	int
 c	int
 d	int
 e	int
-m	int
 
 ===== Function expressions Symbol Table =====
 return	int
@@ -82,46 +94,73 @@ v	double
 ===== Function f3 Symbol Table =====
 return	int
 x	char	param
+
+===== Function f4 Symbol Table =====
+return	int
 x	char	param
 
 ===== Function f Symbol Table =====
 return	int
+b	void
+
+===== Function f1 Symbol Table =====
+return	int
 x	char	param
 y	int	param
-a	int	param
-b	int	param
-n	int
-c	int
-a	char	param
-b	int	param
-y	char	param
 
 ===== Function b Symbol Table =====
 return	int
 c	char	param
 x	int
-b	int
+
+===== Function f5 Symbol Table =====
+return	int
+a	int	param
+b	int	param
+n	int
+c	int
+
+===== Function f7 Symbol Table =====
+return	int
+a	char	param
+b	int	param
+
+===== Function f8 Symbol Table =====
+return	int
+y	char	param
+x	char
 
 ===== Function teste Symbol Table =====
 return	int
 b	int
 
+===== Function main1 Symbol Table =====
+return	void
+c	int
+m	int
+
 ===== Function rekt Symbol Table =====
 return	void
 
-===== Function help Symbol Table =====
-return	int
+===== Function help1 Symbol Table =====
+return	void
 x	int	param
 y	char	param
 upsu	void
 h	char
+
+===== Function help2 Symbol Table =====
+return	int
 x	int	param
 y	int	param
 wgdsg	int
 gsfrgs	char
 teste	void
 
-===== Function asd Symbol Table =====
+===== Function f10 Symbol Table =====
+return	void
+
+===== Function g Symbol Table =====
 return	int
 
 Program
@@ -672,7 +711,7 @@ Program
 ........Char
 ..FuncDeclaration
 ....Int
-....Id(f2)
+....Id(f6)
 ....ParamList
 ......ParamDeclaration
 ........Char
@@ -685,13 +724,6 @@ Program
 ......ParamDeclaration
 ........Char
 ........Id(x)
-..FuncDeclaration
-....Int
-....Id(f3)
-....ParamList
-......ParamDeclaration
-........Char
-........Id(x)
 ..FuncDefinition
 ....Int
 ....Id(f3)
@@ -702,7 +734,7 @@ Program
 ....FuncBody
 ..FuncDefinition
 ....Int
-....Id(f3)
+....Id(f4)
 ....ParamList
 ......ParamDeclaration
 ........Char
@@ -715,11 +747,9 @@ Program
 ......ParamDeclaration
 ........Char
 ........Id(x)
-......ParamDeclaration
-........Void
 ..FuncDefinition
 ....Int
-....Id(f)
+....Id(f1)
 ....ParamList
 ......ParamDeclaration
 ........Char
@@ -738,8 +768,6 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Char
-......ParamDeclaration
-........Void
 ..FuncDefinition
 ....Int
 ....Id(b)
@@ -747,9 +775,6 @@ Program
 ......ParamDeclaration
 ........Char
 ........Id(c)
-......ParamDeclaration
-........Void
-........Id(d)
 ....FuncBody
 ......Declaration
 ........Int
@@ -757,7 +782,7 @@ Program
 ........ChrLit('a') - int
 ..FuncDeclaration
 ....Int
-....Id(f)
+....Id(f5)
 ....ParamList
 ......ParamDeclaration
 ........Char
@@ -767,7 +792,7 @@ Program
 ........Id(b)
 ..FuncDefinition
 ....Int
-....Id(f)
+....Id(f5)
 ....ParamList
 ......ParamDeclaration
 ........Int
@@ -796,7 +821,7 @@ Program
 ........Id(b)
 ..FuncDefinition
 ....Int
-....Id(f)
+....Id(f7)
 ....ParamList
 ......ParamDeclaration
 ........Char
@@ -809,14 +834,11 @@ Program
 ....Int
 ....Id(k)
 ..Declaration
-....Char
-....Id(k)
-..Declaration
 ....Int
 ....Id(v)
 ..FuncDefinition
 ....Int
-....Id(f)
+....Id(f8)
 ....ParamList
 ......ParamDeclaration
 ........Char
@@ -825,10 +847,10 @@ Program
 ......Declaration
 ........Char
 ........Id(x)
-........Id(y) - int
+........Id(y) - char
 ..FuncDeclaration
 ....Int
-....Id(f3)
+....Id(f9)
 ....ParamList
 ......ParamDeclaration
 ........Int
@@ -836,12 +858,6 @@ Program
 ......ParamDeclaration
 ........Double
 ........Id(x)
-..Declaration
-....Int
-....Id(a)
-..Declaration
-....Void
-....Id(a)
 ..FuncDefinition
 ....Int
 ....Id(teste)
@@ -852,42 +868,10 @@ Program
 ......Declaration
 ........Int
 ........Id(b)
-........Id(b) - int(char,void)
-..Declaration
-....Void
-....Id(a)
+........Id(b) - int(char)
 ..FuncDefinition
 ....Void
-....Id(k)
-....ParamList
-......ParamDeclaration
-........Void
-....FuncBody
-......Return
-........IntLit(5)
-..FuncDefinition
-....Int
-....Id(b)
-....ParamList
-......ParamDeclaration
-........Void
-....FuncBody
-......Return
-........Call - undef
-..........Id(rekt) - undef
-..FuncDefinition
-....Void
-....Id(rekt)
-....ParamList
-......ParamDeclaration
-........Void
-....FuncBody
-..Declaration
-....Int
-....Id(a)
-..FuncDefinition
-....Void
-....Id(main)
+....Id(main1)
 ....ParamList
 ......ParamDeclaration
 ........Void
@@ -909,12 +893,6 @@ Program
 ........Void
 ....FuncBody
 ..Declaration
-....Int
-....Id(teste)
-..Declaration
-....Char
-....Id(teste)
-..Declaration
 ....Void
 ....Id(teste)
 ..FuncDeclaration
@@ -927,16 +905,9 @@ Program
 ......ParamDeclaration
 ........Int
 ........Id(y)
-..FuncDeclaration
-....Int
-....Id(help)
-....ParamList
-......ParamDeclaration
-........Double
-........Id(x)
 ..FuncDefinition
 ....Void
-....Id(help)
+....Id(help1)
 ....ParamList
 ......ParamDeclaration
 ........Int
@@ -953,7 +924,7 @@ Program
 ........Id(h)
 ..FuncDefinition
 ....Int
-....Id(help)
+....Id(help2)
 ....ParamList
 ......ParamDeclaration
 ........Int
@@ -973,13 +944,13 @@ Program
 ........Id(teste)
 ..FuncDeclaration
 ....Void
-....Id(f)
+....Id(f10)
 ....ParamList
 ......ParamDeclaration
 ........Void
 ..FuncDefinition
 ....Void
-....Id(f)
+....Id(f10)
 ....ParamList
 ......ParamDeclaration
 ........Void
@@ -991,16 +962,6 @@ Program
 ....Double
 ....Id(b)
 ....Id(sadsjadhsi) - undef
-..FuncDefinition
-....Int
-....Id(b)
-....ParamList
-......ParamDeclaration
-........Void
-....FuncBody
-......Declaration
-........Int
-........Id(b)
 ..FuncDefinition
 ....Void
 ....Id(f)
@@ -1017,33 +978,17 @@ Program
 ........RealLit(2.3) - double
 ..Declaration
 ....Int
-....Id(a)
+....Id(c)
 ..Declaration
 ....Void
-....Id(a)
+....Id(d)
 ..Declaration
 ....Int
-....Id(a)
+....Id(e)
 ..FuncDefinition
 ....Int
-....Id(a)
+....Id(g)
 ....ParamList
 ......ParamDeclaration
 ........Void
-....FuncBody
-..FuncDefinition
-....Int
-....Id(asd)
-....ParamList
-......ParamDeclaration
-........Void
-........Id(a)
-....FuncBody
-..FuncDefinition
-....Int
-....Id(asd)
-....ParamList
-......ParamDeclaration
-........Void
-........Id(a)
 ....FuncBody

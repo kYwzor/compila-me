@@ -99,7 +99,7 @@ b	int
 return	int
 b	int
 
-===== Function ê¥: Symbol Table =====
+===== Function êÙ\ Symbol Table =====
 return	void
 
 ===== Function rekt Symbol Table =====
@@ -115,7 +115,7 @@ wgdsg	int
 gsfrgs	char
 teste	void
 
-===== Function ÷: Symbol Table =====
+===== Function ] Symbol Table =====
 return	int
 
 ===== Function asd Symbol Table =====
@@ -184,15 +184,15 @@ Program
 ....FuncBody
 ......Declaration
 ........Int
-........Id( :)
+........Id( Q\)
 ........IntLit(1)
 ......Declaration
 ........Int
-........Id(–:)
+........Id(–P\)
 ........IntLit(2)
 ......Declaration
 ........Int
-........Id(Ä:)
+........Id(ÄP\)
 ......Declaration
 ........Int
 ........Id(a)
@@ -264,7 +264,7 @@ Program
 ..........Id(variable)
 ......Declaration
 ........Char
-........Id(@!:)
+........Id(@a\)
 ......Declaration
 ........Char
 ........Id(y)
@@ -273,7 +273,7 @@ Program
 ........Id())
 ......Declaration
 ........Int
-........Id(êO:)
+........Id(êè\)
 ......BitWiseXor
 ........Id(x)
 ........Id(y)
@@ -727,7 +727,7 @@ Program
 ....FuncBody
 ......Declaration
 ........Char
-........Id(†î:)
+........Id(†‘\)
 ........RealLit(2.3)
 ..FuncDeclaration
 ....Int
@@ -784,13 +784,13 @@ Program
 ........Id())
 ......Declaration
 ........Int
-........Id(¿†:)
+........Id(¿‡\)
 ......Declaration
 ........Int
 ........Id(c)
 ......Declaration
 ........Int
-........Id(§:)
+........Id(‰\)
 ..FuncDefinition
 ....Int
 ....Id(f)
@@ -807,7 +807,7 @@ Program
 ....Id(k)
 ..Declaration
 ....Char
-....Id(P¶:)
+....Id(PÊ\)
 ..Declaration
 ....Int
 ....Id(v)
@@ -838,7 +838,7 @@ Program
 ....Id(a)
 ..Declaration
 ....Void
-....Id(`≠:)
+....Id(`Ì\)
 ..FuncDefinition
 ....Int
 ....Id(teste)
@@ -852,10 +852,10 @@ Program
 ........Id(b)
 ..Declaration
 ....Void
-....Id(Ä∞:)
+....Id(Ä\)
 ..FuncDefinition
 ....Void
-....Id(ê¥:)
+....Id(êÙ\)
 ....ParamList
 ......ParamDeclaration
 ........Void
@@ -881,7 +881,7 @@ Program
 ....FuncBody
 ..Declaration
 ....Int
-....Id(ê√:)
+....Id(ê])
 ..FuncDefinition
 ....Void
 ....Id(main)
@@ -891,10 +891,10 @@ Program
 ....FuncBody
 ......Declaration
 ........Int
-........Id(∞Ω:)
+........Id(∞˝\)
 ......Declaration
 ........Int
-........Id( π:)
+........Id( ˘\)
 ......Declaration
 ........Int
 ........Id(m)
@@ -913,7 +913,7 @@ Program
 ....Id($)
 ..Declaration
 ....Void
-....Id(∞Ω:)
+....Id(∞˝\)
 ..FuncDeclaration
 ....Int
 ....Id(help)
@@ -986,7 +986,7 @@ Program
 ....FuncBody
 ..Declaration
 ....Double
-....Id(@œ:)
+....Id(@])
 ....Id(sadsjadhsi)
 ..FuncDefinition
 ....Int
@@ -1010,7 +1010,7 @@ Program
 ....FuncBody
 ......Declaration
 ........Void
-........Id(÷:)
+........Id(])
 ........RealLit(2.3)
 ..Declaration
 ....Int
@@ -1020,10 +1020,10 @@ Program
 ....Id())
 ..Declaration
 ....Int
-....Id(Ä’:)
+....Id(Ä])
 ..FuncDefinition
 ....Int
-....Id(÷:)
+....Id(])
 ....ParamList
 ......ParamDeclaration
 ........Void
