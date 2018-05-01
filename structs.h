@@ -20,25 +20,25 @@ typedef struct node_s
 
 typedef struct _t1* Sym_list;
 typedef struct _t1{
-  //TODO Mudar este nome para id
 	char* name;
 	Label label; 
   Sym_list next;
 }_Sym_list;
 
 
-typedef struct _tl* Table_list;
 typedef struct _al* Arg_list;
+typedef struct _al{
+  char* name;
+  Label label;
+  Arg_list next;
+}_arg_list; 
+
+typedef struct _tl* Table_list;
 typedef struct _tl{
   Sym_list table_node;
-  Table_list next;
   Arg_list arg_list;
   int is_defined;
+  Table_list next;
 }_table_list;
 
-typedef struct _al{
-  Label label;
-  char* name; 
-  struct _al* next;
-}_arg_list; 
 
