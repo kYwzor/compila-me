@@ -1,8 +1,9 @@
+1
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
-x	int(void,char)
-lmao	double(char,int,void,double,int)
+x	int(char)
+lmao	double(char,int,double,int)
 main	int(char,int,int)
 expressions	int(void)
 statements	int(void)
@@ -16,7 +17,7 @@ f4	int(char)
 f	int(char)
 f1	int(char,int)
 b	int(char)
-f5	int(char,int)
+f5	int(int,int)
 f7	int(char,int)
 k	int
 v	int
@@ -29,16 +30,18 @@ help	int(int,int)
 help1	void(int,char)
 help2	int(int,int)
 f10	void(void)
+f12	void(short)
 c	int
-d	void
 e	int
 g	int(void)
 
 ===== Function x Symbol Table =====
 return	int
-a	int
+e	char	param
+a	char
 b	int
 c	int
+d	int
 
 ===== Function main Symbol Table =====
 return	int
@@ -60,7 +63,6 @@ c	int
 d	int
 variable	int
 x	double
-y	char
 
 ===== Function statements Symbol Table =====
 return	int
@@ -80,8 +82,6 @@ f	double
 ===== Function huehue Symbol Table =====
 return	int
 x	int	param
-a	char
-r	char
 
 ===== Function meta3 Symbol Table =====
 return	int
@@ -99,10 +99,6 @@ x	char	param
 return	int
 x	char	param
 
-===== Function f Symbol Table =====
-return	int
-b	void
-
 ===== Function f1 Symbol Table =====
 return	int
 x	char	param
@@ -117,6 +113,7 @@ x	int
 return	int
 a	int	param
 b	int	param
+f	double
 n	int
 c	int
 
@@ -146,7 +143,6 @@ return	void
 return	void
 x	int	param
 y	char	param
-upsu	void
 h	char
 
 ===== Function help2 Symbol Table =====
@@ -155,10 +151,14 @@ x	int	param
 y	int	param
 wgdsg	int
 gsfrgs	char
-teste	void
 
 ===== Function f10 Symbol Table =====
 return	void
+
+===== Function f12 Symbol Table =====
+return	void
+a	short	param
+b	double
 
 ===== Function g Symbol Table =====
 return	int
@@ -169,12 +169,11 @@ Program
 ....Id(x)
 ....ParamList
 ......ParamDeclaration
-........Void
-......ParamDeclaration
 ........Char
+........Id(e)
 ....FuncBody
 ......Declaration
-........Int
+........Char
 ........Id(a)
 ......Declaration
 ........Int
@@ -182,19 +181,13 @@ Program
 ......Declaration
 ........Int
 ........Id(c)
-......Comma - int
-........Store - undef
-..........Id(d) - undef
-..........IntLit(2) - int
-........Store - int
-..........Id(a) - int
-..........ChrLit('a') - int
 ......Declaration
 ........Int
-........Id(a)
-........Ne - int
-..........Id(b2) - undef
-..........Id(x) - int(void,char)
+........Id(d)
+........IntLit(2) - int
+......Store - char
+........Id(a) - char
+........ChrLit('a') - int
 ..FuncDeclaration
 ....Double
 ....Id(lmao)
@@ -204,8 +197,6 @@ Program
 ........Id(in)
 ......ParamDeclaration
 ........Int
-......ParamDeclaration
-........Void
 ......ParamDeclaration
 ........Double
 ......ParamDeclaration
@@ -224,17 +215,6 @@ Program
 ........Int
 ........Id(z)
 ....FuncBody
-......Declaration
-........Int
-........Id(x)
-........IntLit(1) - int
-......Declaration
-........Int
-........Id(y)
-........IntLit(2) - int
-......Declaration
-........Int
-........Id(z)
 ......Declaration
 ........Int
 ........Id(a)
@@ -262,10 +242,7 @@ Program
 ..........Ne - int
 ............Id(z) - int
 ............Id(x) - char
-........While
-..........IntLit(1) - int
-..........Return
-............IntLit(1) - int
+........Null
 ........Return
 ..........IntLit(0) - int
 ..FuncDefinition
@@ -304,30 +281,6 @@ Program
 ........Id(variable) - int
 ........Plus - int
 ..........Id(variable) - int
-......Declaration
-........Char
-........Id(x)
-......Declaration
-........Char
-........Id(y)
-......Declaration
-........Int
-........Id(a)
-......Declaration
-........Int
-........Id(b)
-......BitWiseXor - double
-........Id(x) - double
-........Id(y) - char
-......Comma - int
-........Store - int
-..........Id(variable) - int
-..........IntLit(2) - int
-........Store - int
-..........BitWiseAnd - int
-............IntLit(3) - int
-............Id(a) - int
-..........IntLit(2) - int
 ......Store - int
 ........Id(variable) - int
 ........Add - int
@@ -393,8 +346,7 @@ Program
 ......Minus - int
 ........Id(variable) - int
 ......Store - int
-........Plus - int
-..........Id(variable) - int
+........Id(variable) - int
 ........IntLit(2) - int
 ......Store - int
 ........Id(i) - int
@@ -429,61 +381,9 @@ Program
 ......Store - int
 ........Id(a) - int
 ........Id(b) - int
-......Comma - int
-........Comma - int
-..........Comma - int
-............Comma - int
-..............Store - int
-................Id(a) - int
-................Add - int
-..................Id(b) - int
-..................IntLit(1) - int
-..............Eq - int
-................Id(c) - int
-................Mod - int
-..................Div - int
-....................Id(d) - int
-....................Plus - int
-......................Minus - int
-........................Not - int
-..........................Id(x) - double
-..................IntLit(4) - int
-............Or - int
-..............Id(x) - double
-..............Id(a) - int
-..........BitWiseAnd - int
-............Id(y) - char
-............Id(b) - int
-........BitWiseXor - int
-..........Id(z) - undef
-..........Id(d) - int
 ......Call - int
 ........Id(putchar) - int(int)
 ........Id(x) - double
-........Id(variable) - int
-......Call - int
-........Id(a) - int
-........IntLit(1) - int
-........IntLit(2) - int
-........Call - int
-..........Id(getchar) - int(void)
-........Call - int
-..........Id(a) - int
-..........IntLit(1) - int
-..........IntLit(2) - int
-......Comma - char
-........Comma - double
-..........Comma - int
-............Comma - int
-..............Comma - int
-................IntLit(1) - int
-................IntLit(2) - int
-..............Id(a) - int
-............Id(b) - int
-..........Id(x) - double
-........Id(y) - char
-......Call - int
-........Id(putchar) - int(int)
 ..FuncDefinition
 ....Int
 ....Id(statements)
@@ -538,16 +438,6 @@ Program
 ........Call - int
 ..........Id(putchar) - int(int)
 ..........ChrLit('o') - int
-........If
-..........Comma - undef
-............Id(oi) - undef
-............Id(wk) - undef
-..........Call - undef
-............Id(gets) - undef
-..........Null
-......If
-........Id(a) - undef
-........Id(i) - undef
 ........Null
 ..FuncDefinition
 ....Int
@@ -595,33 +485,8 @@ Program
 ........Int
 ........Id(x)
 ....FuncBody
-......Declaration
-........Char
-........Id(a)
-........Id(x) - int
-......Declaration
-........Char
-........Id(r)
-........Sub - char
-..........Id(a) - char
-..........Id(b) - undef
-......Call - int
-........Id(putchar) - int(int)
-........Store - int
-..........Id(x) - int
-..........Id(a) - char
-........Add - char
-..........Id(a) - char
-..........Id(v) - undef
-........Sub - undef
-..........Id(c) - undef
-..........Id(d) - undef
-........Not - int
-..........Id(b) - undef
-........Plus - char
-..........Id(a) - char
-........Minus - undef
-..........Id(b) - undef
+......Return
+........IntLit(3) - int
 ..FuncDefinition
 ....Int
 ....Id(meta3)
@@ -697,10 +562,6 @@ Program
 ........Id(xd) - int
 ......Minus - int
 ........Id(xd) - int
-......Store - int
-........Plus - int
-..........Id(xd) - int
-........Id(huehue) - short
 ..FuncDeclaration
 ....Int
 ....Id(f2)
@@ -785,7 +646,7 @@ Program
 ....Id(f5)
 ....ParamList
 ......ParamDeclaration
-........Char
+........Int
 ........Id(a)
 ......ParamDeclaration
 ........Int
@@ -802,8 +663,8 @@ Program
 ........Id(b)
 ....FuncBody
 ......Declaration
-........Void
-........Id(b)
+........Double
+........Id(f)
 ......Declaration
 ........Int
 ........Id(n)
@@ -857,7 +718,7 @@ Program
 ........Id(x)
 ......ParamDeclaration
 ........Double
-........Id(x)
+........Id(y)
 ..FuncDefinition
 ....Int
 ....Id(teste)
@@ -892,9 +753,6 @@ Program
 ......ParamDeclaration
 ........Void
 ....FuncBody
-..Declaration
-....Void
-....Id(teste)
 ..FuncDeclaration
 ....Int
 ....Id(help)
@@ -917,9 +775,6 @@ Program
 ........Id(y)
 ....FuncBody
 ......Declaration
-........Void
-........Id(upsu)
-......Declaration
 ........Char
 ........Id(h)
 ..FuncDefinition
@@ -939,9 +794,6 @@ Program
 ......Declaration
 ........Char
 ........Id(gsfrgs)
-......Declaration
-........Void
-........Id(teste)
 ..FuncDeclaration
 ....Void
 ....Id(f10)
@@ -954,34 +806,22 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Void
-........Id(a)
-......ParamDeclaration
-........Void
 ....FuncBody
-..Declaration
-....Double
-....Id(b)
-....Id(sadsjadhsi) - undef
 ..FuncDefinition
 ....Void
-....Id(f)
+....Id(f12)
 ....ParamList
 ......ParamDeclaration
-........Void
+........Short
 ........Id(a)
-......ParamDeclaration
-........Void
 ....FuncBody
 ......Declaration
-........Void
+........Double
 ........Id(b)
 ........RealLit(2.3) - double
 ..Declaration
 ....Int
 ....Id(c)
-..Declaration
-....Void
-....Id(d)
 ..Declaration
 ....Int
 ....Id(e)

@@ -1,17 +1,15 @@
-int x(void, char) {
-    int a, b, c; d = 2, a = 'a';
-    int a = b2 != x;
+int x(char e) {
+    char a;
+    int b, c; 
+    int d = 2;
+    a = 'a';
 }
 
-double lmao(char in,int,void,double, int);
+double lmao(char in,int,double, int);
 
 int main(char x, int y, int z) {
-    int x = 1, y = 2, z;
     int a,b,c,d,e;
     if (x > y && z > y || z != x) {
-        while (1){
-            return 1;
-        }
     }
     else {
         return 0;
@@ -23,10 +21,6 @@ int expressions(void) {
     int variable = 1;
     double x;
     variable = +variable;
-    char x,y;
-    int a,b;
-    x ^ y;
-    variable = 2,3 & a = 2;
     variable = variable + 2;
     variable = variable - 2;
     (variable) == 2;
@@ -46,16 +40,12 @@ int expressions(void) {
     !variable;
     +variable;
     -variable;
-    +variable = 2;
+    variable = 2;
     i = (!i ^ 1)  + (a + b | c % d);
     i = (a ^ 1) + !(a * b || a % c) && (a);
     (a  = b);
-    (a = b + 1, c == d/+-!x%4, x || a,y & b, z ^ d);
 
-    putchar(x,variable);
-    a(1,2,getchar(),a(1,2));
-    (1,2,a,b,x,y);
-    putchar();
+    putchar(x);
 }
 
 int statements(void) {
@@ -88,13 +78,6 @@ int statements(void) {
     if (!x) {
         putchar('o');
     }
-    else if (oi,wk){
-        gets();
-    }
-
-    if (a) {
-        i;
-    }
 }
 
 
@@ -107,8 +90,7 @@ int oi(int tudo,int bem){
 }
 
 int huehue(int x){
-   char a = x, r = a -b; 
-   putchar(x=a,a+v,c-d,!b,+a,-b);
+    return 3;
 }
 
 int meta3(int xd, char lmao, double ups, short huehue) {
@@ -131,7 +113,6 @@ int meta3(int xd, char lmao, double ups, short huehue) {
     !xd;
     +xd;
     -xd;
-    +xd = huehue;
 }
 
 int f2(char, char);
@@ -159,10 +140,10 @@ int b(char c) {
   int x = 'a';
 }
 
-int f5(char a, int b);
+int f5(int a, int b);
 
 int f5(int a, int b) {
-  void b;
+  double f;
   int n;
   int n;
 
@@ -182,7 +163,7 @@ int f8(char y) {
   char x = y;
 }
 
-int f9(int x, double x);
+int f9(int x, double y);
 
 
 int teste(void) {
@@ -200,19 +181,16 @@ void rekt(void) {
 
 }
 
-void teste;
 
 int help(int x, int y);
 
 void help1(int x, char y){
-    void upsu;
     char h;
 }
 
 int help2(int x, int y){
     int wgdsg;
     char gsfrgs;
-    void teste;
 
 }
 
@@ -222,16 +200,12 @@ void f10(void) {
 
 }
 
-void f(void a, void) {
-  void b = 2.3;
+void f12(short a) {
+  double b = 2.3;
 }
 
 int c;
-void d;
 int e;
 
 int g (void) {
 }
-
-/* void b; */
-/* int b = asd(b); */

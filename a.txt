@@ -1,8 +1,980 @@
+	Handling (null) Program
+Program is Program
+Adding a new symbol table: putchar
+Adding putchar to Global table
+Adding a new symbol table: getchar
+Adding getchar to Global table
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: x
+Adding x to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding a to x table
+	Handling (null) Char
+Defaulted Char
+	Handling a Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding b to x table
+	Handling (null) Int
+Defaulted Int
+	Handling b Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding c to x table
+	Handling (null) Int
+Defaulted Int
+	Handling c Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding d to x table
+	Handling (null) Int
+Defaulted Int
+	Handling d Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Store
+Defaulted Store
+	Handling a Id
+Defaulted Id
+	Handling 'a' ChrLit
+Defaulted ChrLit
+	Handling (null) FuncDeclaration
+FuncDeclaration is FuncDeclaration
+Adding a new symbol table: lmao
+Adding lmao to Global table
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: main
+Adding main to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding a to main table
+	Handling (null) Int
+Defaulted Int
+	Handling a Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding b to main table
+	Handling (null) Int
+Defaulted Int
+	Handling b Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding c to main table
+	Handling (null) Int
+Defaulted Int
+	Handling c Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding d to main table
+	Handling (null) Int
+Defaulted Int
+	Handling d Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding e to main table
+	Handling (null) Int
+Defaulted Int
+	Handling e Id
+Defaulted Id
+	Handling (null) If
+If is If
+	Handling (null) Or
+Defaulted Or
+	Handling (null) And
+Defaulted And
+	Handling (null) Gt
+Defaulted Gt
+	Handling x Id
+Defaulted Id
+	Handling y Id
+Defaulted Id
+	Handling (null) Gt
+Defaulted Gt
+	Handling z Id
+Defaulted Id
+	Handling y Id
+Defaulted Id
+	Handling (null) Ne
+Defaulted Ne
+	Handling z Id
+Defaulted Id
+	Handling x Id
+Defaulted Id
+	Handling (null) Null
+Defaulted Null
+	Handling (null) Return
+Return is Return
+	Handling 0 IntLit
+Defaulted IntLit
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: expressions
+Adding expressions to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding i to expressions table
+	Handling (null) Int
+Defaulted Int
+	Handling i Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Declaration
+Declaration is Declaration
+Adding a to expressions table
+	Handling (null) Int
+Defaulted Int
+	Handling a Id
+Defaulted Id
+	Handling 3 IntLit
+Defaulted IntLit
+	Handling (null) Declaration
+Declaration is Declaration
+Adding b to expressions table
+	Handling (null) Int
+Defaulted Int
+	Handling b Id
+Defaulted Id
+	Handling 4 IntLit
+Defaulted IntLit
+	Handling (null) Declaration
+Declaration is Declaration
+Adding c to expressions table
+	Handling (null) Int
+Defaulted Int
+	Handling c Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding d to expressions table
+	Handling (null) Int
+Defaulted Int
+	Handling d Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding variable to expressions table
+	Handling (null) Int
+Defaulted Int
+	Handling variable Id
+Defaulted Id
+	Handling 1 IntLit
+Defaulted IntLit
+	Handling (null) Declaration
+Declaration is Declaration
+Adding x to expressions table
+	Handling (null) Double
+Defaulted Double
+	Handling x Id
+Defaulted Id
+	Handling (null) Store
+Defaulted Store
+	Handling variable Id
+Defaulted Id
+	Handling (null) Plus
+Defaulted Plus
+	Handling variable Id
+Defaulted Id
+	Handling (null) Store
+Defaulted Store
+	Handling variable Id
+Defaulted Id
+	Handling (null) Add
+Defaulted Add
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Store
+Defaulted Store
+	Handling variable Id
+Defaulted Id
+	Handling (null) Sub
+Defaulted Sub
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Eq
+Defaulted Eq
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Gt
+Defaulted Gt
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Lt
+Defaulted Lt
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Ge
+Defaulted Ge
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Le
+Defaulted Le
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) BitWiseOr
+Defaulted BitWiseOr
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) BitWiseAnd
+Defaulted BitWiseAnd
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Ne
+Defaulted Ne
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) And
+Defaulted And
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Or
+Defaulted Or
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) BitWiseXor
+Defaulted BitWiseXor
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Store
+Defaulted Store
+	Handling variable Id
+Defaulted Id
+	Handling (null) Mod
+Defaulted Mod
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Store
+Defaulted Store
+	Handling variable Id
+Defaulted Id
+	Handling (null) Mul
+Defaulted Mul
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Store
+Defaulted Store
+	Handling variable Id
+Defaulted Id
+	Handling (null) Div
+Defaulted Div
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Not
+Defaulted Not
+	Handling variable Id
+Defaulted Id
+	Handling (null) Plus
+Defaulted Plus
+	Handling variable Id
+Defaulted Id
+	Handling (null) Minus
+Defaulted Minus
+	Handling variable Id
+Defaulted Id
+	Handling (null) Store
+Defaulted Store
+	Handling variable Id
+Defaulted Id
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) Store
+Defaulted Store
+	Handling i Id
+Defaulted Id
+	Handling (null) Add
+Defaulted Add
+	Handling (null) BitWiseXor
+Defaulted BitWiseXor
+	Handling (null) Not
+Defaulted Not
+	Handling i Id
+Defaulted Id
+	Handling 1 IntLit
+Defaulted IntLit
+	Handling (null) BitWiseOr
+Defaulted BitWiseOr
+	Handling (null) Add
+Defaulted Add
+	Handling a Id
+Defaulted Id
+	Handling b Id
+Defaulted Id
+	Handling (null) Mod
+Defaulted Mod
+	Handling c Id
+Defaulted Id
+	Handling d Id
+Defaulted Id
+	Handling (null) Store
+Defaulted Store
+	Handling i Id
+Defaulted Id
+	Handling (null) And
+Defaulted And
+	Handling (null) Add
+Defaulted Add
+	Handling (null) BitWiseXor
+Defaulted BitWiseXor
+	Handling a Id
+Defaulted Id
+	Handling 1 IntLit
+Defaulted IntLit
+	Handling (null) Not
+Defaulted Not
+	Handling (null) Or
+Defaulted Or
+	Handling (null) Mul
+Defaulted Mul
+	Handling a Id
+Defaulted Id
+	Handling b Id
+Defaulted Id
+	Handling (null) Mod
+Defaulted Mod
+	Handling a Id
+Defaulted Id
+	Handling c Id
+Defaulted Id
+	Handling a Id
+Defaulted Id
+	Handling (null) Store
+Defaulted Store
+	Handling a Id
+Defaulted Id
+	Handling b Id
+Defaulted Id
+	Handling (null) Call
+Defaulted Call
+	Handling putchar Id
+Defaulted Id
+	Handling x Id
+Defaulted Id
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: statements
+Adding statements to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding x to statements table
+	Handling (null) Int
+Defaulted Int
+	Handling x Id
+Defaulted Id
+	Handling 1 IntLit
+Defaulted IntLit
+	Handling (null) While
+While is While
+	Handling (null) Comma
+Defaulted Comma
+	Handling 1 IntLit
+Defaulted IntLit
+	Handling 2 IntLit
+Defaulted IntLit
+	Handling (null) If
+If is If
+	Handling x Id
+Defaulted Id
+	Handling (null) If
+If is If
+	Handling x Id
+Defaulted Id
+	Handling (null) StatList
+StatList is StatList
+	Handling (null) Call
+Defaulted Call
+	Handling putchar Id
+Defaulted Id
+	Handling x Id
+Defaulted Id
+	Handling (null) Return
+Return is Return
+	Handling 1 IntLit
+Defaulted IntLit
+	Handling (null) If
+If is If
+	Handling 1 IntLit
+Defaulted IntLit
+	Handling (null) Call
+Defaulted Call
+	Handling putchar Id
+Defaulted Id
+	Handling x Id
+Defaulted Id
+	Handling (null) Call
+Defaulted Call
+	Handling putchar Id
+Defaulted Id
+	Handling x Id
+Defaulted Id
+	Handling (null) While
+While is While
+	Handling 1 IntLit
+Defaulted IntLit
+	Handling (null) Return
+Return is Return
+	Handling 0 IntLit
+Defaulted IntLit
+	Handling (null) If
+If is If
+	Handling (null) And
+Defaulted And
+	Handling (null) Eq
+Defaulted Eq
+	Handling x Id
+Defaulted Id
+	Handling 1 IntLit
+Defaulted IntLit
+	Handling (null) Ne
+Defaulted Ne
+	Handling x Id
+Defaulted Id
+	Handling 1 IntLit
+Defaulted IntLit
+	Handling (null) Return
+Return is Return
+	Handling 1 IntLit
+Defaulted IntLit
+	Handling (null) Null
+Defaulted Null
+	Handling (null) If
+If is If
+	Handling (null) Not
+Defaulted Not
+	Handling x Id
+Defaulted Id
+	Handling (null) Call
+Defaulted Call
+	Handling putchar Id
+Defaulted Id
+	Handling 'o' ChrLit
+Defaulted ChrLit
+	Handling (null) Null
+Defaulted Null
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: oi
+Adding oi to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding a to oi table
+	Handling (null) Char
+Defaulted Char
+	Handling a Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding b to oi table
+	Handling (null) Char
+Defaulted Char
+	Handling b Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding c to oi table
+	Handling (null) Char
+Defaulted Char
+	Handling c Id
+Defaulted Id
+	Handling 'd' ChrLit
+Defaulted ChrLit
+	Handling (null) Declaration
+Declaration is Declaration
+Adding d to oi table
+	Handling (null) Double
+Defaulted Double
+	Handling d Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding e to oi table
+	Handling (null) Double
+Defaulted Double
+	Handling e Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding f to oi table
+	Handling (null) Double
+Defaulted Double
+	Handling f Id
+Defaulted Id
+	Handling (null) Store
+Defaulted Store
+	Handling e Id
+Defaulted Id
+	Handling 4 IntLit
+Defaulted IntLit
+	Handling (null) Store
+Defaulted Store
+	Handling f Id
+Defaulted Id
+	Handling (null) Add
+Defaulted Add
+	Handling d Id
+Defaulted Id
+	Handling e Id
+Defaulted Id
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: huehue
+Adding huehue to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Return
+Return is Return
+	Handling 3 IntLit
+Defaulted IntLit
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: meta3
+Adding meta3 to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding v to meta3 table
+	Handling (null) Double
+Defaulted Double
+	Handling v Id
+Defaulted Id
+	Handling 2.4 RealLit
+Defaulted RealLit
+	Handling (null) Eq
+Defaulted Eq
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) Gt
+Defaulted Gt
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) Lt
+Defaulted Lt
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) Ge
+Defaulted Ge
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) Le
+Defaulted Le
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) BitWiseOr
+Defaulted BitWiseOr
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) BitWiseAnd
+Defaulted BitWiseAnd
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) Ne
+Defaulted Ne
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) And
+Defaulted And
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) Or
+Defaulted Or
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) BitWiseXor
+Defaulted BitWiseXor
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) Store
+Defaulted Store
+	Handling xd Id
+Defaulted Id
+	Handling (null) Mod
+Defaulted Mod
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) Store
+Defaulted Store
+	Handling xd Id
+Defaulted Id
+	Handling (null) Mul
+Defaulted Mul
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) Store
+Defaulted Store
+	Handling xd Id
+Defaulted Id
+	Handling (null) Div
+Defaulted Div
+	Handling xd Id
+Defaulted Id
+	Handling huehue Id
+Defaulted Id
+	Handling (null) Not
+Defaulted Not
+	Handling xd Id
+Defaulted Id
+	Handling (null) Plus
+Defaulted Plus
+	Handling xd Id
+Defaulted Id
+	Handling (null) Minus
+Defaulted Minus
+	Handling xd Id
+Defaulted Id
+	Handling (null) FuncDeclaration
+FuncDeclaration is FuncDeclaration
+Adding a new symbol table: f2
+Adding f2 to Global table
+	Handling (null) FuncDeclaration
+FuncDeclaration is FuncDeclaration
+Adding a new symbol table: f6
+Adding f6 to Global table
+	Handling (null) FuncDeclaration
+FuncDeclaration is FuncDeclaration
+Adding a new symbol table: f3
+Adding f3 to Global table
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: f4
+Adding f4 to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) FuncDeclaration
+FuncDeclaration is FuncDeclaration
+Adding a new symbol table: f
+Adding f to Global table
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: f1
+Adding f1 to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+	Handling (null) Char
+Defaulted Char
+	Handling  Id
+Defaulted Id
+	Handling 2.3 RealLit
+Defaulted RealLit
+	Handling (null) FuncDeclaration
+FuncDeclaration is FuncDeclaration
+Adding a new symbol table: b
+Adding b to Global table
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding x to b table
+	Handling (null) Int
+Defaulted Int
+	Handling x Id
+Defaulted Id
+	Handling 'a' ChrLit
+Defaulted ChrLit
+	Handling (null) FuncDeclaration
+FuncDeclaration is FuncDeclaration
+Adding a new symbol table: f5
+Adding f5 to Global table
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding f to f5 table
+	Handling (null) Double
+Defaulted Double
+	Handling f Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding n to f5 table
+	Handling (null) Int
+Defaulted Int
+	Handling n Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+	Handling (null) Int
+Defaulted Int
+	Handling  Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+	Handling (null) Int
+Defaulted Int
+	Handling †˘T Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding c to f5 table
+	Handling (null) Int
+Defaulted Int
+	Handling c Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+	Handling (null) Int
+Defaulted Int
+	Handling †˘T Id
+Defaulted Id
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: f7
+Adding f7 to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding k to Global table
+	Handling (null) Int
+Defaulted Int
+	Handling k Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding v to Global table
+	Handling (null) Int
+Defaulted Int
+	Handling v Id
+Defaulted Id
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: f8
+Adding f8 to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding x to f8 table
+	Handling (null) Char
+Defaulted Char
+	Handling x Id
+Defaulted Id
+	Handling y Id
+Defaulted Id
+	Handling (null) FuncDeclaration
+FuncDeclaration is FuncDeclaration
+Adding a new symbol table: f9
+Adding f9 to Global table
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: teste
+Adding teste to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding b to teste table
+	Handling (null) Int
+Defaulted Int
+	Handling b Id
+Defaulted Id
+	Handling b Id
+Defaulted Id
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: main1
+Adding main1 to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding c to main1 table
+	Handling (null) Int
+Defaulted Int
+	Handling c Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+	Handling (null) Int
+Defaulted Int
+	Handling  Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding m to main1 table
+	Handling (null) Int
+Defaulted Int
+	Handling m Id
+Defaulted Id
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: rekt
+Adding rekt to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) FuncDeclaration
+FuncDeclaration is FuncDeclaration
+Adding a new symbol table: help
+Adding help to Global table
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: help1
+Adding help1 to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding h to help1 table
+	Handling (null) Char
+Defaulted Char
+	Handling h Id
+Defaulted Id
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: help2
+Adding help2 to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding wgdsg to help2 table
+	Handling (null) Int
+Defaulted Int
+	Handling wgdsg Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding gsfrgs to help2 table
+	Handling (null) Char
+Defaulted Char
+	Handling gsfrgs Id
+Defaulted Id
+	Handling (null) FuncDeclaration
+FuncDeclaration is FuncDeclaration
+Adding a new symbol table: f10
+Adding f10 to Global table
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: f12
+Adding f12 to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding b to f12 table
+	Handling (null) Double
+Defaulted Double
+	Handling b Id
+Defaulted Id
+	Handling 2.3 RealLit
+Defaulted RealLit
+	Handling (null) Declaration
+Declaration is Declaration
+Adding c to Global table
+	Handling (null) Int
+Defaulted Int
+	Handling c Id
+Defaulted Id
+	Handling (null) Declaration
+Declaration is Declaration
+Adding e to Global table
+	Handling (null) Int
+Defaulted Int
+	Handling e Id
+Defaulted Id
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: g
+Adding g to Global table
+	Handling (null) FuncBody
+FuncBody is FuncBody
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
-x	int(void,char)
-lmao	double(char,int,void,double,int)
+x	int(char)
+lmao	double(char,int,double,int)
 main	int(char,int,int)
 expressions	int(void)
 statements	int(void)
@@ -10,22 +982,37 @@ oi	int(int,int)
 huehue	int(int)
 meta3	int(int,char,double,short)
 f2	int(char,char)
+f6	int(char,int)
 f3	int(char)
-f	int(char,void)
-b	int(char,void)
+f4	int(char)
+f	int(char)
+f1	int(char,int)
+b	int(char)
+f5	int(int,int)
+f7	int(char,int)
 k	int
 v	int
-a	int
+f8	int(char)
+f9	int(int,double)
 teste	int(void)
+main1	void(void)
 rekt	void(void)
 help	int(int,int)
-asd	int(void)
+help1	void(int,char)
+help2	int(int,int)
+f10	void(void)
+f12	void(short)
+c	int
+e	int
+g	int(void)
 
 ===== Function x Symbol Table =====
 return	int
-a	int
+e	char	param
+a	char
 b	int
 c	int
+d	int
 
 ===== Function main Symbol Table =====
 return	int
@@ -37,7 +1024,6 @@ b	int
 c	int
 d	int
 e	int
-m	int
 
 ===== Function expressions Symbol Table =====
 return	int
@@ -48,7 +1034,6 @@ c	int
 d	int
 variable	int
 x	double
-y	char
 
 ===== Function statements Symbol Table =====
 return	int
@@ -68,8 +1053,6 @@ f	double
 ===== Function huehue Symbol Table =====
 return	int
 x	int	param
-a	char
-r	char
 
 ===== Function meta3 Symbol Table =====
 return	int
@@ -83,42 +1066,71 @@ v	double
 return	int
 x	char	param
 
-===== Function f Symbol Table =====
+===== Function f4 Symbol Table =====
 return	int
 x	char	param
-b	void
-n	int
-c	int
+
+===== Function f1 Symbol Table =====
+return	int
+x	char	param
+y	int	param
 
 ===== Function b Symbol Table =====
 return	int
 x	int
-b	int
+
+===== Function f5 Symbol Table =====
+return	int
+a	int	param
+b	int	param
+f	double
+n	int
+c	int
+
+===== Function f7 Symbol Table =====
+return	int
+a	char	param
+b	int	param
+
+===== Function f8 Symbol Table =====
+return	int
+y	char	param
+x	char
 
 ===== Function teste Symbol Table =====
 return	int
 b	int
 
-===== Function êÙ\ Symbol Table =====
+===== Function main1 Symbol Table =====
 return	void
+c	int
+m	int
 
 ===== Function rekt Symbol Table =====
 return	void
 
-===== Function help Symbol Table =====
+===== Function help1 Symbol Table =====
+return	void
+x	int	param
+y	char	param
+h	char
+
+===== Function help2 Symbol Table =====
 return	int
 x	int	param
 y	int	param
-upsu	void
-h	char
 wgdsg	int
 gsfrgs	char
-teste	void
 
-===== Function ] Symbol Table =====
-return	int
+===== Function f10 Symbol Table =====
+return	void
 
-===== Function asd Symbol Table =====
+===== Function f12 Symbol Table =====
+return	void
+a	short	param
+b	double
+
+===== Function g Symbol Table =====
 return	int
 
 Program
@@ -127,12 +1139,11 @@ Program
 ....Id(x)
 ....ParamList
 ......ParamDeclaration
-........Void
-......ParamDeclaration
 ........Char
+........Id(e)
 ....FuncBody
 ......Declaration
-........Int
+........Char
 ........Id(a)
 ......Declaration
 ........Int
@@ -140,19 +1151,13 @@ Program
 ......Declaration
 ........Int
 ........Id(c)
-......Comma
-........Store
-..........Id(d)
-..........IntLit(2)
-........Store
-..........Id(a)
-..........ChrLit('a')
 ......Declaration
 ........Int
-........Id()
-........Ne
-..........Id(b2)
-..........Id(x)
+........Id(d)
+........IntLit(2)
+......Store
+........Id(a)
+........ChrLit('a')
 ..FuncDeclaration
 ....Double
 ....Id(lmao)
@@ -162,8 +1167,6 @@ Program
 ........Id(in)
 ......ParamDeclaration
 ........Int
-......ParamDeclaration
-........Void
 ......ParamDeclaration
 ........Double
 ......ParamDeclaration
@@ -182,17 +1185,6 @@ Program
 ........Int
 ........Id(z)
 ....FuncBody
-......Declaration
-........Int
-........Id( Q\)
-........IntLit(1)
-......Declaration
-........Int
-........Id(–P\)
-........IntLit(2)
-......Declaration
-........Int
-........Id(ÄP\)
 ......Declaration
 ........Int
 ........Id(a)
@@ -220,10 +1212,7 @@ Program
 ..........Ne
 ............Id(z)
 ............Id(x)
-........While
-..........IntLit(1)
-..........Return
-............IntLit(1)
+........Null
 ........Return
 ..........IntLit(0)
 ..FuncDefinition
@@ -262,30 +1251,6 @@ Program
 ........Id(variable)
 ........Plus
 ..........Id(variable)
-......Declaration
-........Char
-........Id(@a\)
-......Declaration
-........Char
-........Id(y)
-......Declaration
-........Int
-........Id())
-......Declaration
-........Int
-........Id(êè\)
-......BitWiseXor
-........Id(x)
-........Id(y)
-......Comma
-........Store
-..........Id(variable)
-..........IntLit(2)
-........Store
-..........BitWiseAnd
-............IntLit(3)
-............Id(a)
-..........IntLit(2)
 ......Store
 ........Id(variable)
 ........Add
@@ -351,8 +1316,7 @@ Program
 ......Minus
 ........Id(variable)
 ......Store
-........Plus
-..........Id(variable)
+........Id(variable)
 ........IntLit(2)
 ......Store
 ........Id(i)
@@ -387,61 +1351,9 @@ Program
 ......Store
 ........Id(a)
 ........Id(b)
-......Comma
-........Comma
-..........Comma
-............Comma
-..............Store
-................Id(a)
-................Add
-..................Id(b)
-..................IntLit(1)
-..............Eq
-................Id(c)
-................Mod
-..................Div
-....................Id(d)
-....................Plus
-......................Minus
-........................Not
-..........................Id(x)
-..................IntLit(4)
-............Or
-..............Id(x)
-..............Id(a)
-..........BitWiseAnd
-............Id(y)
-............Id(b)
-........BitWiseXor
-..........Id(z)
-..........Id(d)
 ......Call
 ........Id(putchar)
 ........Id(x)
-........Id(variable)
-......Call
-........Id(a)
-........IntLit(1)
-........IntLit(2)
-........Call
-..........Id(getchar)
-........Call
-..........Id(a)
-..........IntLit(1)
-..........IntLit(2)
-......Comma
-........Comma
-..........Comma
-............Comma
-..............Comma
-................IntLit(1)
-................IntLit(2)
-..............Id(a)
-............Id(b)
-..........Id(x)
-........Id(y)
-......Call
-........Id(putchar)
 ..FuncDefinition
 ....Int
 ....Id(statements)
@@ -496,16 +1408,6 @@ Program
 ........Call
 ..........Id(putchar)
 ..........ChrLit('o')
-........If
-..........Comma
-............Id(oi)
-............Id(wk)
-..........Call
-............Id(gets)
-..........Null
-......If
-........Id(a)
-........Id(i)
 ........Null
 ..FuncDefinition
 ....Int
@@ -553,33 +1455,8 @@ Program
 ........Int
 ........Id(x)
 ....FuncBody
-......Declaration
-........Char
-........Id(a)
-........Id(x)
-......Declaration
-........Char
-........Id(r)
-........Sub
-..........Id(a)
-..........Id(b)
-......Call
-........Id(putchar)
-........Store
-..........Id(x)
-..........Id(a)
-........Add
-..........Id(a)
-..........Id(v)
-........Sub
-..........Id(c)
-..........Id(d)
-........Not
-..........Id(b)
-........Plus
-..........Id(a)
-........Minus
-..........Id(b)
+......Return
+........IntLit(3)
 ..FuncDefinition
 ....Int
 ....Id(meta3)
@@ -655,10 +1532,6 @@ Program
 ........Id(xd)
 ......Minus
 ........Id(xd)
-......Store
-........Plus
-..........Id(xd)
-........Id(huehue)
 ..FuncDeclaration
 ....Int
 ....Id(f2)
@@ -669,7 +1542,7 @@ Program
 ........Char
 ..FuncDeclaration
 ....Int
-....Id(f2)
+....Id(f6)
 ....ParamList
 ......ParamDeclaration
 ........Char
@@ -682,13 +1555,6 @@ Program
 ......ParamDeclaration
 ........Char
 ........Id(x)
-..FuncDeclaration
-....Int
-....Id(f3)
-....ParamList
-......ParamDeclaration
-........Char
-........Id(x)
 ..FuncDefinition
 ....Int
 ....Id(f3)
@@ -699,7 +1565,7 @@ Program
 ....FuncBody
 ..FuncDefinition
 ....Int
-....Id(f3)
+....Id(f4)
 ....ParamList
 ......ParamDeclaration
 ........Char
@@ -712,11 +1578,9 @@ Program
 ......ParamDeclaration
 ........Char
 ........Id(x)
-......ParamDeclaration
-........Void
 ..FuncDefinition
 ....Int
-....Id(f)
+....Id(f1)
 ....ParamList
 ......ParamDeclaration
 ........Char
@@ -727,7 +1591,7 @@ Program
 ....FuncBody
 ......Declaration
 ........Char
-........Id(†‘\)
+........Id()
 ........RealLit(2.3)
 ..FuncDeclaration
 ....Int
@@ -735,8 +1599,6 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Char
-......ParamDeclaration
-........Void
 ..FuncDefinition
 ....Int
 ....Id(b)
@@ -744,9 +1606,6 @@ Program
 ......ParamDeclaration
 ........Char
 ........Id(c)
-......ParamDeclaration
-........Void
-........Id(d)
 ....FuncBody
 ......Declaration
 ........Int
@@ -754,17 +1613,17 @@ Program
 ........ChrLit('a')
 ..FuncDeclaration
 ....Int
-....Id(f)
+....Id(f5)
 ....ParamList
 ......ParamDeclaration
-........Char
+........Int
 ........Id(a)
 ......ParamDeclaration
 ........Int
 ........Id(b)
 ..FuncDefinition
 ....Int
-....Id(f)
+....Id(f5)
 ....ParamList
 ......ParamDeclaration
 ........Int
@@ -774,26 +1633,26 @@ Program
 ........Id(b)
 ....FuncBody
 ......Declaration
-........Void
-........Id(b)
+........Double
+........Id(f)
 ......Declaration
 ........Int
 ........Id(n)
 ......Declaration
 ........Int
-........Id())
+........Id(!)
 ......Declaration
 ........Int
-........Id(¿‡\)
+........Id(˚T)
 ......Declaration
 ........Int
 ........Id(c)
 ......Declaration
 ........Int
-........Id(‰\)
+........Id(–¸T)
 ..FuncDefinition
 ....Int
-....Id(f)
+....Id(f7)
 ....ParamList
 ......ParamDeclaration
 ........Char
@@ -806,14 +1665,11 @@ Program
 ....Int
 ....Id(k)
 ..Declaration
-....Char
-....Id(PÊ\)
-..Declaration
 ....Int
 ....Id(v)
 ..FuncDefinition
 ....Int
-....Id(f)
+....Id(f8)
 ....ParamList
 ......ParamDeclaration
 ........Char
@@ -821,24 +1677,18 @@ Program
 ....FuncBody
 ......Declaration
 ........Char
-........Id()
+........Id(x)
 ........Id(y)
 ..FuncDeclaration
 ....Int
-....Id(f3)
+....Id(f9)
 ....ParamList
 ......ParamDeclaration
 ........Int
 ........Id(x)
 ......ParamDeclaration
 ........Double
-........Id(x)
-..Declaration
-....Int
-....Id(a)
-..Declaration
-....Void
-....Id(`Ì\)
+........Id(y)
 ..FuncDefinition
 ....Int
 ....Id(teste)
@@ -850,51 +1700,20 @@ Program
 ........Int
 ........Id(b)
 ........Id(b)
-..Declaration
-....Void
-....Id(Ä\)
 ..FuncDefinition
 ....Void
-....Id(êÙ\)
-....ParamList
-......ParamDeclaration
-........Void
-....FuncBody
-......Return
-........IntLit(5)
-..FuncDefinition
-....Int
-....Id(b)
-....ParamList
-......ParamDeclaration
-........Void
-....FuncBody
-......Return
-........Call
-..........Id(rekt)
-..FuncDefinition
-....Void
-....Id(rekt)
-....ParamList
-......ParamDeclaration
-........Void
-....FuncBody
-..Declaration
-....Int
-....Id(ê])
-..FuncDefinition
-....Void
-....Id(main)
+....Id(main1)
 ....ParamList
 ......ParamDeclaration
 ........Void
 ....FuncBody
 ......Declaration
 ........Int
-........Id(∞˝\)
+........Id(c)
 ......Declaration
 ........Int
-........Id( ˘\)
+........Id(Ä
+U)
 ......Declaration
 ........Int
 ........Id(m)
@@ -905,15 +1724,6 @@ Program
 ......ParamDeclaration
 ........Void
 ....FuncBody
-..Declaration
-....Int
-....Id($)
-..Declaration
-....Char
-....Id($)
-..Declaration
-....Void
-....Id(∞˝\)
 ..FuncDeclaration
 ....Int
 ....Id(help)
@@ -924,16 +1734,9 @@ Program
 ......ParamDeclaration
 ........Int
 ........Id(y)
-..FuncDeclaration
-....Int
-....Id(help)
-....ParamList
-......ParamDeclaration
-........Double
-........Id(x)
 ..FuncDefinition
 ....Void
-....Id(help)
+....Id(help1)
 ....ParamList
 ......ParamDeclaration
 ........Int
@@ -943,14 +1746,11 @@ Program
 ........Id(y)
 ....FuncBody
 ......Declaration
-........Void
-........Id(upsu)
-......Declaration
 ........Char
 ........Id(h)
 ..FuncDefinition
 ....Int
-....Id(help)
+....Id(help2)
 ....ParamList
 ......ParamDeclaration
 ........Int
@@ -965,82 +1765,41 @@ Program
 ......Declaration
 ........Char
 ........Id(gsfrgs)
-......Declaration
-........Void
-........Id(teste)
 ..FuncDeclaration
 ....Void
-....Id(f)
+....Id(f10)
 ....ParamList
 ......ParamDeclaration
 ........Void
 ..FuncDefinition
 ....Void
-....Id(f)
+....Id(f10)
 ....ParamList
-......ParamDeclaration
-........Void
-........Id(a)
 ......ParamDeclaration
 ........Void
 ....FuncBody
-..Declaration
-....Double
-....Id(@])
-....Id(sadsjadhsi)
 ..FuncDefinition
-....Int
-....Id(b)
+....Void
+....Id(f12)
 ....ParamList
 ......ParamDeclaration
-........Void
+........Short
+........Id(a)
 ....FuncBody
 ......Declaration
-........Int
+........Double
 ........Id(b)
-..FuncDefinition
-....Void
-....Id(f)
-....ParamList
-......ParamDeclaration
-........Void
-........Id(a)
-......ParamDeclaration
-........Void
-....FuncBody
-......Declaration
-........Void
-........Id(])
 ........RealLit(2.3)
 ..Declaration
 ....Int
-....Id())
-..Declaration
-....Void
-....Id())
+....Id(c)
 ..Declaration
 ....Int
-....Id(Ä])
+....Id(e)
 ..FuncDefinition
 ....Int
-....Id(])
+....Id(g)
 ....ParamList
 ......ParamDeclaration
 ........Void
-....FuncBody
-..FuncDefinition
-....Int
-....Id(asd)
-....ParamList
-......ParamDeclaration
-........Void
-........Id(a)
-....FuncBody
-..FuncDefinition
-....Int
-....Id(asd)
-....ParamList
-......ParamDeclaration
-........Void
-........Id(a)
 ....FuncBody
