@@ -228,7 +228,8 @@ int handle_node(Node node)
     /* All operators, terminals and Null are defaulted for now */
     /* ParamList and ParamDeclaration are also defaulted, but they should never occur*/
     default:
-      printf("Defaulted %s\n", get_label_string(node->label));
+      if (DEBUG)
+        printf("Defaulted %s\n", get_label_string(node->label));
       full_expand(node);
       break;
   }
