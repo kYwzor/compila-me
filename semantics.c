@@ -151,7 +151,8 @@ int handle_node(Node node)
         printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
       Node type_spec = node->child;
       Node id = type_spec->brother;
-      insert_symbol(current_table->table_node, id->value, type_spec->label);
+      
+      insert_symbol(current_table, id->value, type_spec->label);
       full_expand(node);
       break;
     }
@@ -467,7 +468,7 @@ Table_list create_function_entry(char* name, Label label, Node paramList)
     printf("Adding a new symbol table: %s\n", new_node->table_node->name);
   
   aux->next = new_node;
-  insert_symbol(global_table->table_node, name, label);
+  insert_symbol(global_table, name, label);
 
   return new_node;
 }
