@@ -1,10 +1,12 @@
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
-b	int(char)
+b	int(char,char)
 
 ===== Function b Symbol Table =====
 return	int
+a	char	param
+b	char	param
 x	int
 
 Program
@@ -14,6 +16,10 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Char
+........Id(a)
+......ParamDeclaration
+........Char
+........Id(b)
 ..FuncDefinition
 ....Int
 ....Id(b)
@@ -21,6 +27,9 @@ Program
 ......ParamDeclaration
 ........Char
 ........Id(c)
+......ParamDeclaration
+........Char
+........Id(d)
 ....FuncBody
 ......Declaration
 ........Int
