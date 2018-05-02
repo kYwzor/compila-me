@@ -1,5 +1,4 @@
-int b(char a, char b);
-
-int b(char c, char d) {
+int b(void) {
   int x = 'a';
+  x = y + 1;
 }

@@ -208,7 +208,7 @@ int handle_node(Node node)
     {
       //TODO: double check this
       if (DEBUG)
-        printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
+        printf("%s is %s\n", get_label_string(node->label), get_label_string(RealLit));
       node->type = Double;
       full_expand(node);
       break;
@@ -217,7 +217,7 @@ int handle_node(Node node)
     case IntLit:
     {
       if (DEBUG)
-        printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
+        printf("%s is %s\n", get_label_string(node->label), get_label_string(IntLit));
       node->type = Int;
       full_expand(node);
       break;
@@ -226,7 +226,7 @@ int handle_node(Node node)
     case ChrLit:
     {
       if (DEBUG)
-        printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
+        printf("%s is %s\n", get_label_string(node->label), get_label_string(ChrLit));
       node->type = Int;
       full_expand(node);
       break;
@@ -259,12 +259,14 @@ int handle_node(Node node)
     case Not:
     case Minus:
     case Plus:
-    {
-      node->type = node->child->type;
-    }
     case Call:
     {
-      //TODO
+      handle_node(node->child);
+      put_type(node->child);
+      node->type = node->child->type;
+      if(node->brother != NULL)
+        handle_node(node->brother);
+      break;
     }
 
     /* All operators, terminals and Null are defaulted for now */
@@ -450,9 +452,12 @@ char *get_string_for_tables(Label label)
   case Void:
     s = "void";
     break;
+  case undef:
+    s = "undef";
+    break;
   default:
-    s = "\n\n\nTHIS SHOULD NEVER HAPPEN!\n\n\n";
-    printf("%s", s);
+    s = get_label_string(label);
+    printf("\n\n\nTHIS SHOULD NEVER HAPPEN!\n\n\n");
     break;
   }
   return s;
@@ -474,6 +479,7 @@ Arg_list get_function_args(char *name)
 
 Table_list find_function_entry(char* name)
 {
+  if(name == NULL) return NULL;
   Table_list aux = global_table;
   while (aux != NULL) {
     if (strcmp(aux->table_node->name, name) == 0)
@@ -569,19 +575,26 @@ Label resolve_type(Label label1, Label label2){
 }
 
 void put_type(Node node){
-  printf("Oi\n");
+  if(DEBUG) printf("Putting type for %s\n",get_label_string(node->label));
   switch(node->label){
     case Id:
       {
         Sym_list symbol_entry = NULL;
         symbol_entry = find_symbol(current_table, node->value);
-        if(symbol_entry ==  NULL) symbol_entry = find_symbol(global_table, node->value);
+        if(symbol_entry ==  NULL) 
+          symbol_entry = find_symbol(global_table, node->value);
+        else
+          if(DEBUG) 
+            printf("%s encontrado na tabela local \n", node->value);
         if(symbol_entry == NULL){
           node->type = undef;
         }         
         else {
+          if(DEBUG)
+            printf("%s encontrado na tabela global\n", node->value);
           node->type = symbol_entry->label;
         }
+        break;
       }
       case Void:
       case Char:
@@ -589,11 +602,14 @@ void put_type(Node node){
       case Int:
       case Short:
         node->type = node->label;
+        break;
     default:{
       if(node->type == Empty){
+        printf("Putting type for %s\n", get_label_string(node->label));
         printf("This should never happen\n");
         node->type = undef;
       }
+      break;
     }
   }
 } 
