@@ -1,7 +1,20 @@
 #include "semantics.h"
+      
+/*
+duvidas:
+onde e que void entra na prioridade de tipos
+int + undef = ?
+int + void = ?
 
+mooshak what
+
+realit = double?
+
+store what
+*/
 void print_tables()
 {
+
   printf("===== Global Symbol Table =====\n");
   Table_list aux = global_table;
   Sym_list global_aux = global_table->table_node->next;
@@ -108,8 +121,9 @@ int handle_node(Node node)
       Node paramList = id->brother;
 
       current_table = find_function_entry(id->value);
-      if (current_table == NULL)
+      if (current_table == NULL){
         current_table = create_function_entry(id->value, type_spec->label, paramList, 1);  
+      }
       else {
         // Ja foi declarada, temos que verificar parametros
         Arg_list aux = current_table -> arg_list;
@@ -117,8 +131,10 @@ int handle_node(Node node)
         while(paramDec!=NULL){
           Node type_spec = paramDec->child;
           Node id = type_spec->brother;
-          if (DEBUG)
-            printf("Got label %s and name %s\n", get_label_string(type_spec->label), id->value);
+          if (DEBUG){
+            if(id != NULL) printf("Got label %s and name %s\n", get_label_string(type_spec->label), id->value);
+            else printf("Got label %s and name %s\n", get_label_string(type_spec->label), NULL);
+          }
           if (aux == NULL){
             if (DEBUG)
               printf("error: there's more parameters on definition than on declaration\n");
@@ -145,7 +161,6 @@ int handle_node(Node node)
           if (DEBUG)
             printf("error: there's more parameters on declaration than on definition\n");
         }
-        
         current_table->is_defined = 1;
       }
 
@@ -192,30 +207,65 @@ int handle_node(Node node)
     case RealLit:
     {
       //TODO: double check this
+      if (DEBUG)
+        printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
       node->type = Double;
       full_expand(node);
+      break;
     }
+
     case IntLit:
     {
+      if (DEBUG)
+        printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
       node->type = Int;
       full_expand(node);
+      break;
     }
+
     case ChrLit:
     {
+      if (DEBUG)
+        printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
       node->type = Int;
       full_expand(node);
+      break;
     }
-
+    case Or:
+    case And:
+    case Eq:
+    case Ne:
+    case Lt:
+    case Ge:
     case Add:
+    case Sub:
+    case Mul:
+    case Div:
+    case Mod:
+    case Comma:
+    case BitWiseAnd:
+    case BitWiseXor:
+    case BitWiseOr:
     {
-      if(node->child != NULL)
-        handle_node(node->child);
-      node->type = resolve_type(node->child->label, node->child->brother->label);
+      handle_node(node->child);
+      put_type(node->child);
+      put_type(node->child->brother);
+      node->type = resolve_type(node->child->type, node->child->brother->type);
       if(node->brother != NULL)
         handle_node(node->brother);
+      break;
     }
-
-
+    case Store:
+    case Not:
+    case Minus:
+    case Plus:
+    {
+      node->type = node->child->type;
+    }
+    case Call:
+    {
+      //TODO
+    }
 
     /* All operators, terminals and Null are defaulted for now */
     /* ParamList and ParamDeclaration are also defaulted, but they should never occur*/
@@ -397,9 +447,6 @@ char *get_string_for_tables(Label label)
   case Void:
     s = "void";
     break;
-  case Program:
-    s = "void"; //hol up this is weird
-    break;
   default:
     s = "\n\n\nTHIS SHOULD NEVER HAPPEN!\n\n\n";
     printf("%s", s);
@@ -435,7 +482,6 @@ Table_list find_function_entry(char* name)
 
 Table_list create_function_entry(char* name, Label label, Node paramList, int is_definition)
 {
-
   // Assumes it's not already on the table
   Table_list aux = global_table;
   while (aux->next != NULL)
@@ -514,7 +560,7 @@ Label resolve_type(Label label1, Label label2){
   if(label1 == Char || label2 == Char){
     return Char;
   }
-  //if(DEBUG)
+  if(DEBUG)
    printf("There is a problem with the labels my dude\n");
   return Char;
 }
@@ -534,13 +580,17 @@ void put_type(Node node){
           node->type = symbol_entry->label;
         }
       }
+      case Void:
+      case Char:
+      case Double:
       case Int:
-      {
-        node->type = Int;
-     }
+      case Short:
+        node->type = node->label;
     default:{
-      printf("This should never happen\n");
-      node->type = undef;
+      if(node->type == -1){
+        printf("This should never happen\n");
+        node->type = undef;
+      }
     }
   }
 } 

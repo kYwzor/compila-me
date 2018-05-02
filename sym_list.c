@@ -46,17 +46,3 @@ Sym_list find_symbol(Table_list table_list, char* name){
   }
   return NULL;
 }
-
-Table_list find_table(Table_list table_list, char* name){
-  Table_list aux = table_list;
-  while(aux != NULL){
-    //Isto nao esta protegido para segfault mas acho que nao e preciso
-    if(strcmp(aux->table_node->name, name) == 0){
-      return aux;
-    }
-    aux = aux->next;
-  }
-  return NULL;
-}
-
-

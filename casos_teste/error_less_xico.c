@@ -206,10 +206,11 @@ int help2(int x, int y){
 
 }
 
+
 void f10(void);
 
 void f10(void) {
-
+        a, b;
 }
 
 void f12(short a) {
@@ -219,5 +220,5 @@ void f12(short a) {
 int c;
 int e;
 
-int g (void) {
+int g(void) {
 }
