@@ -274,6 +274,12 @@ int handle_node(Node node)
     {
       handle_node(node->child);
       put_type(node->child);
+      Node aux = node->child->brother;
+      while(aux != NULL){
+        put_type(aux);
+        aux = aux->next;
+      }
+      while(aux != NULL){
       node->type = node->child->type;
       if(node->brother != NULL)
         handle_node(node->brother);
