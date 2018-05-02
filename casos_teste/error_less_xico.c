@@ -136,6 +136,9 @@ int f4 (char x) {
 
 }
 
+void recursiva(int a){
+    recursiva(a);
+}
 int f(char x);
 
 int f1(char x, int y) {

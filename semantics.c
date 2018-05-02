@@ -189,46 +189,6 @@ int handle_node(Node node)
       break;
     }
 
-    case FuncBody:
-    {
-      if (DEBUG)
-        printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncBody));
-      full_expand(node);
-      break;
-    }
-
-    /* Statements */
-    case StatList:
-    {
-      if (DEBUG)
-        printf("%s is %s\n", get_label_string(node->label), get_label_string(StatList));
-      full_expand(node);
-      break;
-    }
-
-    case If:
-    {
-      if (DEBUG)
-        printf("%s is %s\n", get_label_string(node->label), get_label_string(If));
-      full_expand(node);
-      break;
-    }
-
-    case While:
-    {
-      if (DEBUG)
-        printf("%s is %s\n", get_label_string(node->label), get_label_string(While));
-      full_expand(node);
-      break;
-    }
-    case Return:
-    {
-      if (DEBUG)
-        printf("%s is %s\n", get_label_string(node->label), get_label_string(Return));
-      full_expand(node);
-      break;
-    }
-
     case RealLit:
     {
       //TODO: double check this
@@ -248,10 +208,13 @@ int handle_node(Node node)
 
     case Add:
     {
-      //TODO: E possivel que isto de problemas com expressions encadeadas em que temos de testar types em vez de labels
-      node->type = resolve_label(node->child->label, node->child->brother->label);
-      full_expand(node);
+      if(node->child != NULL)
+        handle_node(node->child);
+      node->type = resolve_type(node->child->label, node->child->brother->label);
+      if(node->brother != NULL)
+        handle_node(node->brother);
     }
+
 
 
     /* All operators, terminals and Null are defaulted for now */
@@ -270,6 +233,9 @@ char *get_label_string(Label label)
   char *s;
   switch (label)
   {
+    case undef:
+    s = "undef";
+    break;
   case Program:
     s = "Program";
     break;
@@ -532,7 +498,7 @@ Table_list create_function_entry(char* name, Label label, Node paramList, int is
   return new_node;
 }
 
-Label resolve_label(Label label1, Label label2){
+Label resolve_type(Label label1, Label label2){
   if(label1 == undef || label2 == undef){
     return undef;
   }
@@ -552,3 +518,29 @@ Label resolve_label(Label label1, Label label2){
    printf("There is a problem with the labels my dude\n");
   return Char;
 }
+
+void put_type(Node node){
+  printf("Oi\n");
+  switch(node->label){
+    case Id:
+      {
+        Sym_list symbol_entry = NULL;
+        symbol_entry = find_symbol(current_table, node->value);
+        if(symbol_entry ==  NULL) symbol_entry = find_symbol(global_table, node->value);
+        if(symbol_entry == NULL){
+          node->type = undef;
+        }         
+        else {
+          node->type = symbol_entry->label;
+        }
+      }
+      case Int:
+      {
+        node->type = Int;
+     }
+    default:{
+      printf("This should never happen\n");
+      node->type = undef;
+    }
+  }
+} 
