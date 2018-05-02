@@ -195,6 +195,7 @@ void rekt(void) {
 
 
 int help(int x, int y);
+int help(int t, int h);
 
 void help1(int x, char y){
     char h;

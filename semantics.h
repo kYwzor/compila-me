@@ -9,6 +9,7 @@ void full_expand(Node node);
 Arg_list get_function_args(char * name);
 Table_list find_function_entry(char* name);
 Table_list create_function_entry(char* name, Label label, Node paramList, int is_definition);
+void put_type(Node node);
 Label get_type(Node node);
 Label resolve_type(Label label1, Label label2);
 

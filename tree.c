@@ -3,7 +3,7 @@ Node create_node(Label label, char *value){
 	Node newNode = malloc(sizeof(Node_t));
 
 	newNode->label = label;
-	newNode->type = -1;
+	newNode->type = Empty;
 	newNode->arg_list = NULL;
 
 	newNode->value = value; //value is either NULL or comes from yylval.value which was strduped

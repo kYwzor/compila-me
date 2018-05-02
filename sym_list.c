@@ -11,7 +11,6 @@ int insert_symbol(Table_list table, char* name, Label label){
     if(arg_list->name != NULL){
       if(strcmp(arg_list->name, name) == 0){
         //-1 means error
-        free(name);
         return -1;
       }
     }
@@ -21,7 +20,6 @@ int insert_symbol(Table_list table, char* name, Label label){
     sym_list = sym_list->next;
     if(strcmp(sym_list->name, name) == 0){
       //-1 means error
-      free(name);
       return -1;
     }
   }

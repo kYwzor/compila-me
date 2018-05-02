@@ -1,3 +1,99 @@
+Oi
+This should never happen
+Oi
+This should never happen
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+This should never happen
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+This should never happen
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
+Oi
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
@@ -30,7 +126,7 @@ rekt	void(void)
 help	int(int,int)
 help1	void(int,char)
 help2	int(int,int)
-f10	void(void,void,int)
+f10	void(void)
 f12	void(short)
 c	int
 e	int
@@ -171,8 +267,6 @@ gsfrgs	char
 
 ===== Function f10 Symbol Table =====
 return	void
-a	int	param
-f10	void
 
 ===== Function f12 Symbol Table =====
 return	void
@@ -644,13 +738,13 @@ Program
 ....FuncBody
 ......Declaration
 ........Int
-........Id(°d´)
+........Id(a)
 ......Declaration
 ........Double
-........Id()
+........Id(e)
 ......Declaration
 ........Short
-........Id(Pa´)
+........Id(b)
 ......Declaration
 ........Int
 ........Id(y)
@@ -717,7 +811,7 @@ Program
 ....FuncBody
 ......Declaration
 ........Char
-........Id(Pq´)
+........Id(x)
 ........RealLit(2.3)
 ..FuncDeclaration
 ....Int
@@ -766,16 +860,16 @@ Program
 ........Id(n)
 ......Declaration
 ........Int
-........Id(p~´)
+........Id(`œ®)
 ......Declaration
 ........Int
-........Id(`|´)
+........Id(b)
 ......Declaration
 ........Int
 ........Id(c)
 ......Declaration
 ........Int
-........Id( ~´)
+........Id(b)
 ..FuncDefinition
 ....Int
 ....Id(f7)
@@ -838,7 +932,7 @@ Program
 ........Id(c)
 ......Declaration
 ........Int
-........Id(Ð‹´)
+........Id(Ð«®)
 ......Declaration
 ........Int
 ........Id(m)
@@ -859,6 +953,16 @@ Program
 ......ParamDeclaration
 ........Int
 ........Id(y)
+..FuncDeclaration
+....Int
+....Id(help)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(t)
+......ParamDeclaration
+........Int
+........Id(h)
 ..FuncDefinition
 ....Void
 ....Id(help1)
@@ -896,25 +1000,16 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Void
-......ParamDeclaration
-........Void
-......ParamDeclaration
-........Int
 ..FuncDefinition
 ....Void
 ....Id(f10)
 ....ParamList
 ......ParamDeclaration
 ........Void
-......ParamDeclaration
-........Void
-......ParamDeclaration
-........Int
-........Id(a)
 ....FuncBody
-......Declaration
-........Void
-........Id(f10)
+......Comma
+........Id(a)
+........Id(b)
 ..FuncDefinition
 ....Void
 ....Id(f12)

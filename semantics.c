@@ -1,16 +1,16 @@
 #include "semantics.h"
       
 /*
-duvidas:
-onde e que void entra na prioridade de tipos
-int + undef = ?
-int + void = ?
+keep in mind:
 
-mooshak what
+undef levanta sempre erro quando e operado
+todos os tipos sao compativeis e guardamos o mais alto
 
-realit = double?
+declarations podem ser duplicadas na global mas nao dentro de funcoes
 
-store what
+plus deve ser sempre inteiro? tricky shit
+
+store fica com o tipo do ID
 */
 void print_tables()
 {
@@ -283,7 +283,10 @@ char *get_label_string(Label label)
   char *s;
   switch (label)
   {
-    case undef:
+  case Empty:
+    s = "Empty";
+    break;
+  case undef:
     s = "undef";
     break;
   case Program:
@@ -587,7 +590,7 @@ void put_type(Node node){
       case Short:
         node->type = node->label;
     default:{
-      if(node->type == -1){
+      if(node->type == Empty){
         printf("This should never happen\n");
         node->type = undef;
       }
