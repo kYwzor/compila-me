@@ -44,18 +44,24 @@ void print_tree(Node current, int depth){
 		}
 		if(current->type != Empty){
 			printf(" - %s",get_string_for_tables(current->type));
+			
 			Table_list aux = find_function_entry(current->value);
 			if(aux != NULL){
-				printf("(");
-				//This id is for a function
-				Arg_list arg_list = aux->arg_list;
-				while(arg_list != NULL){
-					printf("%s", get_string_for_tables(arg_list->label));
-					arg_list = arg_list->next;
-					if(arg_list != NULL)
-						printf(",");
+				//Verificar se existe variavel local com o mesmo nome
+				Sym_list local_check = find_symbol(aux, current->value);
+				//Sym_list local_check = NULL;
+				if(local_check == NULL){
+					printf("(");
+					//This id is for a function
+					Arg_list arg_list = aux->arg_list;
+					while(arg_list != NULL){
+						printf("%s", get_string_for_tables(arg_list->label));
+						arg_list = arg_list->next;
+						if(arg_list != NULL)
+							printf(",");
+					}
+					printf(")");
 				}
-				printf(")");
 			}
 		}
 		printf("\n");

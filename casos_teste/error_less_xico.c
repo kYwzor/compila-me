@@ -38,6 +38,7 @@ int expressions(void) {
     variable = variable * 2;
     variable = variable / 2;
     !variable;
+    int a = 2;
     +variable;
     -variable;
     variable = 2;
@@ -211,7 +212,7 @@ int help2(int x, int y){
 void f10(void);
 
 void f10(void) {
-        a, b;
+     a, b;
 }
 
 void f12(short a) {

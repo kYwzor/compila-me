@@ -1,4 +1,5 @@
 int b(void) {
-  int x = 'a';
-  x = y + 1;
+  if(x){
+    x;
+  }
 }
