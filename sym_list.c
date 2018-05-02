@@ -44,3 +44,16 @@ Sym_list find_symbol(Table_list table_list, char* name){
   }
   return NULL;
 }
+
+Arg_list find_parameter(Table_list table_list, char* name){
+  Arg_list aux = table_list->arg_list;
+  while(aux != NULL){
+    //Isto nao esta protegido para segfault mas acho que nao e preciso
+    if(aux->name != NULL)
+      if(strcmp(aux->name, name) == 0){
+        return aux;
+      }
+    aux = aux->next;
+  }
+  return NULL;
+}

@@ -1,3 +1,307 @@
+	Handling (null) Program
+Program is Program
+Adding a new symbol table: putchar
+Adding putchar to Global table
+Adding a new symbol table: getchar
+Adding getchar to Global table
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: readint
+Adding readint to Global table
+	Handling (null) FuncBody
+Defaulted FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding read to readint table
+	Handling (null) Int
+Defaulted Int
+	Handling read Id
+Defaulted Id
+	Handling 0 IntLit
+IntLit is IntLit
+	Handling (null) Declaration
+Declaration is Declaration
+Adding sign to readint table
+	Handling (null) Int
+Defaulted Int
+	Handling sign Id
+Defaulted Id
+	Handling 1 IntLit
+IntLit is IntLit
+	Handling (null) Declaration
+Declaration is Declaration
+Adding c to readint table
+	Handling (null) Char
+Defaulted Char
+	Handling c Id
+Defaulted Id
+	Handling (null) Call
+	Handling getchar Id
+Defaulted Id
+Putting type for Id
+getchar encontrado na tabela global
+Assigned Call to Int
+	Handling (null) If
+Defaulted If
+	Handling (null) Eq
+	Handling c Id
+Defaulted Id
+	Handling '-' ChrLit
+ChrLit is ChrLit
+Putting type for Id
+c encontrado na tabela local 
+c encontrado na tabela global
+Putting type for ChrLit
+Assigned Eq to Int
+	Handling (null) Store
+	Handling sign Id
+Defaulted Id
+	Handling (null) Minus
+	Handling 1 IntLit
+IntLit is IntLit
+Putting type for IntLit
+Assigned Minus to Int
+Putting type for Id
+sign encontrado na tabela local 
+sign encontrado na tabela global
+	Handling (null) Null
+Defaulted Null
+Assigned Store to Int
+	Handling (null) While
+Defaulted While
+	Handling (null) Ne
+	Handling c Id
+Defaulted Id
+	Handling '\n' ChrLit
+ChrLit is ChrLit
+Putting type for Id
+c encontrado na tabela local 
+c encontrado na tabela global
+Putting type for ChrLit
+Assigned Ne to Int
+	Handling (null) StatList
+Defaulted StatList
+	Handling (null) If
+Defaulted If
+	Handling (null) Ne
+	Handling c Id
+Defaulted Id
+	Handling '-' ChrLit
+ChrLit is ChrLit
+Putting type for Id
+c encontrado na tabela local 
+c encontrado na tabela global
+Putting type for ChrLit
+Assigned Ne to Int
+	Handling (null) Store
+	Handling read Id
+Defaulted Id
+	Handling (null) Sub
+	Handling (null) Add
+	Handling (null) Mul
+	Handling read Id
+Defaulted Id
+	Handling 10 IntLit
+IntLit is IntLit
+Putting type for Id
+read encontrado na tabela local 
+read encontrado na tabela global
+Putting type for IntLit
+	Handling c Id
+Defaulted Id
+Assigned Mul to Int
+Putting type for Mul
+Putting type for Id
+c encontrado na tabela local 
+c encontrado na tabela global
+	Handling '0' ChrLit
+ChrLit is ChrLit
+Assigned Add to Int
+Putting type for Add
+Putting type for ChrLit
+Assigned Sub to Int
+Putting type for Id
+read encontrado na tabela local 
+read encontrado na tabela global
+	Handling (null) Null
+Defaulted Null
+Assigned Store to Int
+	Handling (null) Store
+	Handling c Id
+Defaulted Id
+	Handling (null) Call
+	Handling getchar Id
+Defaulted Id
+Putting type for Id
+getchar encontrado na tabela global
+Assigned Call to Int
+Putting type for Id
+c encontrado na tabela local 
+c encontrado na tabela global
+Assigned Store to Char
+	Handling (null) Return
+Defaulted Return
+	Handling (null) Mul
+	Handling sign Id
+Defaulted Id
+	Handling read Id
+Defaulted Id
+Putting type for Id
+sign encontrado na tabela local 
+sign encontrado na tabela global
+Putting type for Id
+read encontrado na tabela local 
+read encontrado na tabela global
+Assigned Mul to Int
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: printint
+Adding printint to Global table
+	Handling (null) FuncBody
+Defaulted FuncBody
+	Handling (null) If
+Defaulted If
+	Handling (null) Lt
+	Handling n Id
+Defaulted Id
+	Handling 0 IntLit
+IntLit is IntLit
+Putting type for Id
+n encontrado na lista de argumentos
+Putting type for IntLit
+Assigned Lt to Int
+	Handling (null) StatList
+Defaulted StatList
+	Handling (null) Call
+	Handling putchar Id
+Defaulted Id
+	Handling '-' ChrLit
+ChrLit is ChrLit
+Putting type for Id
+putchar encontrado na tabela global
+	Handling (null) Store
+	Handling n Id
+Defaulted Id
+	Handling (null) Minus
+	Handling n Id
+Defaulted Id
+Putting type for Id
+n encontrado na lista de argumentos
+Assigned Minus to Int
+Putting type for Id
+n encontrado na lista de argumentos
+Assigned Store to Int
+Assigned Call to Int
+	Handling (null) Null
+Defaulted Null
+	Handling (null) If
+Defaulted If
+	Handling (null) Div
+	Handling n Id
+Defaulted Id
+	Handling 10 IntLit
+IntLit is IntLit
+Putting type for Id
+n encontrado na lista de argumentos
+Putting type for IntLit
+	Handling (null) Call
+	Handling printint Id
+Defaulted Id
+	Handling (null) Div
+	Handling n Id
+Defaulted Id
+	Handling 10 IntLit
+IntLit is IntLit
+Putting type for Id
+n encontrado na lista de argumentos
+Putting type for IntLit
+Assigned Div to Int
+Putting type for Id
+printint encontrado na tabela local 
+printint encontrado na tabela global
+	Handling (null) Null
+Defaulted Null
+Assigned Call to Void
+Assigned Div to Int
+	Handling (null) Call
+	Handling putchar Id
+Defaulted Id
+	Handling (null) Add
+	Handling (null) Mod
+	Handling n Id
+Defaulted Id
+	Handling 10 IntLit
+IntLit is IntLit
+Putting type for Id
+n encontrado na lista de argumentos
+Putting type for IntLit
+Assigned Mod to Int
+	Handling '0' ChrLit
+ChrLit is ChrLit
+Putting type for Mod
+Putting type for ChrLit
+Assigned Add to Int
+Putting type for Id
+putchar encontrado na tabela global
+Assigned Call to Int
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Adding a new symbol table: main
+Adding main to Global table
+	Handling (null) FuncBody
+Defaulted FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Adding i to main table
+	Handling (null) Int
+Defaulted Int
+	Handling i Id
+Defaulted Id
+	Handling 1 IntLit
+IntLit is IntLit
+	Handling (null) While
+Defaulted While
+	Handling (null) Ne
+	Handling i Id
+Defaulted Id
+	Handling 0 IntLit
+IntLit is IntLit
+Putting type for Id
+i encontrado na tabela local 
+i encontrado na tabela global
+Putting type for IntLit
+Assigned Ne to Int
+	Handling (null) StatList
+Defaulted StatList
+	Handling (null) Store
+	Handling i Id
+Defaulted Id
+	Handling (null) Call
+	Handling readint Id
+Defaulted Id
+Putting type for Id
+readint encontrado na tabela global
+Assigned Call to Int
+Putting type for Id
+i encontrado na tabela local 
+i encontrado na tabela global
+	Handling (null) Call
+	Handling printint Id
+Defaulted Id
+	Handling i Id
+Defaulted Id
+Putting type for Id
+printint encontrado na tabela global
+	Handling (null) Call
+	Handling putchar Id
+Defaulted Id
+	Handling '\n' ChrLit
+ChrLit is ChrLit
+Putting type for Id
+putchar encontrado na tabela global
+Assigned Call to Int
+Assigned Call to Void
+Assigned Store to Int
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
@@ -85,33 +389,33 @@ Program
 ........Id(n)
 ....FuncBody
 ......If
-........Lt - undef
-..........Id(n) - undef
+........Lt - int
+..........Id(n) - int
 ..........IntLit(0) - int
 ........StatList
 ..........Call - int
 ............Id(putchar) - int(int)
 ............ChrLit('-') - int
-..........Store - undef
-............Id(n) - undef
-............Minus - undef
-..............Id(n) - undef
+..........Store - int
+............Id(n) - int
+............Minus - int
+..............Id(n) - int
 ........Null
 ......If
-........Div - undef
-..........Id(n) - undef
+........Div - int
+..........Id(n) - int
 ..........IntLit(10) - int
 ........Call - void
 ..........Id(printint) - void(int)
-..........Div - undef
-............Id(n) - undef
+..........Div - int
+............Id(n) - int
 ............IntLit(10) - int
 ........Null
 ......Call - int
 ........Id(putchar) - int(int)
-........Add - undef
-..........Mod - undef
-............Id(n) - undef
+........Add - int
+..........Mod - int
+............Id(n) - int
 ............IntLit(10) - int
 ..........ChrLit('0') - int
 ..FuncDefinition
@@ -133,9 +437,9 @@ Program
 ..........Store - int
 ............Id(i) - int
 ............Call - int
-..............Id(readint) - int
+..............Id(readint) - int(void)
 ..........Call - void
-............Id(printint) - void
+............Id(printint) - void(int)
 ............Id(i)
 ..........Call - int
 ............Id(putchar) - int(int)

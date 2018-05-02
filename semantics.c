@@ -236,12 +236,23 @@ int handle_node(Node node)
     case Eq:
     case Ne:
     case Lt:
+    case Not:
     case Ge:
+    case Mod:
+    {
+      handle_node(node->child);
+      put_type(node->child);
+      put_type(node->child->brother);
+      node->type = Int;
+      printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
+      if(node->brother != NULL)
+        handle_node(node->brother);
+      break;
+    }
     case Add:
     case Sub:
     case Mul:
     case Div:
-    case Mod:
     case Comma:
     case BitWiseAnd:
     case BitWiseXor:
@@ -253,10 +264,10 @@ int handle_node(Node node)
       node->type = resolve_type(node->child->type, node->child->brother->type);
       if(node->brother != NULL)
         handle_node(node->brother);
+      printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
       break;
     }
     case Store:
-    case Not:
     case Minus:
     case Plus:
     case Call:
@@ -266,6 +277,7 @@ int handle_node(Node node)
       node->type = node->child->type;
       if(node->brother != NULL)
         handle_node(node->brother);
+      printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
       break;
     }
 
@@ -479,9 +491,11 @@ Arg_list get_function_args(char *name)
 
 Table_list find_function_entry(char* name)
 {
+  //printf("Looking for %s\n", name);
   if(name == NULL) return NULL;
   Table_list aux = global_table;
   while (aux != NULL) {
+    //printf("Comparing with %s\n", aux->table_node->name);
     if (strcmp(aux->table_node->name, name) == 0)
       return aux;
     aux = aux->next;
@@ -579,20 +593,33 @@ void put_type(Node node){
   switch(node->label){
     case Id:
       {
-        Sym_list symbol_entry = NULL;
-        symbol_entry = find_symbol(current_table, node->value);
-        if(symbol_entry ==  NULL) 
-          symbol_entry = find_symbol(global_table, node->value);
-        else
-          if(DEBUG) 
-            printf("%s encontrado na tabela local \n", node->value);
-        if(symbol_entry == NULL){
-          node->type = undef;
-        }         
-        else {
+        Arg_list arg_list = NULL;
+        arg_list = find_parameter(current_table, node->value);
+        if(arg_list != NULL){
           if(DEBUG)
-            printf("%s encontrado na tabela global\n", node->value);
-          node->type = symbol_entry->label;
+            printf("%s encontrado na lista de argumentos\n", node->value);
+          node->type = arg_list->label;
+            return;
+        }
+        else{
+          Sym_list symbol_entry = NULL;
+          symbol_entry = find_symbol(current_table, node->value);
+          if (symbol_entry == NULL)
+            symbol_entry = find_symbol(global_table, node->value);
+          else if (DEBUG)
+            printf("%s encontrado na tabela local \n", node->value);
+          if (symbol_entry == NULL)
+          {
+            node->type = undef;
+            return;
+          }
+          else
+          {
+            if (DEBUG)
+              printf("%s encontrado na tabela global\n", node->value);
+            node->type = symbol_entry->label;
+            return;
+          }
         }
         break;
       }

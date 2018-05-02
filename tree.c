@@ -33,7 +33,7 @@ Node add_brother(Node older, Node newer){
 	return older;
 }
 
-void print_tree_and_free(Node current, int depth){
+void print_tree(Node current, int depth){
 	int i;
 	if(errorFlag!=1 && flag > 1){
 		for(i=0; i<depth; i++)
@@ -62,11 +62,16 @@ void print_tree_and_free(Node current, int depth){
 
 	}
 
-	if(current->child != NULL) print_tree_and_free(current->child, depth+1);
-	if(current->brother != NULL) print_tree_and_free(current->brother, depth);
+	if(current->child != NULL) print_tree(current->child, depth+1);
+	if(current->brother != NULL) print_tree(current->brother, depth);
+
+}
+
+
+void free_tree(Node current){
+	if(current->child != NULL) free_tree(current->child);
+	if(current->brother != NULL) free_tree(current->brother);
 
 	free(current->value);
 	free(current);
 }
-
-

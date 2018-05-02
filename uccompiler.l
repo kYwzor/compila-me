@@ -90,7 +90,7 @@ int main(int argc, char** argv)
 {
     flag = 0;
     errorFlag = 0;
-    int print_tree = 1;
+    int print_tree_flag = 1;
     treeRoot = NULL;
     if(argc == 2){
         if (strcmp(argv[1],"-l") == 0) flag = 1;
@@ -102,7 +102,10 @@ int main(int argc, char** argv)
         handle_node(treeRoot);
         print_tables();
     }
-    if(treeRoot!=NULL && print_tree) print_tree_and_free(treeRoot, 0);
+    if(treeRoot!=NULL && print_tree_flag){
+        print_tree(treeRoot, 0);
+        free_tree(treeRoot);
+    }
     return 0;
 }
 

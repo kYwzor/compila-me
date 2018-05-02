@@ -1,0 +1,16 @@
+
+===== Global Symbol Table =====
+a		Int
+b		Int
+c		Short
+
+Program
+..Declaration
+....Int
+....Id(a)
+..Declaration
+....Int
+....Id(b)
+..Declaration
+....Short
+....Id(c)
