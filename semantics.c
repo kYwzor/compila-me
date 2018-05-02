@@ -244,7 +244,7 @@ int handle_node(Node node)
       put_type(node->child);
       put_type(node->child->brother);
       node->type = Int;
-      printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
+      if(DEBUG)printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
       if(node->brother != NULL)
         handle_node(node->brother);
       break;
@@ -264,7 +264,7 @@ int handle_node(Node node)
       node->type = resolve_type(node->child->type, node->child->brother->type);
       if(node->brother != NULL)
         handle_node(node->brother);
-      printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
+      if(DEBUG)printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
       break;
     }
     case Store:
@@ -277,13 +277,12 @@ int handle_node(Node node)
       Node aux = node->child->brother;
       while(aux != NULL){
         put_type(aux);
-        aux = aux->next;
+        aux = aux->brother;
       }
-      while(aux != NULL){
       node->type = node->child->type;
       if(node->brother != NULL)
         handle_node(node->brother);
-      printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
+      if(DEBUG)printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
       break;
     }
 
