@@ -681,7 +681,7 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
     free(args);
     free(new_list);
     free(new_node);
-        return NULL;
+    return NULL;
   }
   else{
     paramDec = paramDec->brother;
