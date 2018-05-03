@@ -1,5 +1,10 @@
 int b(void) {
-  if(x){
-    x;
-  }
+  char a;
+  short b;
+  int c;
+  double d;
+  +a;
+  +b;
+  +c;
+  +d;
 }

@@ -3,6 +3,7 @@
 /*
 keep in mind:
 
+usar sempre find antes de create 
 undef levanta sempre erro quando e operado
 todos os tipos sao compativeis e guardamos o mais alto
 
@@ -124,6 +125,10 @@ int handle_node(Node node)
     if (current_table == NULL)
     {
       current_table = create_function_entry(id->value, type_spec->label, paramList, 1);
+      if(current_table == NULL){
+        if(node->brother != NULL) handle_node(node->brother);
+        return ERROR;
+      }
     }
     else
     {
@@ -194,8 +199,14 @@ int handle_node(Node node)
     Node paramList = id->brother;
 
     // TODO: We'll need to do something about re-declaring (else)
-    if (find_function_entry(id->value) == NULL)
+    if (find_function_entry(id->value) == NULL){
       create_function_entry(id->value, type_spec->label, paramList, 0);
+      if(find_function_entry(id->value) == NULL){
+        if(node->brother != NULL) handle_node(node->brother);
+        return ERROR;
+      }
+
+    }
 
     if (node->brother != NULL)
       handle_node(node->brother);
@@ -210,7 +221,13 @@ int handle_node(Node node)
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node aux = id->brother;
-    insert_symbol(current_table, id->value, type_spec->label);
+    if(type_spec->label == Void){
+      //3
+      printf("Invalid use of void type in declaration - %s\n", id->value);
+    }
+    else{
+      insert_symbol(current_table, id->value, type_spec->label);
+    }
     while(aux != NULL){
       put_type(aux);
       aux = aux->brother;
@@ -647,6 +664,14 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
   while (paramDec != NULL)
   {
     type_spec = paramDec->child;
+    if(type_spec->label == Void){
+      //3
+      printf("Invalid use of void type in declaration - %s\n", name);
+      free(args);
+      free(new_list);
+      free(new_node);
+      return NULL;
+    }
     id = type_spec->brother;
 
     Arg_list new_arg = (Arg_list)malloc(sizeof(_arg_list));
