@@ -1,3 +1,8 @@
+int main(void){
+  c();
+}
+
+/*
 int b(void) {
   char a;
   short b;
@@ -8,3 +13,4 @@ int b(void) {
   +c;
   +d;
 }
+*/

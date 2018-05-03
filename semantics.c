@@ -675,33 +675,43 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
 
   new_node->arg_list = args;
 
-  paramDec = paramDec->brother;
-
-  while (paramDec != NULL)
-  {
-    type_spec = paramDec->child;
-    if(type_spec->label == Void){
-      //3
-      printf("Line %d, col %d:Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
-      free(args);
-      free(new_list);
-      free(new_node);
-      return NULL;
-    }
-    id = type_spec->brother;
-
-    Arg_list new_arg = (Arg_list)malloc(sizeof(_arg_list));
-    new_arg->label = type_spec->label;
-
-    if (id != NULL && is_definition)
-      new_arg->name = id->value;
-    else
-      new_arg->name = NULL;
-
-    new_arg->next = NULL;
-    args->next = new_arg;
-    args = new_arg;
+  if(type_spec->label == Void && paramDec->brother != NULL){
+    //3
+    printf("Line %d, col %d:Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
+    free(args);
+    free(new_list);
+    free(new_node);
+        return NULL;
+  }
+  else{
     paramDec = paramDec->brother;
+    while (paramDec != NULL)
+    {
+      type_spec = paramDec->child;
+      if (type_spec->label == Void)
+      {
+        //3
+        printf("Line %d, col %d:Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
+        free(args);
+        free(new_list);
+        free(new_node);
+        return NULL;
+      }
+      id = type_spec->brother;
+
+      Arg_list new_arg = (Arg_list)malloc(sizeof(_arg_list));
+      new_arg->label = type_spec->label;
+
+      if (id != NULL && is_definition)
+        new_arg->name = id->value;
+      else
+        new_arg->name = NULL;
+
+      new_arg->next = NULL;
+      args->next = new_arg;
+      args = new_arg;
+      paramDec = paramDec->brother;
+    }
   }
 
   if (DEBUG)
