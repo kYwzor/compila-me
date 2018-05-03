@@ -287,12 +287,13 @@ int handle_node(Node node)
     handle_node(node->child);
     put_type(node->child);
     put_type(node->child->brother);
+    /*
+    Segundo o big nuno isto nao e assim
     if(node->child->type == undef){
       node->type = undef; 
     }
-    else{
-      node->type = node->child->brother->type; 
-    }
+    */
+    node->type = node->child->brother->type; 
     if (node->brother != NULL)
       handle_node(node->brother);
     if (DEBUG)
@@ -586,7 +587,7 @@ char *get_string_for_tables(Label label)
     break;
   default:
     s = get_label_string(label);
-    //printf("\n\n\nTHIS SHOULD NEVER HAPPEN!\n\n\n");
+    printf("\n\n\nTHIS SHOULD NEVER HAPPEN!\n\n\n");
     break;
   }
   return s;
@@ -758,11 +759,11 @@ void put_type(Node node)
           if (DEBUG)
             printf("%s encontrado na tabela global\n", node->value);
           node->type = symbol_entry->label;
+
           Table_list aux = find_function_entry(node->value);
+          //se for uma funcao
           if (aux != NULL)
-          {
             node->arg_list = aux->arg_list;
-          }
         }
       }
       if(symbol_entry == NULL){
@@ -771,24 +772,25 @@ void put_type(Node node)
     }
     break;
   }
-    case Void:
-    case Char:
-    case Double:
-    case Int:
-    case Short:
-      node->type = node->label;
-      break;
-    default:
+  case Void:
+  case Char:
+  case Double:
+  case Int:
+  case Short:
+    node->type = node->label;
+    break;
+
+  default:
+  {
+    if (node->type == Empty)
     {
-      if (node->type == Empty)
-      {
-        /*THIS IS A HACK, O HOMEM DOS KEBABS SABERA COMO FAZER ISTO DECENTEMENTE
+      /*THIS IS A HACK, O HOMEM DOS KEBABS SABERA COMO FAZER ISTO DECENTEMENTE
       printf("Putting type for %s\n", get_label_string(node->label));
       printf("---\nThis should never happen\n---\n");
       SE ELE NAO SOUBER VAMOS TENTAR FAZER ISTO EM HORAS MAIS NORMAIS*/
-        node->type = Empty;
-      }
-      break;
+      node->type = Empty;
     }
-    }
+  break;
+  }
+  }
 }

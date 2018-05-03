@@ -27,9 +27,9 @@ terminator                                          \r\n|\n|\r
 separator                                           \t|" "|\v|\f
 %%
 \/\/.*                                              {column+=yyleng;};
-({numero})+                                         {handleToken("INTLIT"); yylval.value = strdup(yytext); return INTLIT;}
-(({numero})*\.?({numero})+|({numero})+\.?({numero})*)((e|E)[\-\+]?({numero})+)?       {handleToken("REALLIT"); yylval.value = strdup(yytext); return REALLIT;} 
-'({chrlitconst})'                                   {handleToken("CHRLIT"); yylval.value = strdup(yytext); return CHRLIT;}
+({numero})+                                         {handleToken("INTLIT"); yylval.data.value = strdup(yytext); return INTLIT;}
+(({numero})*\.?({numero})+|({numero})+\.?({numero})*)((e|E)[\-\+]?({numero})+)?       {handleToken("REALLIT"); yylval.data.value = strdup(yytext); return REALLIT;} 
+'({chrlitconst})'                                   {handleToken("CHRLIT"); yylval.data.value = strdup(yytext); return CHRLIT;}
 '([^'\n\r\\]|(\\.))*'                               {handleError(INVALID_CHARLIT);}
 '([^'\n\r\\]|(\\.))*\\?                             {handleError(UNTERM_CHARLIT);}
 \/\*                                                {BEGIN COMMENT; 
@@ -79,7 +79,7 @@ void                                                {handleKeyword("VOID"); retu
 \)                                                  {handleKeyword("RPAR"); return RPAR;}
 \;                                                  {handleKeyword("SEMI"); return SEMI;}
 ({reserved})                                        {handleToken("RESERVED"); return RESERVED;}
-[a-zA-Z_][a-zA-Z_0-9]*                              {handleToken("ID"); yylval.value = strdup(yytext); return ID;}
+[a-zA-Z_][a-zA-Z_0-9]*                              {handleToken("ID"); yylval.data.value = strdup(yytext); return ID;}
 ({separator})                                       {column += yyleng;}
 ({terminator})                                      {line++; column = 1;}
 <<EOF>>                                             {column++; return 0;}
@@ -118,6 +118,8 @@ void handleKeyword(char* keyword){
     if(flag==1){
         printf("%s\n", keyword);
     }
+    yylval.data.line = line;
+    yylval.data.column = column;
     column += yyleng;
 }
 
@@ -125,6 +127,8 @@ void handleToken(char* token_val){
     if(flag==1){
         printf("%s(%s)\n", token_val, yytext);
     }
+    yylval.data.line = line;
+    yylval.data.column = column;
     column += yyleng;
 }
 
