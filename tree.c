@@ -44,7 +44,17 @@ void print_tree(Node current, int depth){
 		}
 		if(current->type != Empty){
 			printf(" - %s",get_string_for_tables(current->type));
-			
+			if(current->arg_list != NULL){
+				Arg_list aux_arg = current->arg_list;
+				printf("(");
+				while(aux_arg != NULL){
+					printf("%s", get_string_for_tables(aux_arg->label));
+					aux_arg= aux_arg->next;
+					if(aux_arg != NULL)
+						printf(",");
+				}
+				printf(")");
+			}	
 			/*
 			Table_list aux = find_function_entry(current->value);
 			if(aux != NULL){

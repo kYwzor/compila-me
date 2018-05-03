@@ -147,11 +147,7 @@ int f1(char x, int y) {
 }
 
 
-int b(char);
 
-int b(char c) {
-  int x = 'a';
-}
 
 int f5(int a, int b);
 
@@ -178,10 +174,17 @@ int f8(char y) {
 
 int f9(int x, double y);
 
+int b(char);
+
+int b(char c) {
+  int x = 'a';
+}
 
 int teste(void) {
   int b = b;
 }
+
+
 
 void main1(void) {
   int c;
@@ -211,8 +214,11 @@ int help2(int x, int y){
 
 void f10(void);
 
+int ret;
 void f10(void) {
-     a, b;
+    ret;
+    a, b;
+    git, ret;
 }
 
 void f12(short a) {
@@ -223,4 +229,9 @@ int c;
 int e;
 
 int g(void) {
+}
+
+int fffffff(void){
+    int n = 0;
+    n + g;
 }

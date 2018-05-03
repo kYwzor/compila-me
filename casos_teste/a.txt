@@ -5,11 +5,13 @@ Line 125, col 12: Symbol e already defined
 Line 126, col 11: Symbol b already defined
 Line 146, col 8: Symbol x already defined
 Line 146, col 8: Conflicting types (got double, expected char)
-Line 161, col 7: Symbol n already defined
-Line 163, col 7: Symbol b already defined
-Line 164, col 10: Symbol b already defined
-Line 188, col 7: Symbol c already defined
-Line 215, col 6: Unknown symbol a
+Line 157, col 7: Symbol n already defined
+Line 159, col 7: Symbol b already defined
+Line 160, col 10: Symbol b already defined
+Line 191, col 7: Symbol c already defined
+Line 220, col 5: Unknown symbol a
+Line 221, col 5: Unknown symbol git
+Line 236, col 7: Operator + cannot be applied to types int, int(void)
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
@@ -29,13 +31,13 @@ f4	int(char)
 recursiva	void(int)
 f	int(char)
 f1	int(char,int)
-b	int(char)
 f5	int(int,int)
 f7	int(char,int)
 k	int
 v	int
 f8	int(char)
 f9	int(int,double)
+b	int(char)
 teste	int(void)
 main1	void(void)
 rekt	void(void)
@@ -43,10 +45,12 @@ help	int(int,int)
 help1	void(int,char)
 help2	int(int,int)
 f10	void(void)
+ret	int
 f12	void(short)
 c	int
 e	int
 g	int(void)
+fffffff	int(void)
 
 ===== Function x Symbol Table =====
 return	int
@@ -133,11 +137,6 @@ return	int
 x	char	param
 y	int	param
 
-===== Function b Symbol Table =====
-return	int
-c	char	param
-x	int
-
 ===== Function f5 Symbol Table =====
 return	int
 a	int	param
@@ -155,6 +154,11 @@ b	int	param
 return	int
 y	char	param
 x	char
+
+===== Function b Symbol Table =====
+return	int
+c	char	param
+x	int
 
 ===== Function teste Symbol Table =====
 return	int
@@ -191,6 +195,10 @@ b	double
 
 ===== Function g Symbol Table =====
 return	int
+
+===== Function fffffff Symbol Table =====
+return	int
+n	int
 
 Program
 ..FuncDefinition
@@ -735,24 +743,6 @@ Program
 ........RealLit(2.3) - double
 ..FuncDeclaration
 ....Int
-....Id(b)
-....ParamList
-......ParamDeclaration
-........Char
-..FuncDefinition
-....Int
-....Id(b)
-....ParamList
-......ParamDeclaration
-........Char
-........Id(c)
-....FuncBody
-......Declaration
-........Int
-........Id(x)
-........ChrLit('a') - int
-..FuncDeclaration
-....Int
 ....Id(f5)
 ....ParamList
 ......ParamDeclaration
@@ -829,6 +819,24 @@ Program
 ......ParamDeclaration
 ........Double
 ........Id(y)
+..FuncDeclaration
+....Int
+....Id(b)
+....ParamList
+......ParamDeclaration
+........Char
+..FuncDefinition
+....Int
+....Id(b)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(c)
+....FuncBody
+......Declaration
+........Int
+........Id(x)
+........ChrLit('a') - int
 ..FuncDefinition
 ....Int
 ....Id(teste)
@@ -920,6 +928,9 @@ Program
 ....ParamList
 ......ParamDeclaration
 ........Void
+..Declaration
+....Int
+....Id(ret)
 ..FuncDefinition
 ....Void
 ....Id(f10)
@@ -927,9 +938,13 @@ Program
 ......ParamDeclaration
 ........Void
 ....FuncBody
+......Id(ret) - int
 ......Comma - undef
 ........Id(a) - undef
 ........Id(b) - int(char)
+......Comma - undef
+........Id(git) - undef
+........Id(ret) - int
 ..FuncDefinition
 ....Void
 ....Id(f12)
@@ -955,3 +970,17 @@ Program
 ......ParamDeclaration
 ........Void
 ....FuncBody
+..FuncDefinition
+....Int
+....Id(fffffff)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Declaration
+........Int
+........Id(n)
+........IntLit(0) - int
+......Add - undef
+........Id(n) - int
+........Id(g) - int(void)

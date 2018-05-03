@@ -209,8 +209,12 @@ int handle_node(Node node)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
     Node type_spec = node->child;
     Node id = type_spec->brother;
-
+    Node aux = id->brother;
     insert_symbol(current_table, id->value, type_spec->label);
+    while(aux != NULL){
+      put_type(aux);
+      aux = aux->brother;
+    }
     full_expand(node);
     break;
   }
@@ -261,11 +265,27 @@ int handle_node(Node node)
       handle_node(node->brother);
     break;
   }
+  case Comma:
+  {
+    handle_node(node->child);
+    put_type(node->child);
+    put_type(node->child->brother);
+    if(node->child->type == undef){
+      node->type = undef; 
+    }
+    else{
+      node->type = node->child->brother->type; 
+    }
+    if (node->brother != NULL)
+      handle_node(node->brother);
+    if (DEBUG)
+      printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
+    break;
+  }
   case Add:
   case Sub:
   case Mul:
   case Div:
-  case Comma:
   case BitWiseAnd:
   case BitWiseXor:
   case BitWiseOr:
@@ -349,6 +369,16 @@ int handle_node(Node node)
     if (DEBUG)
       printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
     break;
+  }
+  case FuncBody:
+  {
+    Node children = node->child;
+    while(children != NULL){
+      if(children->label == Id)
+        put_type(children);
+      children = children->brother;
+    }
+    full_expand(node);
   }
 
   /* All operators, terminals and Null are defaulted for now */
@@ -539,7 +569,7 @@ char *get_string_for_tables(Label label)
     break;
   default:
     s = get_label_string(label);
-    printf("\n\n\nTHIS SHOULD NEVER HAPPEN!\n\n\n");
+    //printf("\n\n\nTHIS SHOULD NEVER HAPPEN!\n\n\n");
     break;
   }
   return s;
@@ -687,43 +717,53 @@ void put_type(Node node)
     else
     {
       Sym_list symbol_entry = find_symbol(current_table, node->value);
-      if (symbol_entry == NULL)
-        symbol_entry = find_symbol(global_table, node->value);
-      else if (DEBUG)
-        printf("%s encontrado na tabela local \n", node->value);
-      if (symbol_entry == NULL)
+      if (symbol_entry != NULL)
       {
-        node->type = undef;
-        return;
+        if (DEBUG){
+          printf("%s encontrado na tabela local \n", node->value);
+          printf("Symbol entry label is %s\n", get_label_string(symbol_entry->label));
+        }
+        node->type = symbol_entry->label;
       }
       else
       {
-        if (DEBUG)
-          printf("%s encontrado na tabela global\n", node->value);
-        node->type = symbol_entry->label;
-        return;
+        symbol_entry = find_symbol(global_table, node->value);
+        if (symbol_entry != NULL)
+        {
+          if (DEBUG)
+            printf("%s encontrado na tabela global\n", node->value);
+          node->type = symbol_entry->label;
+          Table_list aux = find_function_entry(node->value);
+          if (aux != NULL)
+          {
+            node->arg_list = aux->arg_list;
+          }
+        }
+      }
+      if(symbol_entry == NULL){
+        node->type = undef;
       }
     }
     break;
   }
-  case Void:
-  case Char:
-  case Double:
-  case Int:
-  case Short:
-    node->type = node->label;
-    break;
-  default:
-  {
-    if (node->type == Empty)
+    case Void:
+    case Char:
+    case Double:
+    case Int:
+    case Short:
+      node->type = node->label;
+      break;
+    default:
     {
-      /*THIS IS A HACK, O HOMEM DOS KEBABS SABERA COMO FAZER ISTO DECENTEMENTE
+      if (node->type == Empty)
+      {
+        /*THIS IS A HACK, O HOMEM DOS KEBABS SABERA COMO FAZER ISTO DECENTEMENTE
       printf("Putting type for %s\n", get_label_string(node->label));
       printf("---\nThis should never happen\n---\n");
       SE ELE NAO SOUBER VAMOS TENTAR FAZER ISTO EM HORAS MAIS NORMAIS*/
-      node->type = Empty;
+        node->type = Empty;
+      }
+      break;
     }
-    break;
-  }
-  }
+    }
 }
