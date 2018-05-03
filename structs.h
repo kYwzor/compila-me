@@ -18,6 +18,8 @@ typedef struct node_s
   char *value;
   Node child;
   Node brother;
+  int line;
+  int column;
 } Node_t;
 
 typedef struct _t1* Sym_list;
@@ -41,5 +43,11 @@ typedef struct _tl{
   int is_defined;
   Table_list next;
 }_table_list;
+
+typedef struct _td{
+  char* value;
+  int line;
+  int column;
+}Token_data;
 
 
