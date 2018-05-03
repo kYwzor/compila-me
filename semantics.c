@@ -217,7 +217,6 @@ int handle_node(Node node)
 
   case RealLit:
   {
-    //TODO: double check this
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(RealLit));
     node->type = Double;
@@ -248,15 +247,13 @@ int handle_node(Node node)
   case Ne:
   case Lt:
   case Le:
-  case Not:
   case Gt:
   case Ge:
   case Mod:
   {
     handle_node(node->child);
     put_type(node->child);
-    if(node->child->brother != NULL)
-      put_type(node->child->brother);
+    put_type(node->child->brother);
     node->type = Int;
     if (DEBUG)
       printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
@@ -284,13 +281,33 @@ int handle_node(Node node)
     break;
   }
   case Store:
+  {
+    handle_node(node->child);
+    put_type(node->child);
+    put_type(node->child->brother);
+    node->type = node->child->type;
+    if (node->brother != NULL)
+      handle_node(node->brother);
+    if (DEBUG)
+      printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
+    break;
+  }
+  case Not:
+  {
+    handle_node(node->child);
+    put_type(node->child);
+    node->type = Int;
+    if (node->brother != NULL)
+      handle_node(node->brother);
+    if (DEBUG)
+      printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
+    break;
+  }  
   case Minus:
   case Plus:
   {
     handle_node(node->child);
     put_type(node->child);
-    if(node->child->brother != NULL)
-      put_type(node->child->brother);
     node->type = node->child->type;
     if (node->brother != NULL)
       handle_node(node->brother);
@@ -659,8 +676,7 @@ void put_type(Node node)
   {
   case Id:
   {
-    Arg_list arg_list = NULL;
-    arg_list = find_parameter(current_table, node->value);
+    Arg_list arg_list = find_parameter(current_table, node->value);
     if (arg_list != NULL)
     {
       if (DEBUG)
@@ -670,8 +686,7 @@ void put_type(Node node)
     }
     else
     {
-      Sym_list symbol_entry = NULL;
-      symbol_entry = find_symbol(current_table, node->value);
+      Sym_list symbol_entry = find_symbol(current_table, node->value);
       if (symbol_entry == NULL)
         symbol_entry = find_symbol(global_table, node->value);
       else if (DEBUG)
