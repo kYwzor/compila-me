@@ -251,14 +251,14 @@ Program
 ........Or - int
 ..........And - int
 ............Gt - int
-..............Id(x) - char
+..............Id(x) - char(char)
 ..............Id(y) - int
 ............Gt - int
 ..............Id(z) - int
 ..............Id(y) - int
 ..........Ne - int
 ............Id(z) - int
-............Id(x) - char
+............Id(x) - char(char)
 ........Null
 ........Return
 ..........IntLit(0) - int
@@ -379,7 +379,7 @@ Program
 ..........BitWiseOr - int
 ............Add - int
 ..............Id(a) - int
-..............Id(b) - int
+..............Id(b) - int(char)
 ............Mod - int
 ..............Id(c) - int
 ..............Id(d) - int
@@ -394,17 +394,17 @@ Program
 ..............Or - int
 ................Mul - int
 ..................Id(a) - int
-..................Id(b) - int
+..................Id(b) - int(char)
 ................Mod - int
 ..................Id(a) - int
 ..................Id(c) - int
 ..........Id(a) - int
 ......Store - int
 ........Id(a) - int
-........Id(b) - int
+........Id(b) - int(char)
 ......Call - int
-........Id(putchar) - int
-........Id(x) - double
+........Id(putchar) - int(int)
+........Id(x) - double(char)
 ..FuncDefinition
 ....Int
 ....Id(statements)
@@ -421,23 +421,23 @@ Program
 ..........IntLit(1) - int
 ..........IntLit(2) - int
 ........If
-..........Id(x) - int
+..........Id(x) - int(char)
 ..........If
-............Id(x) - int
+............Id(x) - int(char)
 ............StatList
 ..............Call - int
-................Id(putchar) - int
-................Id(x) - int
+................Id(putchar) - int(int)
+................Id(x) - int(char)
 ..............Return
 ................IntLit(1) - int
 ............If
 ..............IntLit(1) - int
 ..............Call - int
-................Id(putchar) - int
-................Id(x) - int
+................Id(putchar) - int(int)
+................Id(x) - int(char)
 ..............Call - int
-................Id(putchar) - int
-................Id(x) - int
+................Id(putchar) - int(int)
+................Id(x) - int(char)
 ..........While
 ............IntLit(1) - int
 ............Return
@@ -445,19 +445,19 @@ Program
 ......If
 ........And - int
 ..........Eq - int
-............Id(x) - int
+............Id(x) - int(char)
 ............IntLit(1) - int
 ..........Ne - int
-............Id(x) - int
+............Id(x) - int(char)
 ............IntLit(1) - int
 ........Return
 ..........IntLit(1) - int
 ........Null
 ......If
 ........Not - int
-..........Id(x) - int
+..........Id(x) - int(char)
 ........Call - int
-..........Id(putchar) - int
+..........Id(putchar) - int(int)
 ..........ChrLit('o') - int
 ........Null
 ..FuncDefinition
@@ -494,7 +494,7 @@ Program
 ........Id(e) - double
 ........IntLit(4) - int
 ......Store - double
-........Id(f) - double
+........Id(f) - double(char)
 ........Add - double
 ..........Id(d) - double
 ..........Id(e) - double
@@ -531,52 +531,52 @@ Program
 ........RealLit(2.4) - double
 ......Eq - int
 ........Id(xd) - int
-........Id(huehue) - short
+........Id(huehue) - short(int)
 ......Gt - int
 ........Id(xd) - int
-........Id(huehue) - short
+........Id(huehue) - short(int)
 ......Lt - int
 ........Id(xd) - int
-........Id(huehue) - short
+........Id(huehue) - short(int)
 ......Ge - int
 ........Id(xd) - int
-........Id(huehue) - short
+........Id(huehue) - short(int)
 ......Le - int
 ........Id(xd) - int
-........Id(huehue) - short
+........Id(huehue) - short(int)
 ......BitWiseOr - int
 ........Id(xd) - int
-........Id(huehue) - short
+........Id(huehue) - short(int)
 ......BitWiseAnd - int
 ........Id(xd) - int
-........Id(huehue) - short
+........Id(huehue) - short(int)
 ......Ne - int
 ........Id(xd) - int
-........Id(huehue) - short
+........Id(huehue) - short(int)
 ......And - int
 ........Id(xd) - int
-........Id(huehue) - short
+........Id(huehue) - short(int)
 ......Or - int
 ........Id(xd) - int
-........Id(huehue) - short
+........Id(huehue) - short(int)
 ......BitWiseXor - int
 ........Id(xd) - int
-........Id(huehue) - short
+........Id(huehue) - short(int)
 ......Store - int
 ........Id(xd) - int
 ........Mod - int
 ..........Id(xd) - int
-..........Id(huehue) - short
+..........Id(huehue) - short(int)
 ......Store - int
 ........Id(xd) - int
 ........Mul - int
 ..........Id(xd) - int
-..........Id(huehue) - short
+..........Id(huehue) - short(int)
 ......Store - int
 ........Id(xd) - int
 ........Div - int
 ..........Id(xd) - int
-..........Id(huehue) - short
+..........Id(huehue) - short(int)
 ......Not - int
 ........Id(xd) - int
 ......Plus - int
@@ -660,7 +660,7 @@ Program
 ........Int
 ........Id(h)
 ........Call - int
-..........Id(f2) - int
+..........Id(f2) - int(char,char)
 ..........ChrLit('a') - int
 ..........ChrLit('c') - int
 ......Return
@@ -697,7 +697,7 @@ Program
 ........Id(a)
 ....FuncBody
 ......Call - void
-........Id(recursiva) - void
+........Id(recursiva) - void(int)
 ........Id(a) - int
 ..FuncDeclaration
 ....Int
@@ -917,7 +917,7 @@ Program
 ....FuncBody
 ......Comma - undef
 ........Id(a) - undef
-........Id(b) - int
+........Id(b) - int(char)
 ..FuncDefinition
 ....Void
 ....Id(f12)

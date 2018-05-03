@@ -544,15 +544,19 @@ Arg_list get_function_args(char *name)
 
 Table_list find_function_entry(char *name)
 {
-  //printf("Looking for %s\n", name);
+  if(DEBUG)printf("Looking for %s\n", name);
   if (name == NULL)
     return NULL;
+  
   Table_list aux = global_table;
   while (aux != NULL)
   {
-    //printf("Comparing with %s\n", aux->table_node->name);
+    if(DEBUG)printf("Comparing with %s\n", aux->table_node->name);
     if (strcmp(aux->table_node->name, name) == 0)
+    {
+      if(DEBUG)printf("Found %s\n", name);
       return aux;
+    }
     aux = aux->next;
   }
   return NULL;
@@ -579,7 +583,6 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
   Node paramDec = paramList->child;
   Node type_spec = paramDec->child;
   Node id = type_spec->brother;
-
   Arg_list args = (Arg_list)malloc(sizeof(_arg_list));
   args->label = type_spec->label;
 
