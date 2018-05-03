@@ -126,12 +126,20 @@ int handle_node(Node node)
     {
       current_table = create_function_entry(id->value, type_spec->label, paramList, 1);
       if(current_table == NULL){
+        current_table = global_table;
         if(node->brother != NULL) handle_node(node->brother);
         return ERROR;
       }
     }
     else
     {
+      if(current_table->is_defined){
+        //Already defined, mate.
+        printf("Line %d, col %d:Symbol %s already defined\n", id->line, id->column, id->value); //not sure about the position
+        current_table = global_table;
+        if (node->brother != NULL) handle_node(node->brother);
+        return ERROR;
+      }
       // Ja foi declarada, temos que verificar parametros
       Arg_list aux = current_table->arg_list;
       Node paramDec = paramList->child;
@@ -223,7 +231,8 @@ int handle_node(Node node)
     Node aux = id->brother;
     if(type_spec->label == Void){
       //3
-      printf("Invalid use of void type in declaration - %s\n", id->value);
+      // Pus a ir buscar a linha do id... makes no sense to me, mas e o que esta no outro output?
+      printf("Line %d, col %d:Invalid use of void type in declaration\n", id->line, id->column);
     }
     else{
       insert_symbol(current_table, id->value, type_spec->label);
@@ -373,6 +382,12 @@ int handle_node(Node node)
   }
   case Call:
   {
+    if(find_function_entry(node->child->value)==NULL){
+      printf("Line %d, col %d:Symbol %s is not a function\n", node->child->line, node->child->column, node->child->value);
+      // TODO: Sera que se tem que anotar algo?
+      if (node->brother != NULL) handle_node(node->brother);
+      return ERROR;
+    }
     handle_node(node->child);
     put_type(node->child);
     Node aux = node->child->brother;
@@ -667,7 +682,7 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
     type_spec = paramDec->child;
     if(type_spec->label == Void){
       //3
-      printf("Invalid use of void type in declaration - %s\n", name);
+      printf("Line %d, col %d:Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
       free(args);
       free(new_list);
       free(new_node);
@@ -767,6 +782,7 @@ void put_type(Node node)
         }
       }
       if(symbol_entry == NULL){
+        printf("Line %d, col %d:Unknown symbol %s\n", node->line, node->column, node->value);
         node->type = undef;
       }
     }
