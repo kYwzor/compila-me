@@ -130,6 +130,26 @@ int handle_node(Node node)
     current_table = find_function_entry(id->value);
     if (current_table == NULL)
     {
+      Sym_list found_symbol = find_symbol(global_table, id->value);
+      if(found_symbol != NULL){
+        char params_1[1024];
+        params_1[0] = '\0';
+        Node paramDec = paramList->child;
+        while (paramDec != NULL)
+        {
+          Node type = paramDec->child;
+          strcat(params_1, get_string_for_tables(type->label));
+          paramDec = paramDec->brother;
+          if(paramDec != NULL)
+            strcat(params_1, ",");
+        }
+        printf("Line %d, col %d: Conflicting types (got %s(%s), expected %s)\n", id->line, id->column, get_string_for_tables(type_spec->label), params_1, get_string_for_tables(found_symbol->label));
+        current_table = global_table;
+        if (node->brother != NULL)
+          handle_node(node->brother);
+        return ERROR;
+      }
+
       current_table = create_function_entry(id->value, type_spec->label, paramList, 1);
       if (current_table == NULL)
       {
@@ -262,6 +282,26 @@ int handle_node(Node node)
     Table_list found = find_function_entry(id->value);
     if (found == NULL)
     {
+      Sym_list found_symbol = find_symbol(global_table, id->value);
+      if(found_symbol != NULL){
+        char params_1[1024];
+        params_1[0] = '\0';
+        Node paramDec = paramList->child;
+        while (paramDec != NULL)
+        {
+          Node type = paramDec->child;
+          strcat(params_1, get_string_for_tables(type->label));
+          paramDec = paramDec->brother;
+          if(paramDec != NULL)
+            strcat(params_1, ",");
+        }
+        printf("Line %d, col %d: Conflicting types (got %s(%s), expected %s)\n", id->line, id->column, get_string_for_tables(type_spec->label), params_1, get_string_for_tables(found_symbol->label));
+        current_table = global_table;
+        if (node->brother != NULL)
+          handle_node(node->brother);
+        return ERROR;
+      }
+
       if (create_function_entry(id->value, type_spec->label, paramList, 0) == NULL)
       {
         if (node->brother != NULL)
