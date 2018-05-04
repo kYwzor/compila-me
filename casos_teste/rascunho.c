@@ -1,3 +1,9 @@
+int main(int a, int b);
+
+int main(int a, int b, int b, char b){
+ return -1;
+}
+/*
 double i(void){}
 void k(void);
 int j(void){
@@ -50,3 +56,4 @@ int j(void){
     _ || d;
     _ || k;
 }
+*/
