@@ -1,249 +1,236 @@
-	Handling (null) Program
-Program is Program
-		Current table is now Global
-Adding a new symbol table: putchar
-Adding putchar to Global table
-Adding a new symbol table: getchar
-Adding getchar to Global table
-	Handling (null) Declaration
-Declaration is Declaration
-Line 1, col 6: Invalid use of void type in declaration
-	Handling (null) Void
-Defaulted Void
-	Handling a Id
-Defaulted Id
-	Handling (null) FuncDefinition
-FuncDefinition is FuncDefinition
+Line 12, col 9: Operator + cannot be applied to types double, void(void)
+Line 13, col 11: Unknown symbol undef
+Line 13, col 9: Operator + cannot be applied to types double, undef
+Line 14, col 5: Operator ! cannot be applied to type double
+Line 18, col 5: Operator ! cannot be applied to type void(void)
+Line 19, col 5: Operator + cannot be applied to type void(void)
+Line 20, col 5: Operator - cannot be applied to type void(void)
+Line 22, col 9: Operator | cannot be applied to types double, int
+Line 23, col 9: Operator | cannot be applied to types double, double
+Line 24, col 9: Operator | cannot be applied to types double, short
+Line 25, col 9: Operator | cannot be applied to types double, char
+Line 26, col 9: Operator | cannot be applied to types double, void(void)
+Line 27, col 7: Operator | cannot be applied to types void(void), int
+Line 28, col 7: Operator | cannot be applied to types void(void), double
+Line 29, col 7: Operator | cannot be applied to types void(void), short
+Line 30, col 7: Operator | cannot be applied to types void(void), char
+Line 31, col 7: Operator | cannot be applied to types void(void), void(void)
+Line 32, col 5: Unknown symbol _
+Line 32, col 7: Operator | cannot be applied to types undef, int
+Line 33, col 5: Unknown symbol _
+Line 33, col 7: Operator | cannot be applied to types undef, double
+Line 34, col 5: Unknown symbol _
+Line 34, col 7: Operator | cannot be applied to types undef, short
+Line 35, col 5: Unknown symbol _
+Line 35, col 7: Operator | cannot be applied to types undef, char
+Line 36, col 5: Unknown symbol _
+Line 36, col 7: Operator | cannot be applied to types undef, void(void)
+Line 37, col 9: Operator || cannot be applied to types double, int
+Line 38, col 9: Operator || cannot be applied to types double, double
+Line 39, col 9: Operator || cannot be applied to types double, short
+Line 40, col 9: Operator || cannot be applied to types double, char
+Line 41, col 9: Operator || cannot be applied to types double, void(void)
+Line 42, col 7: Operator || cannot be applied to types void(void), int
+Line 43, col 7: Operator || cannot be applied to types void(void), double
+Line 44, col 7: Operator || cannot be applied to types void(void), short
+Line 45, col 7: Operator || cannot be applied to types void(void), char
+Line 46, col 7: Operator || cannot be applied to types void(void), void(void)
+Line 47, col 5: Unknown symbol _
+Line 47, col 7: Operator || cannot be applied to types undef, int
+Line 48, col 5: Unknown symbol _
+Line 48, col 7: Operator || cannot be applied to types undef, double
+Line 49, col 5: Unknown symbol _
+Line 49, col 7: Operator || cannot be applied to types undef, short
+Line 50, col 5: Unknown symbol _
+Line 50, col 7: Operator || cannot be applied to types undef, char
+Line 51, col 5: Unknown symbol _
+Line 51, col 7: Operator || cannot be applied to types undef, void(void)
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
+i	double(void)
+k	void(void)
+j	int(void)
 
-Looking for b
-Comparing with Global
-Comparing with putchar
-Comparing with getchar
-Adding a new symbol table: b
-Adding b to Global table
-	Handling (null) FuncBody
-Putting type for Id
-	Handling a Id
-Defaulted Id
-	Handling (null) Return
-	Handling (null) Null
-Defaulted Null
-Putting type for Null
-Assigned Return to Empty
-	Handling (null) FuncDefinition
-FuncDefinition is FuncDefinition
-===== Global Symbol Table =====
-putchar	int(int)
-getchar	int(void)
-b	void(void)
+===== Function i Symbol Table =====
+return	double
 
-===== Function b Symbol Table =====
-return	void
-
-Looking for c
-Comparing with Global
-Comparing with putchar
-Comparing with getchar
-Comparing with b
-Adding a new symbol table: c
-Adding c to Global table
-	Handling (null) FuncBody
-	Handling (null) Declaration
-Declaration is Declaration
-Line 7, col 10: Invalid use of void type in declaration
-	Handling (null) Void
-Defaulted Void
-	Handling d Id
-Defaulted Id
-	Handling (null) Return
-	Handling (null) Null
-Defaulted Null
-Putting type for Null
-Assigned Return to Empty
-	Handling (null) FuncDefinition
-FuncDefinition is FuncDefinition
-===== Global Symbol Table =====
-putchar	int(int)
-getchar	int(void)
-b	void(void)
-c	void(int)
-
-===== Function b Symbol Table =====
-return	void
-
-===== Function c Symbol Table =====
-return	void
-a	int	param
-
-Looking for d
-Comparing with Global
-Comparing with putchar
-Comparing with getchar
-Comparing with b
-Comparing with c
-Line 10, col 8: Invalid use of void type in declaration
-	Handling (null) FuncDefinition
-FuncDefinition is FuncDefinition
-===== Global Symbol Table =====
-putchar	int(int)
-getchar	int(void)
-b	void(void)
-c	void(int)
-
-===== Function b Symbol Table =====
-return	void
-
-===== Function c Symbol Table =====
-return	void
-a	int	param
-
-Looking for e
-Comparing with Global
-Comparing with putchar
-Comparing with getchar
-Comparing with b
-Comparing with c
-Line 12, col 15: Invalid use of void type in declaration
-	Handling (null) FuncDefinition
-FuncDefinition is FuncDefinition
-===== Global Symbol Table =====
-putchar	int(int)
-getchar	int(void)
-b	void(void)
-c	void(int)
-
-===== Function b Symbol Table =====
-return	void
-
-===== Function c Symbol Table =====
-return	void
-a	int	param
-
-Looking for f
-Comparing with Global
-Comparing with putchar
-Comparing with getchar
-Comparing with b
-Comparing with c
-Line 13, col 25: Invalid use of void type in declaration
-	Handling (null) FuncDeclaration
-FuncDeclaration is FuncDeclaration
-===== Global Symbol Table =====
-putchar	int(int)
-getchar	int(void)
-b	void(void)
-c	void(int)
-
-===== Function b Symbol Table =====
-return	void
-
-===== Function c Symbol Table =====
-return	void
-a	int	param
-
-Looking for g
-Comparing with Global
-Comparing with putchar
-Comparing with getchar
-Comparing with b
-Comparing with c
-Line 14, col 25: Invalid use of void type in declaration
-Looking for g
-Comparing with Global
-Comparing with putchar
-Comparing with getchar
-Comparing with b
-Comparing with c
-===== Global Symbol Table =====
-putchar	int(int)
-getchar	int(void)
-b	void(void)
-c	void(int)
-
-===== Function b Symbol Table =====
-return	void
-
-===== Function c Symbol Table =====
-return	void
-a	int	param
+===== Function j Symbol Table =====
+return	int
+a	int
+b	double
+c	short
+d	char
 
 Program
-..Declaration
-....Void
-....Id(a)
 ..FuncDefinition
-....Void
-....Id(b)
+....Double
+....Id(i)
 ....ParamList
 ......ParamDeclaration
 ........Void
-....FuncBody
-......Id(a)
-......Return
-........Null
-..FuncDefinition
-....Void
-....Id(c)
-....ParamList
-......ParamDeclaration
-........Int
-........Id(a)
-....FuncBody
-......Declaration
-........Void
-........Id(d)
-......Return
-........Null
-..FuncDefinition
-....Void
-....Id(d)
-....ParamList
-......ParamDeclaration
-........Void
-......ParamDeclaration
-........Void
-....FuncBody
-..FuncDefinition
-....Void
-....Id(e)
-....ParamList
-......ParamDeclaration
-........Int
-........Id(a)
-......ParamDeclaration
-........Void
-....FuncBody
-..FuncDefinition
-....Void
-....Id(f)
-....ParamList
-......ParamDeclaration
-........Int
-........Id(a)
-......ParamDeclaration
-........Double
-........Id(f)
-......ParamDeclaration
-........Void
-......ParamDeclaration
-........Short
-........Id(b)
 ....FuncBody
 ..FuncDeclaration
 ....Void
-....Id(g)
+....Id(k)
 ....ParamList
 ......ParamDeclaration
-........Int
-........Id(a)
-......ParamDeclaration
-........Double
-........Id(f)
+........Void
+..FuncDefinition
+....Int
+....Id(j)
+....ParamList
 ......ParamDeclaration
 ........Void
-......ParamDeclaration
-........Short
+....FuncBody
+......Declaration
+........Int
+........Id(a)
+......Declaration
+........Double
 ........Id(b)
+......Declaration
+........Short
+........Id(c)
+......Declaration
+........Char
+........Id(d)
+......Add - double
+........Call - double
+..........Id(i) - double(void)
+........Id(a) - int
+......Add - double
+........Call - double
+..........Id(i) - double(void)
+........Id(b) - double
+......Add - double
+........Call - double
+..........Id(i) - double(void)
+........Id(c) - short
+......Add - double
+........Call - double
+..........Id(i) - double(void)
+........Id(d) - char
+......Add - undef
+........Call - double
+..........Id(i) - double(void)
+........Id(k) - void(void)
+......Add - undef
+........Call - double
+..........Id(i) - double(void)
+........Id(undef) - undef
+......Not - int
+........Call - double
+..........Id(i) - double(void)
+......Plus - double
+........Call - double
+..........Id(i) - double(void)
+......Minus - double
+........Call - double
+..........Id(i) - double(void)
+......Not - int
+........Id(k) - void(void)
+......Plus - undef
+........Id(k) - void(void)
+......Minus - undef
+........Id(k) - void(void)
+......BitWiseOr - int
+........Call - double
+..........Id(i) - double(void)
+........Id(a) - int
+......BitWiseOr - int
+........Call - double
+..........Id(i) - double(void)
+........Id(b) - double
+......BitWiseOr - int
+........Call - double
+..........Id(i) - double(void)
+........Id(c) - short
+......BitWiseOr - int
+........Call - double
+..........Id(i) - double(void)
+........Id(d) - char
+......BitWiseOr - int
+........Call - double
+..........Id(i) - double(void)
+........Id(k) - void(void)
+......BitWiseOr - int
+........Id(k) - void(void)
+........Id(a) - int
+......BitWiseOr - int
+........Id(k) - void(void)
+........Id(b) - double
+......BitWiseOr - int
+........Id(k) - void(void)
+........Id(c) - short
+......BitWiseOr - int
+........Id(k) - void(void)
+........Id(d) - char
+......BitWiseOr - int
+........Id(k) - void(void)
+........Id(k) - void(void)
+......BitWiseOr - int
+........Id(_) - undef
+........Id(a) - int
+......BitWiseOr - int
+........Id(_) - undef
+........Id(b) - double
+......BitWiseOr - int
+........Id(_) - undef
+........Id(c) - short
+......BitWiseOr - int
+........Id(_) - undef
+........Id(d) - char
+......BitWiseOr - int
+........Id(_) - undef
+........Id(k) - void(void)
+......Or - int
+........Call - double
+..........Id(i) - double(void)
+........Id(a) - int
+......Or - int
+........Call - double
+..........Id(i) - double(void)
+........Id(b) - double
+......Or - int
+........Call - double
+..........Id(i) - double(void)
+........Id(c) - short
+......Or - int
+........Call - double
+..........Id(i) - double(void)
+........Id(d) - char
+......Or - int
+........Call - double
+..........Id(i) - double(void)
+........Id(k) - void(void)
+......Or - int
+........Id(k) - void(void)
+........Id(a) - int
+......Or - int
+........Id(k) - void(void)
+........Id(b) - double
+......Or - int
+........Id(k) - void(void)
+........Id(c) - short
+......Or - int
+........Id(k) - void(void)
+........Id(d) - char
+......Or - int
+........Id(k) - void(void)
+........Id(k) - void(void)
+......Or - int
+........Id(_) - undef
+........Id(a) - int
+......Or - int
+........Id(_) - undef
+........Id(b) - double
+......Or - int
+........Id(_) - undef
+........Id(c) - short
+......Or - int
+........Id(_) - undef
+........Id(d) - char
+......Or - int
+........Id(_) - undef
+........Id(k) - void(void)
