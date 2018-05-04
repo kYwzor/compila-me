@@ -144,6 +144,7 @@ int handle_node(Node node)
             strcat(params_1, ",");
         }
         printf("Line %d, col %d: Conflicting types (got %s(%s), expected %s)\n", id->line, id->column, get_string_for_tables(type_spec->label), params_1, get_string_for_tables(found_symbol->label));
+        handle_node(paramList->brother); //FuncBody
         current_table = global_table;
         if (node->brother != NULL)
           handle_node(node->brother);
@@ -187,7 +188,18 @@ int handle_node(Node node)
       {
         Node type = paramDec->child;
         Node new_id = type->brother;
-        if (type->label == Void && (count > 0 || paramDec->brother != NULL || id != NULL)){
+        if (new_id != NULL){
+          if(find_parameter(current_table, new_id->value) != NULL){
+            printf("Line %d, col %d: Symbol %s already defined\n", new_id->line, new_id->column, new_id->value);
+            old_args->name = NULL;
+          }
+          else
+            old_args->name = new_id->value;
+        }
+        else
+          old_args->name = NULL;
+
+        if (type->label == Void && (count > 0 || paramDec->brother != NULL || new_id != NULL)){
           printf("Line %d, col %d: Invalid use of void type in declaration\n", type->line, type->column);
           current_table = global_table;
           if (node->brother != NULL) handle_node(node->brother);
@@ -200,12 +212,7 @@ int handle_node(Node node)
           conflict = 1;
           break;
         }
-        if (type->label == old_args->label)
-        {
-          if (new_id != NULL)
-            old_args->name = new_id->value;
-        }
-        else
+        if (type->label != old_args->label)
         {
           if (DEBUG)
             printf("error: labels don't match\n");
@@ -252,6 +259,7 @@ int handle_node(Node node)
             strcat(params_2, ",");
         }
         printf("Line %d, col %d: Conflicting types (got %s(%s), expected %s(%s))\n", id->line, id->column, get_string_for_tables(type_spec->label), params_1, get_string_for_tables(current_table->table_node->label), params_2);
+        handle_node(paramList->brother); //FuncBody
         current_table = global_table;
         if (node->brother != NULL) handle_node(node->brother);
         return ERROR;
@@ -296,7 +304,6 @@ int handle_node(Node node)
             strcat(params_1, ",");
         }
         printf("Line %d, col %d: Conflicting types (got %s(%s), expected %s)\n", id->line, id->column, get_string_for_tables(type_spec->label), params_1, get_string_for_tables(found_symbol->label));
-        current_table = global_table;
         if (node->brother != NULL)
           handle_node(node->brother);
         return ERROR;
@@ -317,7 +324,17 @@ int handle_node(Node node)
       while (paramDec != NULL)
       {
         Node type = paramDec->child;
-        //Node id = type->brother;
+        Node new_id = type->brother;
+        if (new_id != NULL){
+          if(find_parameter(found, new_id->value) != NULL){
+            printf("Line %d, col %d: Symbol %s already defined\n", new_id->line, new_id->column, new_id->value);
+            old_args->name = NULL;
+          }
+          else
+            old_args->name = new_id->value;
+        }
+        else
+          old_args->name = NULL;
         if (type->label == Void && (count > 0 || paramDec->brother != NULL || id!=NULL)){
           printf("Line %d, col %d: Invalid use of void type in declaration\n", type->line, type->column);
           current_table = global_table;
@@ -587,6 +604,7 @@ int handle_node(Node node)
   }
   case Call:
   {
+    /*
     if (find_function_entry(node->child->value) == NULL)
     {
       printf("Line %d, col %d: Symbol %s is not a function\n", node->child->line, node->child->column, node->child->value);
@@ -595,6 +613,7 @@ int handle_node(Node node)
         handle_node(node->brother);
       return ERROR;
     }
+    */
     handle_node(node->child);
     put_type(node->child);
     Node aux = node->child->brother;
@@ -903,15 +922,6 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
   while (paramDec != NULL)
   {
     type_spec = paramDec->child;
-    if (type_spec->label == Void)
-    {
-      //3
-      printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
-      free(args);
-      free(new_list);
-      free(new_node);
-      return NULL;
-    }
     id = type_spec->brother;
 
     Arg_list new_arg = (Arg_list)malloc(sizeof(_arg_list));
@@ -927,6 +937,18 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
     }
     else
       new_arg->name = NULL;
+
+    if (type_spec->label == Void)
+    {
+      //3
+      printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
+      free(args);
+      free(new_list);
+      free(new_node);
+      free(new_arg);
+      return NULL;
+    }
+
 
     new_arg->next = NULL;
     args->next = new_arg;
