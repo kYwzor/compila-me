@@ -152,7 +152,7 @@ int handle_node(Node node)
       if (current_table->is_defined)
       {
         //Already defined, mate.
-        printf("Line %d, col %d: Symbol %s already defined\n", id->line, id->column, id->value); //not sure about the position
+        printf("Line %d, col %d: Symbol %s already defined\n", id->line, id->column, id->value);
         current_table = global_table;
         if (node->brother != NULL)
           handle_node(node->brother);
@@ -167,7 +167,7 @@ int handle_node(Node node)
       {
         Node type = paramDec->child;
         Node new_id = type->brother;
-        if (type->label == Void && (count > 0 || paramDec->brother != NULL)){
+        if (type->label == Void && (count > 0 || paramDec->brother != NULL || id != NULL)){
           printf("Line %d, col %d: Invalid use of void type in declaration\n", type->line, type->column);
           current_table = global_table;
           if (node->brother != NULL) handle_node(node->brother);
@@ -278,7 +278,7 @@ int handle_node(Node node)
       {
         Node type = paramDec->child;
         //Node id = type->brother;
-        if (type->label == Void && (count > 0 || paramDec->brother != NULL)){
+        if (type->label == Void && (count > 0 || paramDec->brother != NULL || id!=NULL)){
           printf("Line %d, col %d: Invalid use of void type in declaration\n", type->line, type->column);
           current_table = global_table;
           if (node->brother != NULL) handle_node(node->brother);
@@ -838,6 +838,16 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
   Node type_spec = paramDec->child;
   Node id = type_spec->brother;
   Arg_list args = (Arg_list)malloc(sizeof(_arg_list));
+
+  if (type_spec->label == Void && (paramDec->brother != NULL || id!=NULL))
+  {
+    //3
+    printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
+    free(args);
+    free(new_list);
+    free(new_node);
+    return NULL;
+  }
   args->label = type_spec->label;
 
   if (id != NULL)
@@ -849,45 +859,41 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
 
   new_node->arg_list = args;
 
-  if (type_spec->label == Void && paramDec->brother != NULL)
+  paramDec = paramDec->brother;
+  while (paramDec != NULL)
   {
-    //3
-    printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
-    free(args);
-    free(new_list);
-    free(new_node);
-    return NULL;
-  }
-  else
-  {
-    paramDec = paramDec->brother;
-    while (paramDec != NULL)
+    type_spec = paramDec->child;
+    if (type_spec->label == Void)
     {
-      type_spec = paramDec->child;
-      if (type_spec->label == Void)
-      {
-        //3
-        printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
+      //3
+      printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
+      free(args);
+      free(new_list);
+      free(new_node);
+      return NULL;
+    }
+    id = type_spec->brother;
+
+    Arg_list new_arg = (Arg_list)malloc(sizeof(_arg_list));
+    new_arg->label = type_spec->label;
+
+    if (id != NULL){
+      if(find_parameter(new_node, id->value) != NULL){
+        printf("Line %d, col %d: Symbol %s already defined\n", id->line, id->column, id->value);
         free(args);
         free(new_list);
         free(new_node);
         return NULL;
       }
-      id = type_spec->brother;
-
-      Arg_list new_arg = (Arg_list)malloc(sizeof(_arg_list));
-      new_arg->label = type_spec->label;
-
-      if (id != NULL && is_definition)
-        new_arg->name = id->value;
-      else
-        new_arg->name = NULL;
-
-      new_arg->next = NULL;
-      args->next = new_arg;
-      args = new_arg;
-      paramDec = paramDec->brother;
+      new_arg->name = id->value;
     }
+    else
+      new_arg->name = NULL;
+
+    new_arg->next = NULL;
+    args->next = new_arg;
+    args = new_arg;
+    paramDec = paramDec->brother;
   }
 
   if (DEBUG)
