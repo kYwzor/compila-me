@@ -1,0 +1,124 @@
+Line 2, col 6: Invalid use of void type in declaration
+Line 2, col 6: Symbol a already defined
+Line 4, col 8: Invalid use of void type in declaration
+Line 14, col 17: Invalid use of void type in declaration
+Line 19, col 21: Invalid use of void type in declaration
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+a	int
+sa	int(int,char)
+b	int(int,int)
+c	int(int,int)
+d	int(int,int)
+
+===== Function sa Symbol Table =====
+return	int
+a	int	param
+b	char	param
+
+===== Function d Symbol Table =====
+return	int
+
+Program
+..Declaration
+....Int
+....Id(a)
+..Declaration
+....Void
+....Id(a)
+..FuncDeclaration
+....Int
+....Id(sa)
+....ParamList
+......ParamDeclaration
+........Void
+......ParamDeclaration
+........Void
+......ParamDeclaration
+........Void
+..FuncDefinition
+....Int
+....Id(sa)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(a)
+......ParamDeclaration
+........Char
+........Id(b)
+....FuncBody
+......Return
+........IntLit(1) - int
+..FuncDeclaration
+....Int
+....Id(sa)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Char
+..FuncDeclaration
+....Int
+....Id(b)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Int
+..FuncDefinition
+....Int
+....Id(b)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Void
+....FuncBody
+......Return
+........IntLit(0)
+..FuncDeclaration
+....Int
+....Id(c)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Int
+..FuncDefinition
+....Int
+....Id(c)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(a)
+......ParamDeclaration
+........Int
+........Id(b)
+......ParamDeclaration
+........Void
+....FuncBody
+......Return
+........IntLit(2)
+..FuncDeclaration
+....Int
+....Id(d)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Int
+..FuncDefinition
+....Int
+....Id(d)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Int
+....FuncBody
+......Return
+........Minus - int
+..........IntLit(1) - int
