@@ -131,7 +131,8 @@ int handle_node(Node node)
     if (current_table == NULL)
     {
       Sym_list found_symbol = find_symbol(global_table, id->value);
-      if(found_symbol != NULL){
+      if (found_symbol != NULL)
+      {
         char params_1[1024];
         params_1[0] = '\0';
         Node paramDec = paramList->child;
@@ -140,7 +141,7 @@ int handle_node(Node node)
           Node type = paramDec->child;
           strcat(params_1, get_string_for_tables(type->label));
           paramDec = paramDec->brother;
-          if(paramDec != NULL)
+          if (paramDec != NULL)
             strcat(params_1, ",");
         }
         printf("Line %d, col %d: Conflicting types (got %s(%s), expected %s)\n", id->line, id->column, get_string_for_tables(type_spec->label), params_1, get_string_for_tables(found_symbol->label));
@@ -187,10 +188,12 @@ int handle_node(Node node)
       {
         Node type = paramDec->child;
         Node new_id = type->brother;
-        if (type->label == Void && (count > 0 || paramDec->brother != NULL || id != NULL)){
+        if (type->label == Void && (count > 0 || paramDec->brother != NULL || id != NULL))
+        {
           printf("Line %d, col %d: Invalid use of void type in declaration\n", type->line, type->column);
           current_table = global_table;
-          if (node->brother != NULL) handle_node(node->brother);
+          if (node->brother != NULL)
+            handle_node(node->brother);
           return ERROR;
         }
         if (old_args == NULL)
@@ -222,13 +225,15 @@ int handle_node(Node node)
           printf("error: older definitions had more parameters\n");
         conflict = 1;
       }
-      if(type_spec->label != current_table->table_node->label){
+      if (type_spec->label != current_table->table_node->label)
+      {
         if (DEBUG)
           printf("error: different label\n");
         conflict = 1;
       }
-
-      if (conflict){
+ 
+      if (conflict)
+      {
         char params_1[1024];
         params_1[0] = '\0';
         Node paramDec = paramList->child;
@@ -237,7 +242,7 @@ int handle_node(Node node)
           Node type = paramDec->child;
           strcat(params_1, get_string_for_tables(type->label));
           paramDec = paramDec->brother;
-          if(paramDec != NULL)
+          if (paramDec != NULL)
             strcat(params_1, ",");
         }
 
@@ -253,7 +258,8 @@ int handle_node(Node node)
         }
         printf("Line %d, col %d: Conflicting types (got %s(%s), expected %s(%s))\n", id->line, id->column, get_string_for_tables(type_spec->label), params_1, get_string_for_tables(current_table->table_node->label), params_2);
         current_table = global_table;
-        if (node->brother != NULL) handle_node(node->brother);
+        if (node->brother != NULL)
+          handle_node(node->brother);
         return ERROR;
       }
     }
@@ -283,7 +289,8 @@ int handle_node(Node node)
     if (found == NULL)
     {
       Sym_list found_symbol = find_symbol(global_table, id->value);
-      if(found_symbol != NULL){
+      if (found_symbol != NULL)
+      {
         char params_1[1024];
         params_1[0] = '\0';
         Node paramDec = paramList->child;
@@ -292,7 +299,7 @@ int handle_node(Node node)
           Node type = paramDec->child;
           strcat(params_1, get_string_for_tables(type->label));
           paramDec = paramDec->brother;
-          if(paramDec != NULL)
+          if (paramDec != NULL)
             strcat(params_1, ",");
         }
         printf("Line %d, col %d: Conflicting types (got %s(%s), expected %s)\n", id->line, id->column, get_string_for_tables(type_spec->label), params_1, get_string_for_tables(found_symbol->label));
@@ -309,7 +316,8 @@ int handle_node(Node node)
         return ERROR;
       }
     }
-    else{
+    else
+    {
       int conflict = 0;
       Arg_list old_args = found->arg_list;
       Node paramDec = paramList->child;
@@ -318,10 +326,12 @@ int handle_node(Node node)
       {
         Node type = paramDec->child;
         //Node id = type->brother;
-        if (type->label == Void && (count > 0 || paramDec->brother != NULL || id!=NULL)){
+        if (type->label == Void && (count > 0 || paramDec->brother != NULL || id != NULL))
+        {
           printf("Line %d, col %d: Invalid use of void type in declaration\n", type->line, type->column);
           current_table = global_table;
-          if (node->brother != NULL) handle_node(node->brother);
+          if (node->brother != NULL)
+            handle_node(node->brother);
           return ERROR;
         }
         if (old_args == NULL)
@@ -348,13 +358,15 @@ int handle_node(Node node)
           printf("error: older definitions had more parameters\n");
         conflict = 1;
       }
-      if(type_spec->label != found->table_node->label){
+      if (type_spec->label != found->table_node->label)
+      {
         if (DEBUG)
           printf("error: different label\n");
         conflict = 1;
       }
 
-      if (conflict){
+      if (conflict)
+      {
         char params_1[1024];
         params_1[0] = '\0';
         Node paramDec = paramList->child;
@@ -363,7 +375,7 @@ int handle_node(Node node)
           Node type = paramDec->child;
           strcat(params_1, get_string_for_tables(type->label));
           paramDec = paramDec->brother;
-          if(paramDec != NULL)
+          if (paramDec != NULL)
             strcat(params_1, ",");
         }
 
@@ -404,18 +416,21 @@ int handle_node(Node node)
     }
     Arg_list argums = find_parameter(current_table, id->value);
     Sym_list symb = find_symbol(current_table, id->value);
-    if (argums!=NULL){
+    if (argums != NULL)
+    {
       printf("Line %d, col %d: Symbol %s already defined\n", id->line, id->column, id->value);
       conflict = 1;
     }
-    else if(symb!=NULL){
-      if(symb->label != type_spec->label || current_table!=global_table){
+    else if (symb != NULL)
+    {
+      if (symb->label != type_spec->label || current_table != global_table)
+      {
         printf("Line %d, col %d: Symbol %s already defined\n", id->line, id->column, id->value);
         conflict = 1;
-      } 
+      }
     }
 
-    if(!conflict)
+    if (!conflict)
       insert_symbol(current_table, id->value, type_spec->label);
 
     while (aux != NULL)
@@ -467,6 +482,43 @@ int handle_node(Node node)
     put_type(node->child);
     put_type(node->child->brother);
     node->type = Int;
+    if (node->child->brother->type == Double || node->child->type ==  Double || node->child->brother->type == Void || node->child->brother->type == undef || node->child->type == undef || node->child->type == Void)
+    {
+      printf("Line %d, col %d: Operator %s cannot be applied to types %s", node->line, node->column, get_operator_string(node->label), get_string_for_tables(node->child->type));
+      Table_list aux = find_function_entry(node->child->value);
+      if (aux != NULL)
+      {
+        printf("(");
+        Arg_list aux_args = aux->arg_list;
+        while (aux_args != NULL)
+        {
+          printf("%s", get_string_for_tables(aux_args->label));
+          aux_args = aux_args->next;
+          if (aux_args != NULL)
+            printf(",");
+        }
+        printf(")");
+      }
+      printf(", %s",get_string_for_tables(node->child->brother->type));
+      aux = find_function_entry(node->child->brother->value);
+      if (aux != NULL)
+      {
+        printf("(");
+        Arg_list aux_args = aux->arg_list;
+        while (aux_args != NULL)
+        {
+          printf("%s", get_string_for_tables(aux_args->label));
+          aux_args = aux_args->next;
+          if (aux_args != NULL)
+            printf(",");
+        }
+        printf(")");
+      }
+      printf("\n");
+      if (node->brother != NULL)
+        handle_node(node->brother);
+      return ERROR;
+    }
     if (DEBUG)
       printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
     if (node->brother != NULL)
@@ -499,9 +551,39 @@ int handle_node(Node node)
     handle_node(node->child);
     put_type(node->child);
     put_type(node->child->brother);
-    if(node->child->brother->type == Void || node->child->brother->type == undef || node->child->type == undef || node->child->type == Void)
+    if (node->child->brother->type == Void || node->child->brother->type == undef || node->child->type == undef || node->child->type == Void)
     {
-      printf("Line %d, col %d: Operator %s cannot be applied to types %s, %s\n", node->line, node->column, get_label_string(node->label), get_string_for_tables(node->child->type), get_string_for_tables(node->child->brother->type));
+      printf("Line %d, col %d: Operator %s cannot be applied to types %s", node->line, node->column, get_operator_string(node->label), get_string_for_tables(node->child->type));
+      Table_list aux = find_function_entry(node->child->value);
+      if (aux != NULL)
+      {
+        printf("(");
+        Arg_list aux_args = aux->arg_list;
+        while (aux_args != NULL)
+        {
+          printf("%s", get_string_for_tables(aux_args->label));
+          aux_args = aux_args->next;
+          if (aux_args != NULL)
+            printf(",");
+        }
+        printf(")");
+      }
+      printf(", %s",get_string_for_tables(node->child->brother->type));
+      aux = find_function_entry(node->child->brother->value);
+      if (aux != NULL)
+      {
+        printf("(");
+        Arg_list aux_args = aux->arg_list;
+        while (aux_args != NULL)
+        {
+          printf("%s", get_string_for_tables(aux_args->label));
+          aux_args = aux_args->next;
+          if (aux_args != NULL)
+            printf(",");
+        }
+        printf(")");
+      }
+      printf("\n");
       node->type = undef;
       if (node->brother != NULL)
         handle_node(node->brother);
@@ -522,7 +604,44 @@ int handle_node(Node node)
     put_type(node->child);
     put_type(node->child->brother);
     node->type = Int;
-        if (node->brother != NULL)
+    if (node->child->brother->type == Double || node->child->type ==  Double || node->child->brother->type == Void || node->child->brother->type == undef || node->child->type == undef || node->child->type == Void)
+    {
+printf("Line %d, col %d: Operator %s cannot be applied to types %s", node->line, node->column, get_operator_string(node->label), get_string_for_tables(node->child->type));
+      Table_list aux = find_function_entry(node->child->value);
+      if (aux != NULL)
+      {
+        printf("(");
+        Arg_list aux_args = aux->arg_list;
+        while (aux_args != NULL)
+        {
+          printf("%s", get_string_for_tables(aux_args->label));
+          aux_args = aux_args->next;
+          if (aux_args != NULL)
+            printf(",");
+        }
+        printf(")");
+      }
+      printf(", %s",get_string_for_tables(node->child->brother->type));
+      aux = find_function_entry(node->child->brother->value);
+      if (aux != NULL)
+      {
+        printf("(");
+        Arg_list aux_args = aux->arg_list;
+        while (aux_args != NULL)
+        {
+          printf("%s", get_string_for_tables(aux_args->label));
+          aux_args = aux_args->next;
+          if (aux_args != NULL)
+            printf(",");
+        }
+        printf(")");
+      }
+      printf("\n");
+      if (node->brother != NULL)
+        handle_node(node->brother);
+      return ERROR;
+    }
+    if (node->brother != NULL)
       handle_node(node->brother);
     if (DEBUG)
       printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
@@ -554,7 +673,31 @@ int handle_node(Node node)
   {
     handle_node(node->child);
     put_type(node->child);
-    node->type = Int;
+    if (node->child->type != Void && node->child->type != undef && node->child->type != Double)
+      node->type = Int;
+    else
+    {
+printf("Line %d, col %d: Operator %s cannot be applied to type %s", node->line, node->column, get_operator_string(node->label), get_string_for_tables(node->child->type));
+      Table_list aux = find_function_entry(node->child->value);
+      if (aux != NULL)
+      {
+        printf("(");
+        Arg_list aux_args = aux->arg_list;
+        while (aux_args != NULL)
+        {
+          printf("%s", get_string_for_tables(aux_args->label));
+          aux_args = aux_args->next;
+          if (aux_args != NULL)
+            printf(",");
+        }
+        printf(")");
+      }
+      printf("\n");
+      node->type = Int;
+      if (node->brother != NULL)
+        handle_node(node->brother);
+      return ERROR;
+    }
     if (node->brother != NULL)
       handle_node(node->brother);
     if (DEBUG)
@@ -566,7 +709,31 @@ int handle_node(Node node)
   {
     handle_node(node->child);
     put_type(node->child);
-    node->type = node->child->type;
+    if (node->child->type != Void && node->child->type != undef)
+      node->type = node->child->type;
+    else
+    {
+      printf("Line %d, col %d: Operator %s cannot be applied to type %s", node->line, node->column, get_operator_string(node->label), get_string_for_tables(node->child->type));
+      Table_list aux = find_function_entry(node->child->value);
+      if (aux != NULL)
+      {
+        printf("(");
+        Arg_list aux_args = aux->arg_list;
+        while (aux_args != NULL)
+        {
+          printf("%s", get_string_for_tables(aux_args->label));
+          aux_args = aux_args->next;
+          if (aux_args != NULL)
+            printf(",");
+        }
+        printf(")");
+      }
+      printf("\n");
+      node->type = undef;
+      if (node->brother != NULL)
+        handle_node(node->brother);
+      return ERROR;
+    }
     if (node->brother != NULL)
       handle_node(node->brother);
     if (DEBUG)
@@ -885,7 +1052,7 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
   Node id = type_spec->brother;
   Arg_list args = (Arg_list)malloc(sizeof(_arg_list));
 
-  if (type_spec->label == Void && (paramDec->brother != NULL || id!=NULL))
+  if (type_spec->label == Void && (paramDec->brother != NULL || id != NULL))
   {
     //3
     printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
@@ -923,8 +1090,10 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
     Arg_list new_arg = (Arg_list)malloc(sizeof(_arg_list));
     new_arg->label = type_spec->label;
 
-    if (id != NULL){
-      if(find_parameter(new_node, id->value) != NULL){
+    if (id != NULL)
+    {
+      if (find_parameter(new_node, id->value) != NULL)
+      {
         printf("Line %d, col %d: Symbol %s already defined\n", id->line, id->column, id->value);
         new_arg->name = NULL;
       }
@@ -1017,17 +1186,16 @@ void put_type(Node node)
           if (aux != NULL)
             node->arg_list = aux->arg_list;
         }
-        else{
+        else
+        {
           node->type = undef;
         }
       }
-      /*
       if (symbol_entry == NULL)
       {
         printf("Line %d, col %d: Unknown symbol %s\n", node->line, node->column, node->value);
         node->type = undef;
       }
-      */
     }
     break;
   }
@@ -1052,4 +1220,69 @@ void put_type(Node node)
     break;
   }
   }
+}
+
+char * get_operator_string(Label label){
+  char * s;
+  switch(label){
+  case Or:
+    s = "||";
+    break;
+  case And:
+    s = "&&";
+    break;
+  case Eq:
+    s = "==";
+    break;
+  case Ne:
+    s = "!=";
+    break;
+  case Lt:
+    s = "<";
+    break;
+  case Le:
+    s = "<=";
+    break;
+  case Gt:
+    s = ">";
+    break;
+  case Ge:
+    s = ">=";
+    break;
+  case Mod:
+    s = "%";
+    break;
+  case Comma:
+    s = ",";
+    break;
+  case Plus:
+  case Add:
+    s = "+";
+    break;
+  case Minus:
+  case Sub:
+    s = "-";
+    break;
+  case Not:
+    s = "!";
+    break;
+  case Mul:
+    s = "*";
+    break;
+  case Div:
+    s = "/";
+    break;
+  case BitWiseAnd:
+    s = "&";
+    break;
+  case BitWiseXor:
+    s = "^";
+    break;
+  case BitWiseOr:
+    s = "|";
+    break;
+  default:
+    s = "erro na traducao de operadores";
+  }
+  return s;
 }
