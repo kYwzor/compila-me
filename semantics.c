@@ -119,7 +119,6 @@ int handle_node(Node node)
   {
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDefinition));
-    print_tables();
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node paramList = id->brother;
@@ -135,16 +134,7 @@ int handle_node(Node node)
           handle_node(node->brother);
         return ERROR;
       }
-      /*
-      if (DEBUG)
-      {
-        //TODO: Sinto que ha aqui um problema
-        if (current_table != NULL)
-          printf("\t\tCurrent table is now %s\n", current_table->table_node->name);
-        else
-          printf("\t\tCurrent table is now NULL\n");
-      }
-      */
+
       if (current_table == NULL)
       {
         current_table = global_table;
@@ -155,19 +145,11 @@ int handle_node(Node node)
     }
     else
     {
-      /*
-      if (DEBUG)
-        printf("\t\tCurrent table is now %s\n", current_table->table_node->name);
-        */
       if (current_table->is_defined)
       {
         //Already defined, mate.
         printf("Line %d, col %d:Symbol %s already defined\n", id->line, id->column, id->value); //not sure about the position
         current_table = global_table;
-        /*
-        if (DEBUG)
-          printf("\t\tCurrent table is now %s\n", current_table->table_node->name);
-          */
         if (node->brother != NULL)
           handle_node(node->brother);
         return ERROR;
@@ -175,27 +157,22 @@ int handle_node(Node node)
       // Ja foi declarada, temos que verificar parametros
       Arg_list aux = current_table->arg_list;
       Node paramDec = paramList->child;
+      int count = 0;
       while (paramDec != NULL)
       {
         Node type_spec = paramDec->child;
         Node id = type_spec->brother;
-        if (DEBUG)
-        {
-          if (id != NULL)
-            printf("Got label %s and name %s\n", get_label_string(type_spec->label), id->value);
-          else
-            printf("Got label %s and name %s\n", get_label_string(type_spec->label), NULL);
+        if (type_spec->label == Void && count > 0){
+          printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
+          current_table = global_table;
+          if (node->brother != NULL) handle_node(node->brother);
+          return ERROR;
         }
         if (aux == NULL)
         {
           if (DEBUG)
             printf("error: there's more parameters on definition than on declaration\n");
           break;
-        }
-        else
-        {
-          if (DEBUG)
-            printf("Existing label is %s\n", get_label_string(aux->label));
         }
         if (type_spec->label == aux->label)
         {
@@ -210,6 +187,7 @@ int handle_node(Node node)
 
         paramDec = paramDec->brother;
         aux = aux->next;
+        count++;
       }
 
       if (aux != NULL)
@@ -237,7 +215,6 @@ int handle_node(Node node)
   {
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDeclaration));
-    print_tables();
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node paramList = id->brother;
@@ -264,10 +241,22 @@ int handle_node(Node node)
   {
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
+
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node aux = id->brother;
-    if (type_spec->label == Void)
+    // nao sei que check deve ser primeiro, void ou already defined
+    Arg_list args = find_parameter(current_table, id->value);
+    Sym_list symb = find_symbol(current_table, id->value);
+    if (args!=NULL){
+      printf("Line %d, col %d:Symbol %s already defined\n", id->line, id->column, id->value);
+    }
+    else if(symb!=NULL){
+        if(symb->label != type_spec->label || current_table!=global_table){
+          printf("Line %d, col %d:Symbol %s already defined\n", id->line, id->column, id->value);
+        }
+    }
+    else if (type_spec->label == Void)
     {
       //3
       // Pus a ir buscar a linha do id... makes no sense to me, mas e o que esta no outro output?
