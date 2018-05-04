@@ -425,7 +425,7 @@ int handle_node(Node node)
     handle_node(node->child);
     put_type(node->child);
     put_type(node->child->brother);
-    if(node->child->brother->type == Void || node->child->brother->type == undef || node->child->type == undef ||node->child->type == Void ||)
+    if(node->child->brother->type == Void || node->child->brother->type == undef || node->child->type == undef ||node->child->type == Void )
     {
       //Operator error goes here TODO
     }
