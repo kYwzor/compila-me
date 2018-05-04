@@ -232,12 +232,13 @@ int handle_node(Node node)
             strcat(params_2, ",");
         }
         printf("Line %d, col %d: Conflicting types (got %s(%s), expected %s(%s))\n", id->line, id->column, get_string_for_tables(type_spec->label), params_1, get_string_for_tables(current_table->table_node->label), params_2);
-      }
-      else{
-        current_table->is_defined = 1;
-        handle_node(paramList->brother); //FuncBody
+        current_table = global_table;
+        if (node->brother != NULL) handle_node(node->brother);
+        return ERROR;
       }
     }
+    current_table->is_defined = 1;
+    handle_node(paramList->brother); //FuncBody
     current_table = global_table;
     /*
     if (DEBUG)
@@ -361,7 +362,6 @@ int handle_node(Node node)
       printf("Line %d, col %d: Invalid use of void type in declaration\n", id->line, id->column);
       conflict = 1;
     }
-
     Arg_list argums = find_parameter(current_table, id->value);
     Sym_list symb = find_symbol(current_table, id->value);
     if (argums!=NULL){
@@ -572,6 +572,8 @@ int handle_node(Node node)
   }
   case FuncBody:
   {
+    if (DEBUG)
+      printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncBody));
     Node children = node->child;
     while (children != NULL)
     {
