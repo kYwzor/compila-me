@@ -155,51 +155,85 @@ int handle_node(Node node)
         return ERROR;
       }
       // Ja foi declarada, temos que verificar parametros
-      Arg_list aux = current_table->arg_list;
+      int conflict = 0;
+      Arg_list old_args = current_table->arg_list;
       Node paramDec = paramList->child;
       int count = 0;
       while (paramDec != NULL)
       {
-        Node type_spec = paramDec->child;
-        Node id = type_spec->brother;
-        if (type_spec->label == Void && (count > 0 || paramDec->brother != NULL)){
-          printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
+        Node type = paramDec->child;
+        Node new_id = type->brother;
+        if (type->label == Void && (count > 0 || paramDec->brother != NULL)){
+          printf("Line %d, col %d: Invalid use of void type in declaration\n", type->line, type->column);
           current_table = global_table;
           if (node->brother != NULL) handle_node(node->brother);
           return ERROR;
         }
-        if (aux == NULL)
+        if (old_args == NULL)
         {
           if (DEBUG)
-            printf("error: there's more parameters on definition than on declaration\n");
+            printf("error: there's more parameters than on older definitions\n");
+          conflict = 1;
           break;
         }
-        if (type_spec->label == aux->label)
+        if (type_spec->label == old_args->label)
         {
-          if (id != NULL)
-            aux->name = id->value;
+          if (new_id != NULL)
+            old_args->name = new_id->value;
         }
         else
         {
           if (DEBUG)
             printf("error: labels don't match\n");
+          conflict = 1;
         }
 
         paramDec = paramDec->brother;
-        aux = aux->next;
+        old_args = old_args->next;
         count++;
       }
-
-      if (aux != NULL)
+      if (old_args != NULL)
       {
         if (DEBUG)
-          printf("error: there's more parameters on declaration than on definition\n");
+          printf("error: older definitions had more parameters\n");
+        conflict = 1;
       }
-      current_table->is_defined = 1;
+      if(type_spec->label != current_table->table_node->label){
+        if (DEBUG)
+          printf("error: different label\n");
+        conflict = 1;
+      }
+
+      if (conflict){
+        char params_1[1024];
+        params_1[0] = '\0';
+        Node paramDec = paramList->child;
+        while (paramDec != NULL)
+        {
+          Node type = paramDec->child;
+          strcat(params_1, get_string_for_tables(type->label));
+          paramDec = paramDec->brother;
+          if(paramDec != NULL)
+            strcat(params_1, ",");
+        }
+
+        char params_2[1024];
+        params_2[0] = '\0';
+        Arg_list aux_args = current_table->arg_list;
+        while (aux_args != NULL)
+        {
+          strcat(params_2, get_string_for_tables(aux_args->label));
+          aux_args = aux_args->next;
+          if (aux_args != NULL)
+            strcat(params_2, ",");
+        }
+        printf("Line %d, col %d: Conflicting types (got %s(%s), expected %s(%s))\n", id->line, id->column, get_string_for_tables(type_spec->label), params_1, get_string_for_tables(current_table->table_node->label), params_2);
+      }
+      else{
+        current_table->is_defined = 1;
+        handle_node(paramList->brother); //FuncBody
+      }
     }
-
-    handle_node(paramList->brother); //FuncBody
-
     current_table = global_table;
     /*
     if (DEBUG)
