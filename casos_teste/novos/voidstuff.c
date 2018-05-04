@@ -24,3 +24,13 @@ int d(int, int);
 int d(int, int){
 	return -1;
 }
+
+int e(int a, int b){
+	return -2;
+}
+
+int e(int a, void);
+
+int f(int a, int b, int c);
+
+int f(int a, char b, void);
