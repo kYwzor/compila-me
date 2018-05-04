@@ -227,6 +227,12 @@ int handle_node(Node node)
       }
       if (old_args != NULL)
       {
+        /*
+        TODO LIST
+        lvalue comentado e submeter, fix se der tempo
+        merge de tudo, deve dar conflitos
+        casos de teste do prof
+        */
         if (DEBUG)
           printf("error: older definitions had more parameters\n");
         conflict = 1;
