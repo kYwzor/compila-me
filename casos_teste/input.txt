@@ -1,0 +1,54 @@
+Line 3, col 5: Conflicting types (got int(int,int,int), expected int(int,int))
+Line 7, col 1: Symbol i is not a function
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+main	int(int,int)
+
+Program
+..FuncDeclaration
+....Int
+....Id(main)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(a)
+......ParamDeclaration
+........Int
+........Id(b)
+..FuncDefinition
+....Int
+....Id(main)
+....ParamList
+......ParamDeclaration
+........Int
+........Id(b)
+......ParamDeclaration
+........Int
+........Id(a)
+......ParamDeclaration
+........Int
+........Id(c)
+....FuncBody
+......Declaration
+........Char
+........Id(i)
+........ChrLit('A') - int
+......While
+........Le - int
+..........Id(i) - char
+..........ChrLit('Z') - int
+........StatList
+..........Call - char
+............Id(i) - char
+............Id(i)
+..........Store - char
+............Id(i) - char
+............Add - int
+..............Id(i) - char
+..............IntLit(1) - int
+..........Store - char
+............Id(i) - char
+............IntLit(1) - int
+......Return
+........IntLit(0) - int

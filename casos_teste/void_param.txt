@@ -1,0 +1,24 @@
+Line 1, col 20: Symbol b already defined
+Line 1, col 15: Invalid use of void type in declaration
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+
+Program
+..FuncDefinition
+....Int
+....Id(f)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(b)
+......ParamDeclaration
+........Void
+........Id(b)
+....FuncBody
+......Declaration
+........Int
+........Id(a)
+......Declaration
+........Short
+........Id(b)

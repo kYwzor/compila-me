@@ -1,0 +1,174 @@
+Line 5, col 8: Conflicting types (got double(int,char), expected double(int,int,int))
+Line 8, col 2: Wrong number of arguments to function lol (got 1, required 0)
+Line 14, col 14: Invalid use of void type in declaration
+Line 31, col 5: Conflicting types (got int(double), expected double(int,int,int))
+Line 32, col 5: Conflicting types (got int(char,int), expected double(int,int,int))
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+lol	void(void)
+main	double(int,int,int)
+b	int
+H	int
+
+Program
+..FuncDeclaration
+....Void
+....Id(lol)
+....ParamList
+......ParamDeclaration
+........Void
+..FuncDeclaration
+....Double
+....Id(main)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Int
+..FuncDefinition
+....Double
+....Id(main)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Char
+....FuncBody
+......Declaration
+........Char
+........Id(c)
+......Call - void
+........Id(lol) - void(void)
+........Id(c) - char
+......Return
+........IntLit(0) - int
+..Declaration
+....Int
+....Id(b)
+..Declaration
+....Int
+....Id(H)
+..FuncDefinition
+....Void
+....Id(lol)
+....ParamList
+......ParamDeclaration
+........Int
+......ParamDeclaration
+........Void
+......ParamDeclaration
+........Int
+........Id(a)
+....FuncBody
+......Declaration
+........Int
+........Id(b)
+......Declaration
+........Char
+........Id(a)
+......Declaration
+........Char
+........Id(b)
+......Declaration
+........Char
+........Id(c)
+......Declaration
+........Char
+........Id(d)
+........IntLit(2)
+......Declaration
+........Char
+........Id(e)
+......If
+........Comma
+..........Lt
+............Id(a)
+............IntLit(2)
+..........And
+............Gt
+..............Id(b)
+..............IntLit(3)
+............IntLit(4)
+........Store
+..........Id(a)
+..........Add
+............Id(a)
+............IntLit(1)
+........Store
+..........Id(a)
+..........IntLit(2)
+......While
+........Id(a)
+........Store
+..........Id(a)
+..........Add
+............Id(a)
+............IntLit(2)
+......Store
+........Id(c)
+........Or
+..........And
+............Id(c)
+............BitWiseOr
+..............BitWiseAnd
+................Le
+..................Ge
+....................Gt
+......................Lt
+........................Id(a)
+........................Id(d)
+......................Id(e)
+....................Id(b)
+..................Not
+....................Id(e)
+................Id(a)
+..............Id(e)
+..........And
+............Id(e)
+............Id(a)
+......Null
+......Comma
+........Store
+..........Id(a)
+..........Add
+............Mul
+..............Id(a)
+..............IntLit(2)
+............Id(b)
+........Sub
+..........IntLit(2)
+..........Mod
+............Div
+..............IntLit(9)
+..............IntLit(2)
+............IntLit(1)
+......Call
+........Id(lol)
+........Id(a)
+........Id(b)
+........Call
+..........Id(b)
+..........Id(a)
+..........Id(a)
+........Id(b)
+......Return
+........Id(a)
+..FuncDeclaration
+....Int
+....Id(main)
+....ParamList
+......ParamDeclaration
+........Double
+........Id(f)
+..FuncDeclaration
+....Int
+....Id(main)
+....ParamList
+......ParamDeclaration
+........Char
+........Id(b)
+......ParamDeclaration
+........Int
