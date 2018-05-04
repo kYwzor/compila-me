@@ -478,7 +478,7 @@ int handle_node(Node node)
     handle_node(node->child);
     put_type(node->child);
     put_type(node->child->brother);
-    /*
+    /*i
     Segundo o big nuno isto nao e assim
     if(node->child->type == undef){
       node->type = undef; 
@@ -499,9 +499,13 @@ int handle_node(Node node)
     handle_node(node->child);
     put_type(node->child);
     put_type(node->child->brother);
-    if(node->child->brother->type == Void || node->child->brother->type == undef || node->child->type == undef ||node->child->type == Void )
+    if(node->child->brother->type == Void || node->child->brother->type == undef || node->child->type == undef || node->child->type == Void)
     {
-      //Operator error goes here TODO
+      printf("Line %d, col %d: Operator %s cannot be applied to types %s, %s\n", node->line, node->column, get_label_string(node->label), get_string_for_tables(node->child->type), get_string_for_tables(node->child->brother->type));
+      node->type = undef;
+      if (node->brother != NULL)
+        handle_node(node->brother);
+      return ERROR;
     }
     node->type = resolve_type(node->child->type, node->child->brother->type);
     if (node->brother != NULL)
@@ -517,8 +521,8 @@ int handle_node(Node node)
     handle_node(node->child);
     put_type(node->child);
     put_type(node->child->brother);
-    node->type = resolve_type(node->child->type, node->child->brother->type);
-    if (node->brother != NULL)
+    node->type = Int;
+        if (node->brother != NULL)
       handle_node(node->brother);
     if (DEBUG)
       printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
@@ -529,7 +533,8 @@ int handle_node(Node node)
     handle_node(node->child);
     put_type(node->child);
     put_type(node->child->brother);
-    Node left_child = node->child;
+    //Node left_child = node->child;
+    /*
     if(left_child->label != Id || (find_parameter(current_table, left_child->value) == NULL && find_symbol(current_table, left_child->value) == NULL)){
       printf("Line %d, col %d: Lvalue required\n", left_child->line, left_child->column);
       node->type = undef;
@@ -537,6 +542,7 @@ int handle_node(Node node)
         handle_node(node->brother);
       return ERROR;
     }
+    */
     node->type = node->child->type;
     if (node->brother != NULL)
       handle_node(node->brother);
@@ -1012,6 +1018,9 @@ void put_type(Node node)
           //se for uma funcao
           if (aux != NULL)
             node->arg_list = aux->arg_list;
+        }
+        else{
+          node->type = undef;
         }
       }
       /*

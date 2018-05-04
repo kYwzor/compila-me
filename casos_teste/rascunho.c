@@ -12,11 +12,13 @@ int j(void){
     i() + k;
     i() + undef;
     !i();
+    //not pode ser feito em qualquer coisa que nao seja um double
     +i();
     -i();
     !k;
     +k;
     -k;
+    
     i() | a;
     i() | b;
     i() | c;
