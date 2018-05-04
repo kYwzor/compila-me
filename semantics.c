@@ -92,6 +92,8 @@ int handle_node(Node node)
     global_table->next = NULL;
 
     current_table = global_table;
+    if (DEBUG)
+      printf("\t\tCurrent table is now %s\n", current_table->table_node->name);
 
     Node aux = (Node)malloc(sizeof(Node_t));   //paramlist
     aux->child = (Node)malloc(sizeof(Node_t)); //ParamDeclaration
@@ -117,6 +119,7 @@ int handle_node(Node node)
   {
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDefinition));
+    print_tables();
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node paramList = id->brother;
@@ -125,19 +128,48 @@ int handle_node(Node node)
     if (current_table == NULL)
     {
       current_table = create_function_entry(id->value, type_spec->label, paramList, 1);
-      if(current_table == NULL){
+      if (current_table == NULL)
+      {
         current_table = global_table;
-        if(node->brother != NULL) handle_node(node->brother);
+        if (node->brother != NULL)
+          handle_node(node->brother);
+        return ERROR;
+      }
+      /*
+      if (DEBUG)
+      {
+        //TODO: Sinto que ha aqui um problema
+        if (current_table != NULL)
+          printf("\t\tCurrent table is now %s\n", current_table->table_node->name);
+        else
+          printf("\t\tCurrent table is now NULL\n");
+      }
+      */
+      if (current_table == NULL)
+      {
+        current_table = global_table;
+        if (node->brother != NULL)
+          handle_node(node->brother);
         return ERROR;
       }
     }
     else
     {
-      if(current_table->is_defined){
+      /*
+      if (DEBUG)
+        printf("\t\tCurrent table is now %s\n", current_table->table_node->name);
+        */
+      if (current_table->is_defined)
+      {
         //Already defined, mate.
         printf("Line %d, col %d:Symbol %s already defined\n", id->line, id->column, id->value); //not sure about the position
         current_table = global_table;
-        if (node->brother != NULL) handle_node(node->brother);
+        /*
+        if (DEBUG)
+          printf("\t\tCurrent table is now %s\n", current_table->table_node->name);
+          */
+        if (node->brother != NULL)
+          handle_node(node->brother);
         return ERROR;
       }
       // Ja foi declarada, temos que verificar parametros
@@ -191,7 +223,10 @@ int handle_node(Node node)
     handle_node(paramList->brother); //FuncBody
 
     current_table = global_table;
-
+    /*
+    if (DEBUG)
+      printf("\t\tCurrent table is now %s\n", current_table->table_node->name);
+    */
     if (node->brother != NULL)
       handle_node(node->brother);
 
@@ -202,18 +237,21 @@ int handle_node(Node node)
   {
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDeclaration));
+    print_tables();
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node paramList = id->brother;
 
-    // TODO: We'll need to do something about re-declaring (else)
-    if (find_function_entry(id->value) == NULL){
+    //TODO: We'll need to do something about re-declaring (else)
+    if (find_function_entry(id->value) == NULL)
+    {
       create_function_entry(id->value, type_spec->label, paramList, 0);
-      if(find_function_entry(id->value) == NULL){
-        if(node->brother != NULL) handle_node(node->brother);
+      if (find_function_entry(id->value) == NULL)
+      {
+        if (node->brother != NULL)
+          handle_node(node->brother);
         return ERROR;
       }
-
     }
 
     if (node->brother != NULL)
@@ -229,15 +267,18 @@ int handle_node(Node node)
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node aux = id->brother;
-    if(type_spec->label == Void){
+    if (type_spec->label == Void)
+    {
       //3
       // Pus a ir buscar a linha do id... makes no sense to me, mas e o que esta no outro output?
-      printf("Line %d, col %d:Invalid use of void type in declaration\n", id->line, id->column);
+      printf("Line %d, col %d: Invalid use of void type in declaration\n", id->line, id->column);
     }
-    else{
+    else
+    {
       insert_symbol(current_table, id->value, type_spec->label);
     }
-    while(aux != NULL){
+    while (aux != NULL)
+    {
       put_type(aux);
       aux = aux->brother;
     }
@@ -302,7 +343,7 @@ int handle_node(Node node)
       node->type = undef; 
     }
     */
-    node->type = node->child->brother->type; 
+    node->type = node->child->brother->type;
     if (node->brother != NULL)
       handle_node(node->brother);
     if (DEBUG)
@@ -349,7 +390,7 @@ int handle_node(Node node)
     if (DEBUG)
       printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
     break;
-  }  
+  }
   case Minus:
   case Plus:
   {
@@ -382,10 +423,12 @@ int handle_node(Node node)
   }
   case Call:
   {
-    if(find_function_entry(node->child->value)==NULL){
+    if (find_function_entry(node->child->value) == NULL)
+    {
       printf("Line %d, col %d:Symbol %s is not a function\n", node->child->line, node->child->column, node->child->value);
       // TODO: Sera que se tem que anotar algo?
-      if (node->brother != NULL) handle_node(node->brother);
+      if (node->brother != NULL)
+        handle_node(node->brother);
       return ERROR;
     }
     handle_node(node->child);
@@ -406,12 +449,14 @@ int handle_node(Node node)
   case FuncBody:
   {
     Node children = node->child;
-    while(children != NULL){
-      if(children->label == Id)
+    while (children != NULL)
+    {
+      if (children->label == Id)
         put_type(children);
       children = children->brother;
     }
     full_expand(node);
+    break;
   }
 
   /* All operators, terminals and Null are defaulted for now */
@@ -624,17 +669,20 @@ Arg_list get_function_args(char *name)
 
 Table_list find_function_entry(char *name)
 {
-  if(DEBUG)printf("Looking for %s\n", name);
+  if (DEBUG)
+    printf("Looking for %s\n", name);
   if (name == NULL)
     return NULL;
-  
+
   Table_list aux = global_table;
   while (aux != NULL)
   {
-    if(DEBUG)printf("Comparing with %s\n", aux->table_node->name);
+    if (DEBUG)
+      printf("Comparing with %s\n", aux->table_node->name);
     if (strcmp(aux->table_node->name, name) == 0)
     {
-      if(DEBUG)printf("Found %s\n", name);
+      if (DEBUG)
+        printf("Found %s\n", name);
       return aux;
     }
     aux = aux->next;
@@ -675,15 +723,17 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
 
   new_node->arg_list = args;
 
-  if(type_spec->label == Void && paramDec->brother != NULL){
+  if (type_spec->label == Void && paramDec->brother != NULL)
+  {
     //3
-    printf("Line %d, col %d:Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
+    printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
     free(args);
     free(new_list);
     free(new_node);
     return NULL;
   }
-  else{
+  else
+  {
     paramDec = paramDec->brother;
     while (paramDec != NULL)
     {
@@ -691,7 +741,7 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
       if (type_spec->label == Void)
       {
         //3
-        printf("Line %d, col %d:Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
+        printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
         free(args);
         free(new_list);
         free(new_node);
@@ -770,7 +820,8 @@ void put_type(Node node)
       Sym_list symbol_entry = find_symbol(current_table, node->value);
       if (symbol_entry != NULL)
       {
-        if (DEBUG){
+        if (DEBUG)
+        {
           printf("%s encontrado na tabela local \n", node->value);
           printf("Symbol entry label is %s\n", get_label_string(symbol_entry->label));
         }
@@ -791,10 +842,13 @@ void put_type(Node node)
             node->arg_list = aux->arg_list;
         }
       }
-      if(symbol_entry == NULL){
-        printf("Line %d, col %d:Unknown symbol %s\n", node->line, node->column, node->value);
+      /*
+      if (symbol_entry == NULL)
+      {
+        printf("Line %d, col %d: Unknown symbol %s\n", node->line, node->column, node->value);
         node->type = undef;
       }
+      */
     }
     break;
   }
@@ -816,7 +870,7 @@ void put_type(Node node)
       SE ELE NAO SOUBER VAMOS TENTAR FAZER ISTO EM HORAS MAIS NORMAIS*/
       node->type = Empty;
     }
-  break;
+    break;
   }
   }
 }

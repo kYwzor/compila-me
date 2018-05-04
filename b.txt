@@ -1,0 +1,64 @@
+	Handling (null) Program
+Program is Program
+		Current table is now Global
+Adding a new symbol table: putchar
+Adding putchar to Global table
+Adding a new symbol table: getchar
+Adding getchar to Global table
+	Handling (null) Declaration
+Declaration is Declaration
+Line 1, col 6: Invalid use of void type in declaration
+	Handling (null) Void
+Defaulted Void
+	Handling a Id
+Defaulted Id
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+Looking for b
+Comparing with Global
+Comparing with putchar
+Comparing with getchar
+Adding a new symbol table: b
+Adding b to Global table
+		Current table is now b
+	Handling (null) FuncBody
+Putting type for Id
+Line 3, col 5: Unknown symbol a
+	Handling a Id
+Defaulted Id
+	Handling (null) Return
+	Handling (null) Null
+Defaulted Null
+Putting type for Null
+Assigned Return to Empty
+Defaulted FuncBody
+	Handling a Id
+Defaulted Id
+	Handling (null) Return
+	Handling (null) Null
+Defaulted Null
+Putting type for Null
+Assigned Return to Empty
+		Current table is now Global
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+b	void(void)
+
+===== Function b Symbol Table =====
+return	void
+
+Program
+..Declaration
+....Void
+....Id(a)
+..FuncDefinition
+....Void
+....Id(b)
+....ParamList
+......ParamDeclaration
+........Void
+....FuncBody
+......Id(a) - undef
+......Return
+........Null

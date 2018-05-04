@@ -1,16 +1,22 @@
 Line 1, col 6: Invalid use of void type in declaration
-Line 5, col 15: Invalid use of void type in declaration
-Line 9, col 8: Invalid use of void type in declaration
-Line 10, col 15: Invalid use of void type in declaration
-Line 11, col 25: Invalid use of void type in declaration
-Line 12, col 25: Invalid use of void type in declaration
+Line 3, col 5: Unknown symbol a
+Line 7, col 10: Invalid use of void type in declaration
+Line 10, col 8: Invalid use of void type in declaration
+Line 12, col 15: Invalid use of void type in declaration
+Line 13, col 25: Invalid use of void type in declaration
+Line 14, col 25: Invalid use of void type in declaration
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
 b	void(void)
+c	void(int)
 
 ===== Function b Symbol Table =====
 return	void
+
+===== Function c Symbol Table =====
+return	void
+a	int	param
 
 Program
 ..Declaration
@@ -23,6 +29,7 @@ Program
 ......ParamDeclaration
 ........Void
 ....FuncBody
+......Id(a) - undef
 ......Return
 ........Null
 ..FuncDefinition
@@ -32,12 +39,10 @@ Program
 ......ParamDeclaration
 ........Int
 ........Id(a)
-......ParamDeclaration
-........Void
 ....FuncBody
 ......Declaration
 ........Void
-........Id(b)
+........Id(d)
 ......Return
 ........Null
 ..FuncDefinition

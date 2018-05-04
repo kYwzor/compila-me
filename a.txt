@@ -1,9 +1,40 @@
-Invalid use of void type in declaration - a
-Invalid use of void type in declaration - c
-Invalid use of void type in declaration - d
-Invalid use of void type in declaration - e
-Invalid use of void type in declaration - f
-Invalid use of void type in declaration - g
+	Handling (null) Program
+Program is Program
+		Current table is now Global
+Adding a new symbol table: putchar
+Adding putchar to Global table
+Adding a new symbol table: getchar
+Adding getchar to Global table
+	Handling (null) Declaration
+Declaration is Declaration
+Line 1, col 6: Invalid use of void type in declaration
+	Handling (null) Void
+Defaulted Void
+	Handling a Id
+Defaulted Id
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+
+Looking for b
+Comparing with Global
+Comparing with putchar
+Comparing with getchar
+Adding a new symbol table: b
+Adding b to Global table
+	Handling (null) FuncBody
+Putting type for Id
+	Handling a Id
+Defaulted Id
+	Handling (null) Return
+	Handling (null) Null
+Defaulted Null
+Putting type for Null
+Assigned Return to Empty
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
 ===== Global Symbol Table =====
 putchar	int(int)
 getchar	int(void)
@@ -11,6 +42,133 @@ b	void(void)
 
 ===== Function b Symbol Table =====
 return	void
+
+Looking for c
+Comparing with Global
+Comparing with putchar
+Comparing with getchar
+Comparing with b
+Adding a new symbol table: c
+Adding c to Global table
+	Handling (null) FuncBody
+	Handling (null) Declaration
+Declaration is Declaration
+Line 7, col 10: Invalid use of void type in declaration
+	Handling (null) Void
+Defaulted Void
+	Handling d Id
+Defaulted Id
+	Handling (null) Return
+	Handling (null) Null
+Defaulted Null
+Putting type for Null
+Assigned Return to Empty
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+b	void(void)
+c	void(int)
+
+===== Function b Symbol Table =====
+return	void
+
+===== Function c Symbol Table =====
+return	void
+a	int	param
+
+Looking for d
+Comparing with Global
+Comparing with putchar
+Comparing with getchar
+Comparing with b
+Comparing with c
+Line 10, col 8: Invalid use of void type in declaration
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+b	void(void)
+c	void(int)
+
+===== Function b Symbol Table =====
+return	void
+
+===== Function c Symbol Table =====
+return	void
+a	int	param
+
+Looking for e
+Comparing with Global
+Comparing with putchar
+Comparing with getchar
+Comparing with b
+Comparing with c
+Line 12, col 15: Invalid use of void type in declaration
+	Handling (null) FuncDefinition
+FuncDefinition is FuncDefinition
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+b	void(void)
+c	void(int)
+
+===== Function b Symbol Table =====
+return	void
+
+===== Function c Symbol Table =====
+return	void
+a	int	param
+
+Looking for f
+Comparing with Global
+Comparing with putchar
+Comparing with getchar
+Comparing with b
+Comparing with c
+Line 13, col 25: Invalid use of void type in declaration
+	Handling (null) FuncDeclaration
+FuncDeclaration is FuncDeclaration
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+b	void(void)
+c	void(int)
+
+===== Function b Symbol Table =====
+return	void
+
+===== Function c Symbol Table =====
+return	void
+a	int	param
+
+Looking for g
+Comparing with Global
+Comparing with putchar
+Comparing with getchar
+Comparing with b
+Comparing with c
+Line 14, col 25: Invalid use of void type in declaration
+Looking for g
+Comparing with Global
+Comparing with putchar
+Comparing with getchar
+Comparing with b
+Comparing with c
+===== Global Symbol Table =====
+putchar	int(int)
+getchar	int(void)
+b	void(void)
+c	void(int)
+
+===== Function b Symbol Table =====
+return	void
+
+===== Function c Symbol Table =====
+return	void
+a	int	param
 
 Program
 ..Declaration
@@ -23,6 +181,7 @@ Program
 ......ParamDeclaration
 ........Void
 ....FuncBody
+......Id(a)
 ......Return
 ........Null
 ..FuncDefinition
@@ -32,12 +191,10 @@ Program
 ......ParamDeclaration
 ........Int
 ........Id(a)
-......ParamDeclaration
-........Void
 ....FuncBody
 ......Declaration
 ........Void
-........Id(b)
+........Id(d)
 ......Return
 ........Null
 ..FuncDefinition

@@ -1,9 +1,10 @@
 void a;
 void b(void){
+    a;
     return;
 }
-void c(int a, void){
-    void b;
+void c(int a){
+    void d;
     return;
 }
 void d(void, 
