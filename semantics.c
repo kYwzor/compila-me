@@ -7,6 +7,10 @@ usar sempre find antes de create
 undef levanta sempre erro quando e operado
 todos os tipos sao compativeis e guardamos o mais alto
 
+tip do faju
+int a = 2 + 2.3;
+
+
 declarations podem ser duplicadas na global mas nao dentro de funcoes
 
 plus deve ser sempre inteiro? tricky shit
@@ -343,6 +347,21 @@ int handle_node(Node node)
   case Sub:
   case Mul:
   case Div:
+  {
+    handle_node(node->child);
+    put_type(node->child);
+    put_type(node->child->brother);
+    if(node->child->brother->type == Void || node->child->brother->type == undef || node->child->type == undef ||node->child->type == Void ||)
+    {
+      //Operator error goes here TODO
+    }
+    node->type = resolve_type(node->child->type, node->child->brother->type);
+    if (node->brother != NULL)
+      handle_node(node->brother);
+    if (DEBUG)
+      printf("Assigned %s to %s\n", get_label_string(node->label), get_label_string(node->type));
+    break;
+  }
   case BitWiseAnd:
   case BitWiseXor:
   case BitWiseOr:
@@ -362,6 +381,14 @@ int handle_node(Node node)
     handle_node(node->child);
     put_type(node->child);
     put_type(node->child->brother);
+    Node left_child = node->child;
+    if(left_child->label != Id || (find_parameter(current_table, left_child->value) == NULL && find_symbol(current_table, left_child->value) == NULL)){
+      printf("Line %d, col %d: Lvalue required\n", left_child->line, left_child->column);
+      node->type = undef;
+      if (node->brother != NULL)
+        handle_node(node->brother);
+      return ERROR;
+    }
     node->type = node->child->type;
     if (node->brother != NULL)
       handle_node(node->brother);
