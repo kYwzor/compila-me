@@ -243,9 +243,9 @@ Postfix_expr:
 
 Primary_expr:
     ID                  {$$ = create_node(Id, $1.value); $$->line = $1.line; $$->column = $1.column;}
-    | INTLIT            {$$ = create_node(IntLit, $1.value);}
-    | CHRLIT            {$$ = create_node(ChrLit, $1.value);}
-    | REALLIT           {$$ = create_node(RealLit, $1.value);}
+    | INTLIT            {$$ = create_node(IntLit, $1.value); $$->line = $1.line; $$->column = $1.column;}
+    | CHRLIT            {$$ = create_node(ChrLit, $1.value); $$->line = $1.line; $$->column = $1.column;}
+    | REALLIT           {$$ = create_node(RealLit, $1.value); $$->line = $1.line; $$->column = $1.column;}
     | LPAR Expr RPAR    {$$ = $2;}
     | LPAR error RPAR   {$$ = create_node(Null, NULL);}
     ;

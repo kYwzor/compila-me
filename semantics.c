@@ -152,7 +152,7 @@ int handle_node(Node node)
       if (current_table->is_defined)
       {
         //Already defined, mate.
-        printf("Line %d, col %d:Symbol %s already defined\n", id->line, id->column, id->value); //not sure about the position
+        printf("Line %d, col %d: Symbol %s already defined\n", id->line, id->column, id->value); //not sure about the position
         current_table = global_table;
         if (node->brother != NULL)
           handle_node(node->brother);
@@ -166,7 +166,7 @@ int handle_node(Node node)
       {
         Node type_spec = paramDec->child;
         Node id = type_spec->brother;
-        if (type_spec->label == Void && count > 0){
+        if (type_spec->label == Void && (count > 0 || paramDec->brother != NULL)){
           printf("Line %d, col %d: Invalid use of void type in declaration\n", type_spec->line, type_spec->column);
           current_table = global_table;
           if (node->brother != NULL) handle_node(node->brother);
@@ -224,14 +224,85 @@ int handle_node(Node node)
     Node paramList = id->brother;
 
     //TODO: We'll need to do something about re-declaring (else)
-    if (find_function_entry(id->value) == NULL)
+    Table_list found = find_function_entry(id->value);
+    if (found == NULL)
     {
-      create_function_entry(id->value, type_spec->label, paramList, 0);
-      if (find_function_entry(id->value) == NULL)
+      if (create_function_entry(id->value, type_spec->label, paramList, 0) == NULL)
       {
         if (node->brother != NULL)
           handle_node(node->brother);
         return ERROR;
+      }
+    }
+    else{
+      int conflict = 0;
+      Arg_list old_args = found->arg_list;
+      Node paramDec = paramList->child;
+      int count = 0;
+      while (paramDec != NULL)
+      {
+        Node type = paramDec->child;
+        //Node id = type->brother;
+        if (type->label == Void && (count > 0 || paramDec->brother != NULL)){
+          printf("Line %d, col %d: Invalid use of void type in declaration\n", type->line, type->column);
+          current_table = global_table;
+          if (node->brother != NULL) handle_node(node->brother);
+          return ERROR;
+        }
+        if (old_args == NULL)
+        {
+          if (DEBUG)
+            printf("error: there's more parameters than on older definitions\n");
+          conflict = 1;
+          break;
+        }
+        if (type->label != old_args->label)
+        {
+          if (DEBUG)
+            printf("error: labels don't match\n");
+          conflict = 1;
+        }
+
+        paramDec = paramDec->brother;
+        old_args = old_args->next;
+        count++;
+      }
+      if (old_args != NULL)
+      {
+        if (DEBUG)
+          printf("error: older definitions had more parameters\n");
+        conflict = 1;
+      }
+      if(type_spec->label != found->table_node->label){
+        if (DEBUG)
+          printf("error: different label\n");
+        conflict = 1;
+      }
+
+      if (conflict){
+        char params_1[1024];
+        params_1[0] = '\0';
+        Node paramDec = paramList->child;
+        while (paramDec != NULL)
+        {
+          Node type = paramDec->child;
+          strcat(params_1, get_string_for_tables(type->label));
+          paramDec = paramDec->brother;
+          if(paramDec != NULL)
+            strcat(params_1, ",");
+        }
+
+        char params_2[1024];
+        params_2[0] = '\0';
+        Arg_list aux_args = found->arg_list;
+        while (aux_args != NULL)
+        {
+          strcat(params_2, get_string_for_tables(aux_args->label));
+          aux_args = aux_args->next;
+          if (aux_args != NULL)
+            strcat(params_2, ",");
+        }
+        printf("Line %d, col %d: Conflicting types (got %s(%s), expected %s(%s))\n", id->line, id->column, get_string_for_tables(type_spec->label), params_1, get_string_for_tables(found->table_node->label), params_2);
       }
     }
 
@@ -250,26 +321,29 @@ int handle_node(Node node)
     Node id = type_spec->brother;
     Node aux = id->brother;
     // nao sei que check deve ser primeiro, void ou already defined
-    Arg_list args = find_parameter(current_table, id->value);
+    int conflict = 0;
+    if (type_spec->label == Void)
+    {
+      printf("Line %d, col %d: Invalid use of void type in declaration\n", id->line, id->column);
+      conflict = 1;
+    }
+
+    Arg_list argums = find_parameter(current_table, id->value);
     Sym_list symb = find_symbol(current_table, id->value);
-    if (args!=NULL){
-      printf("Line %d, col %d:Symbol %s already defined\n", id->line, id->column, id->value);
+    if (argums!=NULL){
+      printf("Line %d, col %d: Symbol %s already defined\n", id->line, id->column, id->value);
+      conflict = 1;
     }
     else if(symb!=NULL){
-        if(symb->label != type_spec->label || current_table!=global_table){
-          printf("Line %d, col %d:Symbol %s already defined\n", id->line, id->column, id->value);
-        }
+      if(symb->label != type_spec->label || current_table!=global_table){
+        printf("Line %d, col %d: Symbol %s already defined\n", id->line, id->column, id->value);
+        conflict = 1;
+      } 
     }
-    else if (type_spec->label == Void)
-    {
-      //3
-      // Pus a ir buscar a linha do id... makes no sense to me, mas e o que esta no outro output?
-      printf("Line %d, col %d: Invalid use of void type in declaration\n", id->line, id->column);
-    }
-    else
-    {
+
+    if(!conflict)
       insert_symbol(current_table, id->value, type_spec->label);
-    }
+
     while (aux != NULL)
     {
       put_type(aux);
@@ -441,7 +515,7 @@ int handle_node(Node node)
   {
     if (find_function_entry(node->child->value) == NULL)
     {
-      printf("Line %d, col %d:Symbol %s is not a function\n", node->child->line, node->child->column, node->child->value);
+      printf("Line %d, col %d: Symbol %s is not a function\n", node->child->line, node->child->column, node->child->value);
       // TODO: Sera que se tem que anotar algo?
       if (node->brother != NULL)
         handle_node(node->brother);
