@@ -180,7 +180,7 @@ int handle_node(Node node)
           conflict = 1;
           break;
         }
-        if (type_spec->label == old_args->label)
+        if (type->label == old_args->label)
         {
           if (new_id != NULL)
             old_args->name = new_id->value;
