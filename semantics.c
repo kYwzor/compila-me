@@ -920,12 +920,10 @@ Table_list create_function_entry(char *name, Label label, Node paramList, int is
     if (id != NULL){
       if(find_parameter(new_node, id->value) != NULL){
         printf("Line %d, col %d: Symbol %s already defined\n", id->line, id->column, id->value);
-        free(args);
-        free(new_list);
-        free(new_node);
-        return NULL;
+        new_arg->name = NULL;
       }
-      new_arg->name = id->value;
+      else
+        new_arg->name = id->value;
     }
     else
       new_arg->name = NULL;
