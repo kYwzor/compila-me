@@ -181,8 +181,14 @@ int handle_node(Node node)
         return ERROR;
       }
       // Ja foi declarada, temos que verificar parametros
-      int conflict = 0;
       Arg_list old_args = current_table->arg_list;
+      while (old_args!=NULL){
+        old_args->name = NULL;
+        old_args = old_args->next;
+      }
+      
+      int conflict = 0;
+      old_args = current_table->arg_list;
       Node paramDec = paramList->child;
       int count = 0;
       while (paramDec != NULL)
@@ -192,13 +198,15 @@ int handle_node(Node node)
         if (new_id != NULL){
           if(find_parameter(current_table, new_id->value) != NULL){
             printf("Line %d, col %d: Symbol %s already defined\n", new_id->line, new_id->column, new_id->value);
-            old_args->name = NULL;
+            if(old_args != NULL) old_args->name = NULL;
           }
-          else
-            old_args->name = new_id->value;
+          else{
+            if(old_args != NULL) old_args->name = new_id->value;
+          }
         }
-        else
-          old_args->name = NULL;
+        else{
+          if(old_args != NULL) old_args->name = NULL;
+        }
 
         if (type->label == Void && (count > 0 || paramDec->brother != NULL || new_id != NULL)){
           printf("Line %d, col %d: Invalid use of void type in declaration\n", type->line, type->column);
@@ -212,17 +220,18 @@ int handle_node(Node node)
           if (DEBUG)
             printf("error: there's more parameters than on older definitions\n");
           conflict = 1;
-          break;
         }
-        if (type->label != old_args->label)
-        {
-          if (DEBUG)
-            printf("error: labels don't match\n");
-          conflict = 1;
+        else{
+          if (type->label != old_args->label)
+          {
+            if (DEBUG)
+              printf("error: labels don't match\n");
+            conflict = 1;
+          }
+          old_args = old_args->next;
         }
 
         paramDec = paramDec->brother;
-        old_args = old_args->next;
         count++;
       }
       if (old_args != NULL)
@@ -341,13 +350,14 @@ int handle_node(Node node)
         if (new_id != NULL){
           if(find_parameter(found, new_id->value) != NULL){
             printf("Line %d, col %d: Symbol %s already defined\n", new_id->line, new_id->column, new_id->value);
-            old_args->name = NULL;
+            if (old_args != NULL) old_args->name = NULL;
           }
           else
-            old_args->name = new_id->value;
+            if (old_args != NULL) old_args->name = new_id->value;
         }
         else
-          old_args->name = NULL;
+          if (old_args != NULL) old_args->name = NULL;
+
         if (type->label == Void && (count > 0 || paramDec->brother != NULL || id!=NULL)){
           printf("Line %d, col %d: Invalid use of void type in declaration\n", type->line, type->column);
           current_table = global_table;
@@ -360,17 +370,18 @@ int handle_node(Node node)
           if (DEBUG)
             printf("error: there's more parameters than on older definitions\n");
           conflict = 1;
-          break;
         }
-        if (type->label != old_args->label)
-        {
-          if (DEBUG)
-            printf("error: labels don't match\n");
-          conflict = 1;
+        else{
+          if (type->label != old_args->label)
+          {
+            if (DEBUG)
+              printf("error: labels don't match\n");
+            conflict = 1;
+          }
+          old_args = old_args->next;
         }
 
         paramDec = paramDec->brother;
-        old_args = old_args->next;
         count++;
       }
       if (old_args != NULL)
@@ -791,9 +802,34 @@ printf("Line %d, col %d: Operator %s cannot be applied to type %s", node->line, 
       return ERROR;
     }
     */
+    int count_receive = 0;
+    Node aux = node->child->brother;
+    while (aux != NULL)
+    {
+      count_receive++;
+      aux = aux->brother;
+    }
+    int count_params = 0;
+    Table_list found = find_function_entry(node->child->value);
+    if(found){
+      Arg_list params = found->arg_list->next;
+      while(params!=NULL){
+        count_params++;
+        params = params->next;
+      }
+    }
+
+    if(count_receive!=count_params){
+      printf("Line %d, col %d: Wrong number of arguments to function %s (got %d, required %d)\n", node->child->line, node->child->column, node->child->value, count_receive, count_params);
+      if (node->brother != NULL)
+        handle_node(node->brother);
+      return ERROR;
+    }
+
     handle_node(node->child);
     put_type(node->child);
-    Node aux = node->child->brother;
+
+    aux = node->child->brother;
     while (aux != NULL)
     {
       put_type(aux);
