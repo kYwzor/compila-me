@@ -34,7 +34,7 @@ int insert_symbol(Table_list table, char* name, Label label){
 }
 
 Sym_list find_symbol(Table_list table_list, char* name){
-  Sym_list aux = table_list->table_node->next;  //salta o primeiro elemento, return do nome da funcao
+  Sym_list aux = table_list->table_node->next;
   while(aux != NULL){
     //Isto nao esta protegido para segfault mas acho que nao e preciso
     if(strcmp(aux->name, name) == 0){

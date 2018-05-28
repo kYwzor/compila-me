@@ -13,7 +13,9 @@
 
 
 
-%token <data> ID REALLIT INTLIT CHRLIT CHAR ELSE WHILE IF INT SHORT DOUBLE RETURN VOID BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LPAR LT MINUS MOD NE NOT OR PLUS RBRACE RPAR SEMI RESERVED
+%token CHAR ELSE WHILE IF INT SHORT DOUBLE RETURN VOID BITWISEAND BITWISEOR BITWISEXOR AND ASSIGN MUL COMMA DIV EQ GE GT LBRACE LE LPAR LT MINUS MOD NE NOT OR PLUS RBRACE RPAR SEMI RESERVED
+%token <value> REALLIT INTLIT CHRLIT ID
+
 %nonassoc NOELSE
 %nonassoc ELSE
 
@@ -21,7 +23,7 @@
 %right ASSIGN
 
 %union{
-    Token_data data;
+    char *value;
     Node node;
 }
 
@@ -68,7 +70,7 @@ Function_declaration:
     ;
 
 Function_declarator:
-    ID LPAR Parameter_list RPAR {$$ = create_node(Id, $1.value); aux = create_node(ParamList,NULL); add_brother($$, aux); add_child(aux, $3); $$->line = $1.line; $$->column = $1.column;}
+    ID LPAR Parameter_list RPAR {$$ = create_node(Id, $1); aux = create_node(ParamList,NULL); add_brother($$, aux); add_child(aux, $3);}
     ;
 
 Parameter_list:
@@ -77,7 +79,7 @@ Parameter_list:
     ;
 
 Parameter_declaration:
-    Type_spec ID    {$$ = create_node(ParamDeclaration,NULL); add_child($$, $1); add_brother($1, create_node(Id, $2.value)); $1->brother->line = $2.line; $1->brother->column = $2.column;}
+    Type_spec ID    {$$ = create_node(ParamDeclaration,NULL); add_child($$, $1); add_brother($1, create_node(Id, $2));}
     | Type_spec     {$$ = create_node(ParamDeclaration,NULL); add_child($$, $1);}
     ;
 
@@ -107,14 +109,14 @@ Declarator_none_or_more:
     ;
 
 Declarator:
-    ID ASSIGN Expr              {$$ = create_node(Id, $1.value); add_brother($$, $3); $$->line = $1.line; $$->column = $1.column;}
-    | ID                        {$$ = create_node(Id, $1.value); $$->line = $1.line; $$->column = $1.column;}
+    ID ASSIGN Expr              {$$ = create_node(Id, $1); add_brother($$, $3);}
+    | ID                        {$$ = create_node(Id, $1);}
     ;
 
 Type_spec: 
     INT         {$$ = create_node(Int, NULL);}
     | CHAR      {$$ = create_node(Char, NULL);}
-    | VOID      {$$ = create_node(Void, NULL); $$->line = $1.line; $$->column = $1.column;}
+    | VOID      {$$ = create_node(Void, NULL);}
     | SHORT     {$$ = create_node(Short, NULL);}
     | DOUBLE    {$$ = create_node(Double, NULL);}
     ;
@@ -163,71 +165,71 @@ Statement_one_or_more:
 
 Expr:
     Assignment_expr                 {$$ = $1;}
-    | Expr COMMA Assignment_expr    {$$ = create_node(Comma, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
+    | Expr COMMA Assignment_expr    {$$ = create_node(Comma, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
     
 Assignment_expr:
     Logical_OR_expr                            {$$ = $1;}
-    | Logical_OR_expr ASSIGN Assignment_expr   {$$ = create_node(Store, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
+    | Logical_OR_expr ASSIGN Assignment_expr   {$$ = create_node(Store, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
 
 Logical_OR_expr:
     Logical_AND_expr                        {$$ = $1;}
-    | Logical_OR_expr OR Logical_AND_expr   {$$ = create_node(Or, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
+    | Logical_OR_expr OR Logical_AND_expr   {$$ = create_node(Or, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
 
 Logical_AND_expr:
     Inclusive_OR_expr                           {$$ = $1;}
-    | Logical_AND_expr AND Inclusive_OR_expr    {$$ = create_node(And, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
+    | Logical_AND_expr AND Inclusive_OR_expr    {$$ = create_node(And, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
 
 Inclusive_OR_expr:
     Exclusive_OR_expr                               {$$ = $1;}
-    | Inclusive_OR_expr BITWISEOR Exclusive_OR_expr {$$ = create_node(BitWiseOr, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
+    | Inclusive_OR_expr BITWISEOR Exclusive_OR_expr {$$ = create_node(BitWiseOr, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
 
 Exclusive_OR_expr:
     AND_expr                                {$$ = $1;}
-    | Exclusive_OR_expr BITWISEXOR AND_expr {$$ = create_node(BitWiseXor, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
+    | Exclusive_OR_expr BITWISEXOR AND_expr {$$ = create_node(BitWiseXor, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
 
 AND_expr:
     Equality_expr                       {$$ = $1;}
-    | AND_expr BITWISEAND Equality_expr {$$ = create_node(BitWiseAnd, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
+    | AND_expr BITWISEAND Equality_expr {$$ = create_node(BitWiseAnd, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
 
 Equality_expr:
     Relational_expr                     {$$ = $1;}
-    | Equality_expr EQ Relational_expr  {$$ = create_node(Eq, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
-    | Equality_expr NE Relational_expr  {$$ = create_node(Ne, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
+    | Equality_expr EQ Relational_expr  {$$ = create_node(Eq, NULL); add_child($$, $1); add_brother($1, $3);}
+    | Equality_expr NE Relational_expr  {$$ = create_node(Ne, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
 
 Relational_expr:
     Additive_expr                       {$$ = $1;}
-    | Relational_expr LT Additive_expr  {$$ = create_node(Lt, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
-    | Relational_expr GT Additive_expr  {$$ = create_node(Gt, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
-    | Relational_expr LE Additive_expr  {$$ = create_node(Le, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
-    | Relational_expr GE Additive_expr  {$$ = create_node(Ge, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
+    | Relational_expr LT Additive_expr  {$$ = create_node(Lt, NULL); add_child($$, $1); add_brother($1, $3);}
+    | Relational_expr GT Additive_expr  {$$ = create_node(Gt, NULL); add_child($$, $1); add_brother($1, $3);}
+    | Relational_expr LE Additive_expr  {$$ = create_node(Le, NULL); add_child($$, $1); add_brother($1, $3);}
+    | Relational_expr GE Additive_expr  {$$ = create_node(Ge, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
 
 Additive_expr:
     Multiplicative_expr                         {$$ = $1;}
-    | Additive_expr PLUS Multiplicative_expr    {$$ = create_node(Add, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
-    | Additive_expr MINUS Multiplicative_expr   {$$ = create_node(Sub, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
+    | Additive_expr PLUS Multiplicative_expr    {$$ = create_node(Add, NULL); add_child($$, $1); add_brother($1, $3);}
+    | Additive_expr MINUS Multiplicative_expr   {$$ = create_node(Sub, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
 
 Multiplicative_expr:
     Unary_expression                            {$$ = $1;}
-    | Multiplicative_expr MUL Unary_expression  {$$ = create_node(Mul, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
-    | Multiplicative_expr DIV Unary_expression  {$$ = create_node(Div, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
-    | Multiplicative_expr MOD Unary_expression  {$$ = create_node(Mod, NULL); add_child($$, $1); add_brother($1, $3); $$->line = $2.line; $$->column = $2.column;}
+    | Multiplicative_expr MUL Unary_expression  {$$ = create_node(Mul, NULL); add_child($$, $1); add_brother($1, $3);}
+    | Multiplicative_expr DIV Unary_expression  {$$ = create_node(Div, NULL); add_child($$, $1); add_brother($1, $3);}
+    | Multiplicative_expr MOD Unary_expression  {$$ = create_node(Mod, NULL); add_child($$, $1); add_brother($1, $3);}
     ;
 
 Unary_expression:
     Postfix_expr                {$$ = $1;}
-    | PLUS Unary_expression     {$$ = create_node(Plus, NULL); add_child($$, $2); $$->line = $1.line; $$->column = $1.column;}
-    | MINUS Unary_expression    {$$ = create_node(Minus, NULL); add_child($$, $2); $$->line = $1.line; $$->column = $1.column;}
-    | NOT Unary_expression      {$$ = create_node(Not, NULL); add_child($$, $2); $$->line = $1.line; $$->column = $1.column;}
+    | PLUS Unary_expression     {$$ = create_node(Plus, NULL); add_child($$, $2);}
+    | MINUS Unary_expression    {$$ = create_node(Minus, NULL); add_child($$, $2);}
+    | NOT Unary_expression      {$$ = create_node(Not, NULL); add_child($$, $2);}
     ;
 
 Argument_expr_list:
@@ -236,16 +238,16 @@ Argument_expr_list:
 
 Postfix_expr:
     Primary_expr                        {$$ = $1;}
-    | ID LPAR RPAR                      {$$ = create_node(Call, NULL); add_child($$, create_node(Id, $1.value)); $$->child->line = $1.line; $$->child->column = $1.column;}
-    | ID LPAR Argument_expr_list RPAR   {$$ = create_node(Call, NULL); aux = create_node(Id, $1.value); add_child($$, aux); add_brother(aux, $3); aux->line = $1.line; aux->column = $1.column;}
-    | ID LPAR error RPAR                {$$ = create_node(Null, NULL); free($1.value);}
+    | ID LPAR RPAR                      {$$ = create_node(Call, NULL); add_child($$, create_node(Id, $1));}
+    | ID LPAR Argument_expr_list RPAR   {$$ = create_node(Call, NULL); aux = create_node(Id, $1); add_child($$, aux); add_brother(aux, $3);}
+    | ID LPAR error RPAR                {$$ = create_node(Null, NULL); free($1);}
     ;
 
 Primary_expr:
-    ID                  {$$ = create_node(Id, $1.value); $$->line = $1.line; $$->column = $1.column;}
-    | INTLIT            {$$ = create_node(IntLit, $1.value); $$->line = $1.line; $$->column = $1.column;}
-    | CHRLIT            {$$ = create_node(ChrLit, $1.value); $$->line = $1.line; $$->column = $1.column;}
-    | REALLIT           {$$ = create_node(RealLit, $1.value); $$->line = $1.line; $$->column = $1.column;}
+    ID                  {$$ = create_node(Id, $1);}
+    | INTLIT            {$$ = create_node(IntLit, $1);}
+    | CHRLIT            {$$ = create_node(ChrLit, $1);}
+    | REALLIT           {$$ = create_node(RealLit, $1);}
     | LPAR Expr RPAR    {$$ = $2;}
     | LPAR error RPAR   {$$ = create_node(Null, NULL);}
     ;

@@ -11,9 +11,6 @@ Node create_node(Label label, char *value){
 	newNode->child = NULL;
 	newNode->brother = NULL;
 
-	newNode->line = 0;
-	newNode->column = 0;
-
 	return newNode;
 }
 
