@@ -3,6 +3,7 @@ char *return_value;
 void generate_code(Node node)
 {
   if (DEBUG)
+
     printf("\tHandling %s %s\n", node->value, get_label_string(node->label));
 
   switch (node->label)
@@ -12,6 +13,7 @@ void generate_code(Node node)
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Program));
     full_generation(node);
+
     break;
   }
 
@@ -57,8 +59,8 @@ void generate_code(Node node)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Return));
     return_value = node->child->value;
     full_generation(node);
+    break;
   }
-
   /* All operators, terminals and Null are defaulted for now */
   /* ParamList and ParamDeclaration are also defaulted, but they should never occur*/
   default:
