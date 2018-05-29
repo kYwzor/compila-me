@@ -97,13 +97,23 @@ int main(int argc, char** argv)
         else if (strcmp(argv[1],"-t") == 0 || strcmp(argv[1], "-2") == 0) flag = 2;
         else if (strcmp(argv[1],"-s") == 0) flag = 3;
     }
+    else if(argc == 1){
+        flag = 4;
+        printf("yup\n");
+    }
     yyparse();
     if(treeRoot!=NULL && !errorFlag && flag == 3) {
         handle_node(treeRoot);
         print_tables();
+        if(treeRoot!=NULL && print_tree_flag){
+            print_tree(treeRoot, 0);
+            free_tree(treeRoot);
+        }
     }
-    if(treeRoot!=NULL && print_tree_flag){
-        print_tree(treeRoot, 0);
+    if(treeRoot != NULL && !errorFlag && flag == 4){
+        handle_node(treeRoot);
+        if(print_tree_flag)
+            generate_code(treeRoot);
         free_tree(treeRoot);
     }
     return 0;

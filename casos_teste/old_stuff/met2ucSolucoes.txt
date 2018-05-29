@@ -1,7 +1,0 @@
-Line 1, col 1: syntax error: function
-Line 2, col 3: illegal character (:)
-Line 2, col 4: illegal character (:)
-Line 8, col 1: illegal character ($)
-Line 8, col 2: illegal character (?)
-Line 13, col 10: syntax error: )
-Line 15, col 10: syntax error: )
