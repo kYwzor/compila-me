@@ -1,7 +1,10 @@
 #include "generation.h"
-char *return_value;
+
+int r_count = 1;
+
 void generate_code(Node node)
 {
+  int aux1, aux2;
   if (DEBUG)
 
     printf("\tHandling %s %s\n", node->value, get_label_string(node->label));
@@ -12,6 +15,10 @@ void generate_code(Node node)
   {
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Program));
+
+    printf("declare i32 @putchar(i32)\n");
+    printf("declare i32 @getchar()\n");
+
     full_generation(node);
 
     break;
@@ -19,6 +26,7 @@ void generate_code(Node node)
 
   case FuncDefinition:
   {
+  	r_count = 1;
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDefinition));
     Node type_spec = node->child;
@@ -26,11 +34,9 @@ void generate_code(Node node)
     Node paramList = id->brother;
 
     printf("define %s @%s(){\n", get_llvm_type(type_spec->label), id->value);
-    if (node->child != NULL)
-      generate_code(node->child);
+    generate_code(paramList->brother);	//funcbody
 
-    printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), handle_constant(type_spec->label, return_value));
-    return_value = NULL;
+    printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
     if (node->brother != NULL)
       generate_code(node->brother);
 
@@ -49,7 +55,18 @@ void generate_code(Node node)
   {
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
-    full_generation(node);
+    Node type_spec = node->child;
+    Node id = type_spec->brother;
+    
+    printf("%%%s = alloca %s\n", id->value, get_llvm_type(type_spec->label));	//align???
+    Node aux = id->brother;
+    if (aux != NULL){
+      generate_code(aux);
+  	  printf("store %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), r_count - 1, get_llvm_type(type_spec->label), id->value);	
+    }
+
+    if (node->brother != NULL)
+    	generate_code(node->brother);
     break;
   }
 
@@ -57,12 +74,76 @@ void generate_code(Node node)
   {
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Return));
-    return_value = node->child->value;
-    full_generation(node);
+    if(node->child == NULL){
+    	printf("ret void\n");
+    	break;
+    }
+    generate_code(node->child);
+    printf("ret %s %%%d\n", get_llvm_type(node->child->type), r_count - 1);
+
     break;
   }
-  /* All operators, terminals and Null are defaulted for now */
-  /* ParamList and ParamDeclaration are also defaulted, but they should never occur*/
+  case Store:
+    generate_code(node->child->brother);
+  	printf("store %s %%%d, %s* %%%s\n", get_llvm_type(node->type), r_count - 1, get_llvm_type(node->type), node->child->value);
+  	break;
+  case Add:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+    printf("%%%d = add %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
+    if (node->brother != NULL)
+      generate_code(node->brother);
+    break;
+  case Sub:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+    printf("%%%d = sub %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
+    if (node->brother != NULL)
+      generate_code(node->brother);
+    break;
+  case Mul:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+    printf("%%%d = mul %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
+    if (node->brother != NULL)
+      generate_code(node->brother);
+    break;
+  case Div:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+    printf("%%%d = sdiv %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
+    if (node->brother != NULL)
+      generate_code(node->brother);
+    break;
+  case RealLit:
+    printf("%%%d = fadd double %s, %s\n", r_count++, get_default_value(Double), handle_constant(Double, node->value));
+    if (node->brother != NULL)
+      generate_code(node->brother);    
+    break;
+  case IntLit:
+    printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Int), handle_constant(Int, node->value));
+    if (node->brother != NULL)
+      generate_code(node->brother);
+    break;
+  case ChrLit:
+  	printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
+  	// isto esta provavelmente mal. Devo ter que fazer i8 se possivel ou conversao para i32 beforehand
+    if (node->brother != NULL)
+      generate_code(node->brother);
+  	break;
+  case Id:
+  	printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
+    if (node->brother != NULL)
+      generate_code(node->brother);
+  	break;
   default:
     if (DEBUG)
       printf("Defaulted %s\n", get_label_string(node->label));
@@ -105,6 +186,33 @@ char *get_llvm_type(Label label)
   }
   return s;
 }
+
+char *get_default_value(Label label){
+  char *s = NULL;
+  switch (label)
+  {
+  case Char:
+    s = "0";	//not sure about this one
+    break;
+  case Short:
+    s = "0";	//not sure about this one
+    break;
+  case Int:
+    s = "0";
+    break;
+  case Double:
+    s = "0.000000e+00";
+    break;
+  case Void:
+    s = "";
+    break;
+  default:
+    printf("FATAL: Invalid type for default\n");
+  }
+  return s;
+
+}
+
 char *get_label_string(Label label)
 {
   char *s;
@@ -257,6 +365,17 @@ char *handle_constant(Label type, char *value)
   switch (type)
   {
   case Double:
+  {
+  	double aux_double;
+  	char aux_str[1024];	// this seems dangerous to me... returning something created here...
+  	//printf("value %s\n", value);
+  	sscanf(value, "%lf", &aux_double);
+  	//printf("aux_double %lf\n", aux_double);
+  	sprintf(aux_str, "%.16E", aux_double);	//verificar quantas casas devem ser
+  	//printf("aux_str %s\n", aux_str);
+  	s = aux_str;
+  	break;
+  }
   case Short:
     /*
     while(value[i] != '\0'){
@@ -275,10 +394,10 @@ char *handle_constant(Label type, char *value)
     if (value[0] == '0')
     {
       int aux_int;
-      char aux_str[1024];
+      char aux_str[1024];	// this seems dangerous to me... returning something created here...
       sscanf(value, "%o", &aux_int);
       sprintf(aux_str, "%d", aux_int);
-      printf("%s\n", aux_str);
+      printf("%s\n", aux_str);	// porque este print?
       s = aux_str;
     }
     else
@@ -287,11 +406,14 @@ char *handle_constant(Label type, char *value)
     }
     break;
   case Char:{
-    int aux_int;
-    char aux_str[1024];
+    char aux_char;
+    char aux_str[1024];		// this seems dangerous to me... returning something created here...
     //TODO: Temos de fazer um caso especial para os caracteres \t \n e assim
-    aux_int = value[1];
-    sprintf(aux_str, "%d", aux_int);
+    //printf("value %s\n", value);
+    sscanf(value, "'%c'", &aux_char);	//thought this would work :(
+    //printf("aux_char %c\n", aux_char);
+    sprintf(aux_str, "%d", aux_char);
+    //printf("aux_str %s\n", aux_str);
     s = aux_str;
     break;
   }
