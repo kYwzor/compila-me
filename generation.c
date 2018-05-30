@@ -90,8 +90,8 @@ void generate_code(Node node)
     break;
   case Store:
     generate_code(node->child->brother);
-  	printf("store %s %%%d, %s* %%%s\n", get_llvm_type(node->type), r_count - 1, get_llvm_type(node->type), node->child->value);
-  	break;
+    printf("store %s %%%d, %s* %%%s\n", get_llvm_type(node->type), r_count - 1, get_llvm_type(node->type), node->child->value);
+    break;
   case Add:
     generate_code(node->child);
     aux1 = r_count - 1;
@@ -131,29 +131,29 @@ void generate_code(Node node)
   case RealLit:
     printf("%%%d = fadd double %s, %s\n", r_count++, get_default_value(Double), handle_constant(Double, node->value));
     // if (node->brother != NULL)
-    //   generate_code(node->brother);    
+    //   generate_code(node->brother);
     break;
   case IntLit:
-    printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Int), handle_constant(Int, node->value));
+    printf("%%%d = add i32 %s, %s\n", r_count++, get_llvm_type(parent_type), get_default_value(Int), handle_constant(Int, node->value));
     // if (node->brother != NULL)
     //   generate_code(node->brother);
     break;
   case ChrLit:
-  	printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
-  	//printf("%%%d = add i8 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
-  	// isto esta provavelmente mal. Devo ter que fazer i8 se possivel ou conversao para i32 beforehand
+    printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(parent_type), handle_constant(Char, node->value));
+    //printf("%%%d = add i8 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
+    // isto esta provavelmente mal. Devo ter que fazer i8 se possivel ou conversao para i32 beforehand
     // if (node->brother != NULL)
     //   generate_code(node->brother);
-  	break;
+    break;
   case Id:
-  	printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
+    printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
     // if (node->brother != NULL)
     //   generate_code(node->brother);
-  	break;
+    break;
   case Call:
-  {  //verificar como funciona funcao sem argumentos
+  { //verificar como funciona funcao sem argumentos
     Node aux = node->child->brother;
-    char* param_string = (char*)malloc(sizeof(char) * 1024);
+    char *param_string = (char *)malloc(sizeof(char) * 1024);
     strcpy(param_string, "");
     while (aux != NULL)
     {
@@ -171,7 +171,7 @@ void generate_code(Node node)
     else
       printf("call %s @%s(%s", get_llvm_type(node->type), node->child->value, param_string);
     printf(")\n");
-    if(node->brother != NULL)
+    if (node->brother != NULL)
       generate_code(node->brother);
     break;
   }
@@ -218,15 +218,16 @@ char *get_llvm_type(Label label)
   return s;
 }
 
-char *get_default_value(Label label){
+char *get_default_value(Label label)
+{
   char *s = NULL;
   switch (label)
   {
   case Char:
-    s = "0";	//not sure about this one
+    s = "0"; //not sure about this one
     break;
   case Short:
-    s = "0";	//not sure about this one
+    s = "0"; //not sure about this one
     break;
   case Int:
     s = "0";
@@ -241,7 +242,6 @@ char *get_default_value(Label label){
     printf("FATAL: Invalid type for default\n");
   }
   return s;
-
 }
 
 char *get_label_string(Label label)
@@ -391,21 +391,19 @@ char *get_label_string(Label label)
 char *handle_constant(Label type, char *value)
 {
   char *s = NULL;
-  int octal_flag = 0;
-  int i = 0;
   switch (type)
   {
   case Double:
   {
-  	double aux_double;
-  	char aux_str[1024];	// this seems dangerous to me... returning something created here...
-  	//printf("value %s\n", value);
-  	sscanf(value, "%lf", &aux_double);
-  	//printf("aux_double %lf\n", aux_double);
-  	sprintf(aux_str, "%.16E", aux_double);	//verificar quantas casas devem ser
-  	//printf("aux_str %s\n", aux_str);
-  	s = aux_str;
-  	break;
+    double aux_double;
+    char aux_str[1024]; // this seems dangerous to me... returning something created here...
+    //printf("value %s\n", value);
+    sscanf(value, "%lf", &aux_double);
+    //printf("aux_double %lf\n", aux_double);
+    sprintf(aux_str, "%.16E", aux_double); //verificar quantas casas devem ser
+    //printf("aux_str %s\n", aux_str);
+    s = aux_str;
+    break;
   }
   case Short:
     /*
@@ -425,10 +423,9 @@ char *handle_constant(Label type, char *value)
     if (value[0] == '0')
     {
       int aux_int;
-      char aux_str[1024];	// this seems dangerous to me... returning something created here...
+      char aux_str[1024]; // this seems dangerous to me... returning something created here...
       sscanf(value, "%o", &aux_int);
       sprintf(aux_str, "%d", aux_int);
-      printf("%s\n", aux_str);	// porque este print?
       s = aux_str;
     }
     else
@@ -436,12 +433,13 @@ char *handle_constant(Label type, char *value)
       s = value;
     }
     break;
-  case Char:{
-    char aux_char;
-    char aux_str[1024];		// this seems dangerous to me... returning something created here...
+  case Char:
+  {
+    char aux_char = '\0';
+    char aux_str[1024]; // this seems dangerous to me... returning something created here...
     //TODO: Temos de fazer um caso especial para os caracteres \t \n e assim
     //printf("value %s\n", value);
-    sscanf(value, "'%c'", &aux_char);	//thought this would work :(
+    //sscanf(value, "'%c'", &aux_char);	//thought this would work :(
     //printf("aux_char %c\n", aux_char);
     sprintf(aux_str, "%d", aux_char);
     //printf("aux_str %s\n", aux_str);

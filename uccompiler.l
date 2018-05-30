@@ -101,6 +101,10 @@ int main(int argc, char** argv)
         flag = 4;
     }
     yyparse();
+    if(!errorFlag && flag == 2){
+        print_tree(treeRoot, 0);
+        free_tree(treeRoot);
+    }
     if(treeRoot!=NULL && !errorFlag && flag == 3) {
         handle_node(treeRoot);
         print_tables();

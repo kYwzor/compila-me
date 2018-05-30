@@ -8,10 +8,34 @@ void unary_minus(void){
     char d = -c;
     putchar(c);
 }
-int main(void){
-    int a = 'a';
-    int b = a = '2';
+
+/*
+char exemplo(void){
+    char a = 'a';
+    putchar(a);
+    return a;
+}
+*/
+
+void encadeados(void){
+    int a = 37;
+    int b = a = 38;
     int c = a;
+    short d = 37;
+    short e = a = 39;
+    char f = 37;
+    char g = a = 38;
+    double h = 45;
+    double j = a = 99;
+    //double i = h + g + e + c;
+    //int j = g + e + c;
+}
+int main(void){
+    double d  = 1.0;
+    double e = d;
+    encadeados();
     unary_minus();
 }
+
+
 
