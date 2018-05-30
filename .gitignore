@@ -10,6 +10,9 @@ y.tab.c
 y.tab.h
 y.output
 
+# LLVM stuff
+*.s
+
 # Outputs produced
 *.out
 uccompiler

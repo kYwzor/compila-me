@@ -99,7 +99,6 @@ int main(int argc, char** argv)
     }
     else if(argc == 1){
         flag = 4;
-        printf("yup\n");
     }
     yyparse();
     if(treeRoot!=NULL && !errorFlag && flag == 3) {

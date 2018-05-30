@@ -125,25 +125,47 @@ void generate_code(Node node)
     break;
   case RealLit:
     printf("%%%d = fadd double %s, %s\n", r_count++, get_default_value(Double), handle_constant(Double, node->value));
-    if (node->brother != NULL)
-      generate_code(node->brother);    
+    // if (node->brother != NULL)
+    //   generate_code(node->brother);    
     break;
   case IntLit:
     printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Int), handle_constant(Int, node->value));
-    if (node->brother != NULL)
-      generate_code(node->brother);
+    // if (node->brother != NULL)
+    //   generate_code(node->brother);
     break;
   case ChrLit:
   	printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
   	// isto esta provavelmente mal. Devo ter que fazer i8 se possivel ou conversao para i32 beforehand
-    if (node->brother != NULL)
-      generate_code(node->brother);
+    // if (node->brother != NULL)
+    //   generate_code(node->brother);
   	break;
   case Id:
   	printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
-    if (node->brother != NULL)
-      generate_code(node->brother);
+    // if (node->brother != NULL)
+    //   generate_code(node->brother);
   	break;
+  case Call:
+  {  //verificar como funciona funcao sem argumentos
+    Node aux = node->child->brother;
+    char* param_string = (char*)malloc(sizeof(char) * 1024);
+    strcpy(param_string, "");
+    while (aux != NULL)
+    {
+      generate_code(aux);
+      char *aux_string = (char *)malloc(sizeof(char) * 1024);
+      if (param_string[0] != '\0')
+        sprintf(aux_string, ", %s %%%d", get_llvm_type(node->type), r_count - 1);
+      else
+        sprintf(aux_string, "%s %%%d", get_llvm_type(node->type), r_count - 1);
+      strcat(param_string, aux_string);
+      aux = aux->brother;
+    }
+    printf("%%%d = call %s @%s(%s", r_count++, get_llvm_type(node->type), node->child->value, param_string);
+    printf(")\n");
+    if(node->brother != NULL)
+      generate_code(node->brother);
+    break;
+  }
   default:
     if (DEBUG)
       printf("Defaulted %s\n", get_label_string(node->label));
@@ -182,7 +204,7 @@ char *get_llvm_type(Label label)
     s = "void";
     break;
   default:
-    printf("FATAL: Invalid llvm type\n");
+    printf("FATAL: Invalid llvm type %s\n", get_label_string(label));
   }
   return s;
 }
