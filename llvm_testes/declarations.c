@@ -2,6 +2,8 @@
 void unary_minus(void){
     int a = -1;
     int b = -a;
+    a = 1;
+    a = 2;
     char c = 'a';
     char d = -c;
     putchar(c);

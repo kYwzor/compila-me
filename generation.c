@@ -26,7 +26,7 @@ void generate_code(Node node)
 
   case FuncDefinition:
   {
-  	//r_count = 1;
+  	r_count = 1;
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDefinition));
     Node type_spec = node->child;
@@ -140,7 +140,7 @@ void generate_code(Node node)
     break;
   case ChrLit:
   	printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
-  	//printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
+  	//printf("%%%d = add i8 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
   	// isto esta provavelmente mal. Devo ter que fazer i8 se possivel ou conversao para i32 beforehand
     // if (node->brother != NULL)
     //   generate_code(node->brother);
@@ -166,7 +166,10 @@ void generate_code(Node node)
       strcat(param_string, aux_string);
       aux = aux->brother;
     }
-    printf("%%%d = call %s @%s(%s", r_count++, get_llvm_type(node->type), node->child->value, param_string);
+    if (node->type != Void)
+      printf("%%%d = call %s @%s(%s", r_count++, get_llvm_type(node->type), node->child->value, param_string);
+    else
+      printf("call %s @%s(%s", get_llvm_type(node->type), node->child->value, param_string);
     printf(")\n");
     if(node->brother != NULL)
       generate_code(node->brother);
