@@ -62,7 +62,8 @@ void generate_code(Node node)
     Node aux = id->brother;
     if (aux != NULL){
       generate_code(aux);
-      printf("store %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), r_count - 1, get_llvm_type(type_spec->label), id->value);
+      aux1 = convert_register(type_spec->label, aux->type, r_count -1);
+      printf("store %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), aux1, get_llvm_type(type_spec->label), id->value);
     }
 
     if (node->brother != NULL)
@@ -90,18 +91,9 @@ void generate_code(Node node)
     break;
   case Store:
     generate_code(node->child->brother);
-    if(node->type == Char){
-      printf("store i8 %%%d, i8* %%%s\n", r_count - 1, node->child->value);
-    }
-    else if(node->type == Short){
-      printf("store i16 %%%d, i16* %%%s\n", r_count - 1, node->child->value);
-    }
-    else if(node->type == Int){
-      printf("store i32 %%%d, i32* %%%s\n", r_count - 1, node->child->value);
-    }
-    else{
-      printf("store double %%%d, double* %%%s\n", r_count - 1, node->child->value);
-    }
+    aux1 = convert_register(node->type, node->child->brother->type, r_count -1);
+    printf("store %s %%%d, %s* %%%s\n", get_llvm_type(node->type), aux1, get_llvm_type(node->type), node->child->value);
+
     if (node->brother != NULL)
       generate_code(node->brother);
     break;
@@ -116,14 +108,8 @@ void generate_code(Node node)
     }
     else{
       //THIS SOULD ALWAYS BE DOUBLE
-      if(node->child->type == Int){
-        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux1);
-        aux1 = r_count - 1;
-      }
-      if(node->child->brother->type == Int){
-        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux2);
-        aux2 = r_count - 1;
-      }
+      aux1 = convert_register(Double, node->child->type, aux1);
+      aux2 = convert_register(Double, node->child->type, aux2);
       printf("%%%d = fadd double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
     
@@ -141,14 +127,8 @@ void generate_code(Node node)
     }
     else{
       //THIS SOULD ALWAYS BE DOUBLE
-      if(node->child->type == Int){
-        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux1);
-        aux1 = r_count - 1;
-      }
-      if(node->child->brother->type == Int){
-        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux2);
-        aux2 = r_count - 1;
-      }
+      aux1 = convert_register(Double, node->child->type, aux1);
+      aux2 = convert_register(Double, node->child->type, aux2);
       printf("%%%d = fsub double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
     
@@ -166,14 +146,8 @@ void generate_code(Node node)
     }
     else{
       //THIS SOULD ALWAYS BE DOUBLE
-      if(node->child->type == Int){
-        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux1);
-        aux1 = r_count - 1;
-      }
-      if(node->child->brother->type == Int){
-        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux2);
-        aux2 = r_count - 1;
-      }
+      aux1 = convert_register(Double, node->child->type, aux1);
+      aux2 = convert_register(Double, node->child->type, aux2);
       printf("%%%d = fmul double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
     
@@ -191,14 +165,8 @@ void generate_code(Node node)
     }
     else{
       //THIS SOULD ALWAYS BE DOUBLE
-      if(node->child->type == Int){
-        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux1);
-        aux1 = r_count - 1;
-      }
-      if(node->child->brother->type == Int){
-        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux2);
-        aux2 = r_count - 1;
-      }
+      aux1 = convert_register(Double, node->child->type, aux1);
+      aux2 = convert_register(Double, node->child->type, aux2);
       printf("%%%d = fdiv double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
     
@@ -208,24 +176,16 @@ void generate_code(Node node)
     break;
   case RealLit:
     printf("%%%d = fadd double %s, %s\n", r_count++, get_default_value(Double), handle_constant(Double, node->value));
-    // if (node->brother != NULL)
-    //   generate_code(node->brother);
     break;
   case IntLit:
     printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Int), handle_constant(Int, node->value));
-    // if (node->brother != NULL)
-    //   generate_code(node->brother);
     break;
   case ChrLit:
     printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
     // isto esta provavelmente mal. Devo ter que fazer i8 se possivel ou conversao para i32 beforehand
-    // if (node->brother != NULL)
-    //   generate_code(node->brother);
     break;
   case Id:
     printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
-    // if (node->brother != NULL)
-    //   generate_code(node->brother);
     break;
   case Call:
   { //verificar como funciona funcao sem argumentos
@@ -266,6 +226,50 @@ void full_generation(Node node)
     generate_code(node->child);
   if (node->brother != NULL)
     generate_code(node->brother);
+}
+
+int convert_register(Label target, Label original_l, int original_r){
+  if (target == original_l)
+    return original_r;  // no conversion needed
+
+  switch (target)
+  {
+  case Char:
+    if (original_l == Double){
+      printf("%%%d = fptosi double %%%d to i8\n", r_count++, original_r);
+      break;
+    }
+    printf("%%%d = trunc %s %%%d to i8\n", r_count++, get_llvm_type(original_l), original_r);
+    break;
+
+  case Short:
+    if (original_l == Double){
+      printf("%%%d = fptosi double %%%d to i16\n", r_count++, original_r);
+      break;
+    }
+    if (original_l == Char){
+      printf("%%%d = sext i8 %%%d to i16\n", r_count++, original_r);
+      break;
+    }
+    printf("%%%d = trunc %s %%%d to i16\n", r_count++, get_llvm_type(original_l), original_r);
+    break;
+
+  case Int:
+    if (original_l == Double){
+      printf("%%%d = fptosi double %%%d to i32\n", r_count++, original_r);
+      break;
+    }
+    printf("%%%d = sext %s %%%d to i32\n", r_count++, get_llvm_type(original_l), original_r);
+    break;
+
+  case Double:
+    printf("%%%d = sitofp %s %%%d to double\n", r_count++, get_llvm_type(original_l), original_r);
+    break;
+
+  default:
+    printf("FATAL: Invalid conversion type %s\n", get_label_string(target));
+  }
+  return r_count - 1;
 }
 
 char *get_llvm_type(Label label)
