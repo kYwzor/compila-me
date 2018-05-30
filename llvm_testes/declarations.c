@@ -35,12 +35,22 @@ short shawty(void){
     short a = 1;
     return a;
 }
+
+char charizard(void){
+    char a = 'a';
+    return a;
+}
+
 int main(void){
     double d  = 1.0;
     double e = d;
     encadeados();
     unary_minus();
-    int a = shawty();
+    char b = 'b';
+    b = charizard();
+    int a = 1;
+    a = shawty();
+    return 1;
 }
 
 

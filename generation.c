@@ -91,6 +91,8 @@ void generate_code(Node node)
   case Store:
     generate_code(node->child->brother);
     printf("store %s %%%d, %s* %%%s\n", get_llvm_type(node->type), r_count - 1, get_llvm_type(node->type), node->child->value);
+    if (node->brother != NULL)
+      generate_code(node->brother);
     break;
   case Add:
     generate_code(node->child);
