@@ -1,5 +1,6 @@
 #include "structs.h"
 
+Arg_list get_function_args(char * name);
 void full_generation(Node node);
 char *get_label_string(Label label);
 void generate_code(Node node);

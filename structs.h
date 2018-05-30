@@ -43,3 +43,6 @@ typedef struct _tl{
 }_table_list;
 
 
+
+Table_list global_table;
+Table_list current_table;

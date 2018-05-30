@@ -1,7 +1,7 @@
 #include "generation.h"
 
 int r_count = 1;
-
+Label current_function_type = -1;
 void generate_code(Node node)
 {
   int aux1, aux2;
@@ -32,6 +32,7 @@ void generate_code(Node node)
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node paramList = id->brother;
+    current_function_type = type_spec->label;
 
     Node aux = paramList->child;
     char *param_string = (char *)malloc(sizeof(char) * 1024);
@@ -47,7 +48,7 @@ void generate_code(Node node)
       aux = aux->brother;
    }
     printf("define %s @%s(%s){\n", get_llvm_type(type_spec->label), id->value, param_string);
-    generate_code(paramList->brother);	//funcbody
+    generate_code(paramList);
 
     printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
     if (node->brother != NULL)
@@ -64,6 +65,18 @@ void generate_code(Node node)
     break;
   }
 
+  case ParamDeclaration:
+  {
+    Node typeSpec = node->child;
+    Node id = typeSpec->brother;
+    if(typeSpec->label != Void){
+      printf("%%%d = alloca %s\n", r_count++, get_llvm_type(typeSpec->label));
+      printf("store %s %%%s, %s* %%%d\n", get_llvm_type(typeSpec->label), id->value, get_llvm_type(typeSpec->label), r_count - 1);
+    }
+    if(node->brother != NULL)
+    generate_code(node->brother);
+    break;
+  }
   case Declaration:
   {
     if (DEBUG)
@@ -93,7 +106,9 @@ void generate_code(Node node)
       break;
     }
     generate_code(node->child);
-    printf("ret %s %%%d\n", get_llvm_type(node->child->type), r_count - 1);
+    aux1 = convert_register(current_function_type, node->child->type, r_count -1);
+    printf("ret %s %%%d\n", get_llvm_type(node->child->type), aux1);
+
     break;
   }
   case Minus:
@@ -141,7 +156,6 @@ void generate_code(Node node)
       aux2 = convert_register(Double, node->child->type, aux2);
       printf("%%%d = fsub double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
-    
     if (node->brother != NULL)
       generate_code(node->brother);
     break;
@@ -200,18 +214,21 @@ void generate_code(Node node)
   case Call:
   {
     Node aux = node->child->brother;
+    
     char *param_string = (char *)malloc(sizeof(char) * 1024);
     strcpy(param_string, "");
+    Arg_list arguments = get_function_args(node->child->value);
     while (aux != NULL)
     {
       generate_code(aux);
       char *aux_string = (char *)malloc(sizeof(char) * 1024);
       if (param_string[0] != '\0')
-        sprintf(aux_string, ", %s %%%d", get_llvm_type(node->type), r_count - 1);
+        sprintf(aux_string, ", %s %%%d", get_llvm_type(arguments->label), convert_register(arguments->label, aux->type, r_count - 1));
       else
-        sprintf(aux_string, "%s %%%d", get_llvm_type(node->type), r_count - 1);
+        sprintf(aux_string, "%s %%%d", get_llvm_type(arguments->label), convert_register(arguments->label, aux->type, r_count - 1));
       strcat(param_string, aux_string);
       aux = aux->brother;
+      arguments = arguments->next;
     }
     if (node->type != Void)
       printf("%%%d = call %s @%s(%s", r_count++, get_llvm_type(node->type), node->child->value, param_string);
@@ -477,6 +494,20 @@ char *get_label_string(Label label)
     break;
   }
   return s;
+}
+
+Arg_list get_function_args(char *name)
+{
+  Table_list aux = global_table;
+  while (aux != NULL)
+  {
+    if (strcmp(aux->table_node->name, name) == 0)
+    {
+      return aux->arg_list;
+    }
+    aux = aux->next;
+  }
+  return NULL;
 }
 
 char *handle_constant(Label type, char *value)

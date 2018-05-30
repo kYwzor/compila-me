@@ -21,7 +21,8 @@ store i8 %7, i8* %c
 %9 = sub nsw i8 0, %8
 store i8 %9, i8* %d
 %10 = load i8, i8* %c
-%11 = call i32 @putchar(i32 %10)
+%11 = sext i8 %10 to i32
+%12 = call i32 @putchar(i32 %11)
 ret void 
 }
 define i8 @exemplo(){
@@ -30,9 +31,10 @@ define i8 @exemplo(){
 %2 = trunc i32 %1 to i8
 store i8 %2, i8* %a
 %3 = load i8, i8* %a
-%4 = call i32 @putchar(i32 %3)
-%5 = load i8, i8* %a
-ret i8 %5
+%4 = sext i8 %3 to i32
+%5 = call i32 @putchar(i32 %4)
+%6 = load i8, i8* %a
+ret i8 %6
 ret i8 0
 }
 define void @encadeados(){
@@ -102,10 +104,14 @@ ret i32 %2
 ret i32 0
 }
 define i32 @soma(i32 %a, i32 %b){
-%1 = load i32, i32* %a
-%2 = load i32, i32* %b
-%3 = add i32 %1, %2
-ret i32 %3
+%1 = alloca i32
+store i32 %a, i32* %1
+%2 = alloca i32
+store i32 %b, i32* %2
+%3 = load i32, i32* %a
+%4 = load i32, i32* %b
+%5 = add i32 %3, %4
+ret i32 %5
 ret i32 0
 }
 define i32 @main(){

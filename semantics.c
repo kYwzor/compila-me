@@ -432,19 +432,7 @@ char *get_string_for_tables(Label label)
   return s;
 }
 
-Arg_list get_function_args(char *name)
-{
-  Table_list aux = global_table;
-  while (aux != NULL)
-  {
-    if (strcmp(aux->table_node->name, name) == 0)
-    {
-      return aux->arg_list;
-    }
-    aux = aux->next;
-  }
-  return NULL;
-}
+
 
 Table_list find_function_entry(char *name)
 {
