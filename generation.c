@@ -91,7 +91,7 @@ void generate_code(Node node)
   case Store:
     generate_code(node->child->brother);
     if(node->type == Char){
-      printf("store i8 %%%d, i8* %%%s\n", r_count - 1, node->child->value);
+      printf("store i32 %%%d, i32* %%%s\n", r_count - 1, node->child->value);
     }
     else if(node->type == Short){
       printf("store i16 %%%d, i16* %%%s\n", r_count - 1, node->child->value);
@@ -275,7 +275,7 @@ char *get_llvm_type(Label label)
   {
   /*TODO: estes dois sao gerados com signext antes do tamanho, verificar se e necessario*/
   case Char:
-    s = "i8";
+    s = "i32";
     break;
   case Short:
     s = "i16";
@@ -533,7 +533,9 @@ char *handle_constant(Label type, char *value)
         aux_char = '"';
       }
     }
+    else{
     sscanf(value, "'%c'", &aux_char);	//thought this would work :(
+    }
     //printf("aux_char %c\n", aux_char);
     sprintf(aux_str, "%d", aux_char);
     //printf("aux_str %s\n", aux_str);
