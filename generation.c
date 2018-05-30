@@ -1,7 +1,7 @@
 #include "generation.h"
 
 int r_count = 1;
-
+Label current_function_type = -1;
 void generate_code(Node node)
 {
   int aux1, aux2;
@@ -32,6 +32,7 @@ void generate_code(Node node)
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node paramList = id->brother;
+    current_function_type = type_spec->label;
 
     printf("define %s @%s(){\n", get_llvm_type(type_spec->label), id->value);
     generate_code(paramList->brother);	//funcbody
@@ -80,7 +81,8 @@ void generate_code(Node node)
       break;
     }
     generate_code(node->child);
-    printf("ret %s %%%d\n", get_llvm_type(node->child->type), r_count - 1);
+    aux1 = convert_register(current_function_type, node->child->type, r_count -1);
+    printf("ret %s %%%d\n", get_llvm_type(node->child->type), aux1);
 
     break;
   }
