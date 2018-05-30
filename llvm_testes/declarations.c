@@ -1,12 +1,14 @@
 //#include <stdio.h>
 void unary_minus(void){
-    int a = -1;
+    /*
+    int a = 1;
     int b = -a;
     a = 1;
     a = 2;
     char c = 'a';
     char d = -c;
     putchar(c);
+    */
 }
 
 /*
@@ -18,6 +20,7 @@ char exemplo(void){
 */
 
 void encadeados(void){
+    /*
     int a = 37;
     int b = a = 38;
     int c = a;
@@ -27,10 +30,11 @@ void encadeados(void){
     char g = a = 38;
     double h = 45;
     double j = a = 99;
+    */
     //double i = h + g + e + c;
     //int j = g + e + c;
 }
-
+/*
 short shawty(void){
     short a = 1;
     return a;
@@ -40,16 +44,24 @@ char charizard(void){
     char a = 'a';
     return a;
 }
+*/
+int inteligente(void){
+    int a = 1;
+    return a;
+}
 
 int main(void){
     double d  = 1.0;
     double e = d;
     encadeados();
     unary_minus();
-    char b = 'b';
+    /*
+    int b = 4;
     b = charizard();
     int a = 1;
     a = shawty();
+    */
+    char c = inteligente();
     return 1;
 }
 

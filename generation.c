@@ -95,7 +95,6 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux1 = convert_register(node->type, node->child->brother->type, r_count -1);
     printf("store %s %%%d, %s* %%%s\n", get_llvm_type(node->type), aux1, get_llvm_type(node->type), node->child->value);
-
     if (node->brother != NULL)
       generate_code(node->brother);
     break;
@@ -281,7 +280,7 @@ char *get_llvm_type(Label label)
   {
   /*TODO: estes dois sao gerados com signext antes do tamanho, verificar se e necessario*/
   case Char:
-    s = "i8";
+    s = "i32";
     break;
   case Short:
     s = "i16";
@@ -522,7 +521,26 @@ char *handle_constant(Label type, char *value)
     char aux_str[1024]; // this seems dangerous to me... returning something created here...
     //TODO: Temos de fazer um caso especial para os caracteres \t \n e assim
     //printf("value %s\n", value);
-    //sscanf(value, "'%c'", &aux_char);	//thought this would work :(
+    if(value[3] != '\0'){
+      if(value[2] == 'n'){
+        aux_char = '\n';
+      }
+      else if(value[2] == 't'){
+        aux_char = '\t';
+      }
+      else if(value[2] == '\\'){
+        aux_char = '\\';
+      }
+      else if(value[2] == '\''){
+        aux_char = '\'';
+      }
+      else if(value[2] == '"'){
+        aux_char = '"';
+      }
+    }
+    else{
+    sscanf(value, "'%c'", &aux_char);	//thought this would work :(
+    }
     //printf("aux_char %c\n", aux_char);
     sprintf(aux_str, "%d", aux_char);
     //printf("aux_str %s\n", aux_str);
