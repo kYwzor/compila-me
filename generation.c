@@ -139,14 +139,14 @@ void generate_code(Node node)
     //   generate_code(node->brother);
     break;
   case ChrLit:
-    printf("%%%d = add i32 %s, %s\n", r_count++, handle_constant(Char, node->value));
+    printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
     //printf("%%%d = add i8 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
     // isto esta provavelmente mal. Devo ter que fazer i8 se possivel ou conversao para i32 beforehand
     // if (node->brother != NULL)
     //   generate_code(node->brother);
     break;
   case Id:
-    printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llm_type(node->type), get_llvm_type(node->type), node->value);
+    printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
     // if (node->brother != NULL)
     //   generate_code(node->brother);
     break;
