@@ -26,7 +26,7 @@ void generate_code(Node node)
 
   case FuncDefinition:
   {
-  	//r_count = 1;
+    r_count = 1;
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDefinition));
     Node type_spec = node->child;
@@ -62,11 +62,11 @@ void generate_code(Node node)
     Node aux = id->brother;
     if (aux != NULL){
       generate_code(aux);
-  	  printf("store %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), r_count - 1, get_llvm_type(type_spec->label), id->value);	
+      printf("store %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), r_count - 1, get_llvm_type(type_spec->label), id->value);
     }
 
     if (node->brother != NULL)
-    	generate_code(node->brother);
+      generate_code(node->brother);
     break;
   }
 
@@ -75,8 +75,8 @@ void generate_code(Node node)
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Return));
     if(node->child == NULL){
-    	printf("ret void\n");
-    	break;
+      printf("ret void\n");
+      break;
     }
     generate_code(node->child);
     printf("ret %s %%%d\n", get_llvm_type(node->child->type), r_count - 1);
@@ -90,14 +90,44 @@ void generate_code(Node node)
     break;
   case Store:
     generate_code(node->child->brother);
-  	printf("store %s %%%d, %s* %%%s\n", get_llvm_type(node->type), r_count - 1, get_llvm_type(node->type), node->child->value);
-  	break;
+    if(node->type == Char){
+      printf("store i8 %%%d, i8* %%%s\n", r_count - 1, node->child->value);
+    }
+    else if(node->type == Short){
+      printf("store i16 %%%d, i16* %%%s\n", r_count - 1, node->child->value);
+    }
+    else if(node->type == Int){
+      printf("store i32 %%%d, i32* %%%s\n", r_count - 1, node->child->value);
+    }
+    else{
+      printf("store double %%%d, double* %%%s\n", r_count - 1, node->child->value);
+    }
+    
+    if (node->brother != NULL)
+      generate_code(node->brother);
+    break;
   case Add:
     generate_code(node->child);
     aux1 = r_count - 1;
     generate_code(node->child->brother);
     aux2 = r_count - 1;
-    printf("%%%d = add %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
+
+    if (node->type == Int){
+      printf("%%%d = add i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+    }
+    else{
+      //THIS SOULD ALWAYS BE DOUBLE
+      if(node->child->type == Int){
+        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux1);
+        aux1 = r_count - 1;
+      }
+      if(node->child->brother->type == Int){
+        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux2);
+        aux2 = r_count - 1;
+      }
+      printf("%%%d = fadd double %%%d, %%%d\n", r_count++, aux1, aux2);
+    }
+    
     if (node->brother != NULL)
       generate_code(node->brother);
     break;
@@ -106,7 +136,23 @@ void generate_code(Node node)
     aux1 = r_count - 1;
     generate_code(node->child->brother);
     aux2 = r_count - 1;
-    printf("%%%d = sub %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
+
+    if (node->type == Int){
+      printf("%%%d = sub i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+    }
+    else{
+      //THIS SOULD ALWAYS BE DOUBLE
+      if(node->child->type == Int){
+        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux1);
+        aux1 = r_count - 1;
+      }
+      if(node->child->brother->type == Int){
+        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux2);
+        aux2 = r_count - 1;
+      }
+      printf("%%%d = fsub double %%%d, %%%d\n", r_count++, aux1, aux2);
+    }
+    
     if (node->brother != NULL)
       generate_code(node->brother);
     break;
@@ -115,7 +161,23 @@ void generate_code(Node node)
     aux1 = r_count - 1;
     generate_code(node->child->brother);
     aux2 = r_count - 1;
-    printf("%%%d = mul %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
+
+    if (node->type == Int){
+      printf("%%%d = mul i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+    }
+    else{
+      //THIS SOULD ALWAYS BE DOUBLE
+      if(node->child->type == Int){
+        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux1);
+        aux1 = r_count - 1;
+      }
+      if(node->child->brother->type == Int){
+        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux2);
+        aux2 = r_count - 1;
+      }
+      printf("%%%d = fmul double %%%d, %%%d\n", r_count++, aux1, aux2);
+    }
+    
     if (node->brother != NULL)
       generate_code(node->brother);
     break;
@@ -124,9 +186,26 @@ void generate_code(Node node)
     aux1 = r_count - 1;
     generate_code(node->child->brother);
     aux2 = r_count - 1;
-    printf("%%%d = sdiv %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
+
+    if (node->type == Int){
+      printf("%%%d = sdiv i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+    }
+    else{
+      //THIS SOULD ALWAYS BE DOUBLE
+      if(node->child->type == Int){
+        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux1);
+        aux1 = r_count - 1;
+      }
+      if(node->child->brother->type == Int){
+        printf("%%%d = sitofp i32 %%%d to double\n", r_count++, aux2);
+        aux2 = r_count - 1;
+      }
+      printf("%%%d = fdiv double %%%d, %%%d\n", r_count++, aux1, aux2);
+    }
+    
     if (node->brother != NULL)
       generate_code(node->brother);
+    break;
     break;
   case RealLit:
     printf("%%%d = fadd double %s, %s\n", r_count++, get_default_value(Double), handle_constant(Double, node->value));
@@ -139,17 +218,17 @@ void generate_code(Node node)
     //   generate_code(node->brother);
     break;
   case ChrLit:
-  	printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
-  	//printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
-  	// isto esta provavelmente mal. Devo ter que fazer i8 se possivel ou conversao para i32 beforehand
+    printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
+    //printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
+    // isto esta provavelmente mal. Devo ter que fazer i8 se possivel ou conversao para i32 beforehand
     // if (node->brother != NULL)
     //   generate_code(node->brother);
-  	break;
+    break;
   case Id:
-  	printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
+    printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
     // if (node->brother != NULL)
     //   generate_code(node->brother);
-  	break;
+    break;
   case Call:
   {  //verificar como funciona funcao sem argumentos
     Node aux = node->child->brother;
@@ -394,15 +473,15 @@ char *handle_constant(Label type, char *value)
   {
   case Double:
   {
-  	double aux_double;
-  	char aux_str[1024];	// this seems dangerous to me... returning something created here...
-  	//printf("value %s\n", value);
-  	sscanf(value, "%lf", &aux_double);
-  	//printf("aux_double %lf\n", aux_double);
-  	sprintf(aux_str, "%.16E", aux_double);	//verificar quantas casas devem ser
-  	//printf("aux_str %s\n", aux_str);
-  	s = aux_str;
-  	break;
+    double aux_double;
+    char aux_str[1024];	// this seems dangerous to me... returning something created here...
+    //printf("value %s\n", value);
+    sscanf(value, "%lf", &aux_double);
+    //printf("aux_double %lf\n", aux_double);
+    sprintf(aux_str, "%.16E", aux_double);	//verificar quantas casas devem ser
+    //printf("aux_str %s\n", aux_str);
+    s = aux_str;
+    break;
   }
   case Short:
     /*
