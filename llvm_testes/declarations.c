@@ -30,11 +30,17 @@ void encadeados(void){
     //double i = h + g + e + c;
     //int j = g + e + c;
 }
+
+short shawty(void){
+    short a = 1;
+    return a;
+}
 int main(void){
     double d  = 1.0;
     double e = d;
     encadeados();
     unary_minus();
+    int a = shawty();
 }
 
 
