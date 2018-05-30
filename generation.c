@@ -441,7 +441,24 @@ char *handle_constant(Label type, char *value)
     char aux_str[1024]; // this seems dangerous to me... returning something created here...
     //TODO: Temos de fazer um caso especial para os caracteres \t \n e assim
     //printf("value %s\n", value);
-    //sscanf(value, "'%c'", &aux_char);	//thought this would work :(
+    if(value[3] != '\0'){
+      if(value[2] == 'n'){
+        aux_char = '\n';
+      }
+      else if(value[2] == 't'){
+        aux_char = '\t';
+      }
+      else if(value[2] == '\\'){
+        aux_char = '\\';
+      }
+      else if(value[2] == '\''){
+        aux_char = '\'';
+      }
+      else if(value[2] == '"'){
+        aux_char = '"';
+      }
+    }
+    sscanf(value, "'%c'", &aux_char);	//thought this would work :(
     //printf("aux_char %c\n", aux_char);
     sprintf(aux_str, "%d", aux_char);
     //printf("aux_str %s\n", aux_str);
