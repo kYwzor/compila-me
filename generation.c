@@ -33,7 +33,20 @@ void generate_code(Node node)
     Node id = type_spec->brother;
     Node paramList = id->brother;
 
-    printf("define %s @%s(){\n", get_llvm_type(type_spec->label), id->value);
+    Node aux = paramList->child;
+    char *param_string = (char *)malloc(sizeof(char) * 1024);
+    strcpy(param_string, "");
+    while (aux != NULL && aux->child->label != Void)
+    {
+      char *aux_string = (char *)malloc(sizeof(char) * 1024);
+      if (param_string[0] != '\0')
+        sprintf(aux_string, ", %s %%%s", get_llvm_type(aux->child->label), aux->child->brother->value);
+      else
+        sprintf(aux_string, "%s %%%s", get_llvm_type(aux->child->label), aux->child->brother->value);
+      strcat(param_string, aux_string);
+      aux = aux->brother;
+   }
+    printf("define %s @%s(%s){\n", get_llvm_type(type_spec->label), id->value, param_string);
     generate_code(paramList->brother);	//funcbody
 
     printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
@@ -81,7 +94,6 @@ void generate_code(Node node)
     }
     generate_code(node->child);
     printf("ret %s %%%d\n", get_llvm_type(node->child->type), r_count - 1);
-
     break;
   }
   case Minus:
@@ -120,7 +132,6 @@ void generate_code(Node node)
     aux1 = r_count - 1;
     generate_code(node->child->brother);
     aux2 = r_count - 1;
-
     if (node->type == Int){
       printf("%%%d = sub i32 %%%d, %%%d\n", r_count++, aux1, aux2);
     }
@@ -187,7 +198,7 @@ void generate_code(Node node)
     printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
     break;
   case Call:
-  { //verificar como funciona funcao sem argumentos
+  {
     Node aux = node->child->brother;
     char *param_string = (char *)malloc(sizeof(char) * 1024);
     strcpy(param_string, "");
@@ -278,7 +289,7 @@ char *get_llvm_type(Label label)
   {
   /*TODO: estes dois sao gerados com signext antes do tamanho, verificar se e necessario*/
   case Char:
-    s = "i32";
+    s = "i8";
     break;
   case Short:
     s = "i16";

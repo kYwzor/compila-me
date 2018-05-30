@@ -1,6 +1,5 @@
 //#include <stdio.h>
 void unary_minus(void){
-    /*
     int a = 1;
     int b = -a;
     a = 1;
@@ -8,19 +7,15 @@ void unary_minus(void){
     char c = 'a';
     char d = -c;
     putchar(c);
-    */
 }
 
-/*
 char exemplo(void){
     char a = 'a';
     putchar(a);
     return a;
 }
-*/
 
 void encadeados(void){
-    /*
     int a = 37;
     int b = a = 38;
     int c = a;
@@ -30,24 +25,25 @@ void encadeados(void){
     char g = a = 38;
     double h = 45;
     double j = a = 99;
-    */
     //double i = h + g + e + c;
     //int j = g + e + c;
 }
-/*
 short shawty(void){
     short a = 1;
     return a;
 }
 
 char charizard(void){
-    char a = 'a';
+    char a = 2;
     return a;
 }
-*/
 int inteligente(void){
     int a = 1;
     return a;
+}
+
+int soma(int a,int b){
+    return a + b;
 }
 
 int main(void){
@@ -55,13 +51,13 @@ int main(void){
     double e = d;
     encadeados();
     unary_minus();
-    /*
-    int b = 4;
+    char b = 4;
     b = charizard();
     int a = 1;
     a = shawty();
-    */
     char c = inteligente();
+    int oi;
+    oi = soma(1,2);
     return 1;
 }
 
