@@ -5,9 +5,7 @@
 // ALSO CHECK IF TWO CHAR IDS CAN MAKE A CHAR ADD
 
 int r_count = 1;
-Label current_function_type = -1;
-Register_list register_list;
-Register_list temporary_registers;
+char* current_function = NULL;
 void generate_code(Node node)
 {
   int aux1, aux2;
@@ -24,12 +22,7 @@ void generate_code(Node node)
 
     printf("declare i32 @putchar(i32)\n");
     printf("declare i32 @getchar()\n");
-    register_list = (Register_list)malloc(sizeof(struct _rl));
-    register_list->next = NULL;
-    register_list->id = (char *)malloc(sizeof(char) * 1024);
-    register_list->updated_register = (char *)malloc(sizeof(char) * 1024);
-    register_list->id = "Hi i'm list head";
-    register_list->updated_register = "Hi i'm list head";
+  
     Node aux = node->child;
     while (aux != NULL)
     {
@@ -48,7 +41,7 @@ void generate_code(Node node)
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node paramList = id->brother;
-    current_function_type = type_spec->label;
+    current_function = id->value;
 
     Node aux = paramList->child;
     char *param_string = (char *)malloc(sizeof(char) * 1024);
@@ -65,22 +58,14 @@ void generate_code(Node node)
     }
     printf("define %s @%s(%s){\n", get_llvm_type(type_spec->label), id->value, param_string);
     generate_code(aux);
-    Register_list prev_temporary = temporary_registers;
-    temporary_registers = (Register_list)malloc(sizeof(struct _rl));
-    temporary_registers->next = NULL;
-    temporary_registers->id = (char *)malloc(sizeof(char) * 1024);
-    temporary_registers->updated_register = (char *)malloc(sizeof(char) * 1024);
-    temporary_registers->id = "Hi i'm list head";
-    temporary_registers->updated_register = "Hi i'm list head";    //printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
+  //printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
     aux = paramList->brother->child; //funcbody child
     while (aux != NULL)
     {
       generate_code(aux);
       aux = aux->brother;
     }
-    clean_up_register();
-    temporary_registers = prev_temporary;
-    current_function_type = -1;
+    current_function = NULL;
 
     printf("\tret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
     break;
@@ -114,12 +99,11 @@ void generate_code(Node node)
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node aux = id->brother;
-    char *register_id = (char *)malloc(sizeof(char) * 1024);
-    if (current_function_type != -1)
+    if (current_function != NULL)
     {
-      sprintf(register_id, "%%%s", id->value);
-      insert_alias(id->value, register_id, type_spec->label);
-      printf("%s = alloca %s\n", get_register(id->value)->updated_register, get_llvm_type(type_spec->label)); //align???
+      //Marcar o simbolo como ativo
+      find_symbol(find_function_entry(current_function), id->value)->active = 1;
+      printf("%s = alloca %s\n", get_register(id->value), get_llvm_type(type_spec->label)); //align???
       if (aux != NULL)
       {
         generate_code(aux);
@@ -129,22 +113,20 @@ void generate_code(Node node)
     }
     else
     {
-      sprintf(register_id, "@%s", id->value);
-      insert_alias(id->value, register_id, type_spec->label);
       if (aux != NULL)
       {
         if (type_spec->label != Double)
         {
-          printf("%s = global %s %d\n", get_register(id->value)->updated_register, get_llvm_type(type_spec->label), eval_int(aux));
+          printf("%s = global %s %d\n", get_register(id->value), get_llvm_type(type_spec->label), eval_int(aux));
         }
         else
         {
-          printf("%s = global %s %lf\n", get_register(id->value)->updated_register, get_llvm_type(type_spec->label), /*meter aqui uma versao double*/ eval_int(aux));
+          printf("%s = global %s %lf\n", get_register(id->value), get_llvm_type(type_spec->label), /*meter aqui uma versao double*/ eval_int(aux));
         }
       }
       else
       {
-        printf("%s = common global %s %s\n", get_register(id->value)->updated_register, get_llvm_type(type_spec->label), get_default_value(type_spec->label));
+        printf("%s = common global %s %s\n", get_register(id->value), get_llvm_type(type_spec->label), get_default_value(type_spec->label));
       }
     }
 
@@ -161,6 +143,8 @@ void generate_code(Node node)
       break;
     }
     generate_code(node->child);
+    Table_list function_entry = find_function_entry(current_function);
+    Label current_function_type = function_entry->table_node->label;
     aux1 = convert_register(current_function_type, node->child->type, r_count - 1);
     printf("\tret %s %%%d\n", get_llvm_type(current_function_type), aux1);
     break;
@@ -452,9 +436,16 @@ void generate_code(Node node)
     break;
   case Id:
   {
-    Register_list aux = get_register(node->value);
-    printf("\t%%%d = load %s, %s* %s\n", r_count++, get_llvm_type(aux->type), get_llvm_type(aux->type), aux->updated_register);
-    convert_register(node->type, aux->type, r_count - 1);
+    Table_list table = find_function_entry(current_function);
+    Arg_list arg = find_parameter(table, node->value);
+    Sym_list sym = find_symbol(table, node->value);
+    Sym_list global_sym = find_symbol(global_table, node->value);
+    Label label;
+    if(global_sym != NULL) label = global_sym->label;
+    if(sym != NULL) label = sym->label;
+    if(arg != NULL) label = arg->label;
+    printf("\t%%%d = load %s, %s* %s\n", r_count++, get_llvm_type(label), get_llvm_type(label), get_register(node->value));
+    convert_register(node->type, label, r_count - 1);
     break;
   }
   case Call:
@@ -851,65 +842,27 @@ char *handle_constant(Label type, char *value)
   return s;
 }
 
-void insert_alias(char *id, char *updated_register, Label type)
-{
-  /*
-  Register_list aux = register_list;
-  while (aux != NULL)
+char * get_register(char* value){
+  char *register_string = (char *)malloc(sizeof(char) * 1024);
+  if(current_function == NULL){
+      sprintf(register_string, "@%s", value);
+      return register_string;
+  }
+  Table_list function_table = find_function_entry(current_function);
+  Arg_list register_argument = find_parameter(function_table, value);
+  if (register_argument == NULL)
   {
-    if (strcmp(aux->id, id) == 0)
+    Sym_list register_symbol = find_symbol(function_table, value);
+    if (register_symbol != NULL && register_symbol->active == 1)
     {
-      if (DEBUG)
-        printf("Updated %s register from %s to %s\n", id, aux->updated_register, updated_register);
-      aux->updated_register = updated_register;
-      aux->type = type;
-      return;
+      sprintf(register_string, "%%%s", value);
     }
-    aux = aux->next;
-  }
-  */
-  Register_list alias = (Register_list)malloc(sizeof(struct _rl));
-  alias->id = id;
-  alias->updated_register = updated_register;
-  alias->next = register_list;
-  alias->type = type;
-  register_list = alias;
-  if(temporary_registers != NULL){
-  Register_list temp = (Register_list)malloc(sizeof(struct _rl));
-  temp->id = id;
-  temp->updated_register = updated_register;
-  temp->next = temporary_registers;
-  temp->type = type;
-  temporary_registers = alias;
-
-  }
-}
-
-Register_list get_register(char *id)
-{
-  Register_list aux = register_list;
-  while (aux != NULL)
-  {
-    if (strcmp(aux->id, id) == 0)
-    {
-      return aux;
+    else{
+      sprintf(register_string, "@%s", value);
     }
-    aux = aux->next;
   }
-  printf("This should never happen, could not find register\n");
-  return NULL;
-}
-
-void clean_up_register(){
-  while(temporary_registers->next != NULL){
-    printf("A\n");
-    Register_list aux1 = register_list->next;
-    Register_list aux2 = temporary_registers->next;
-    free(register_list);
-    free(temporary_registers);
-    printf("B\n");
-    register_list = aux1;
-    temporary_registers = aux2;
+  else{
+      sprintf(register_string, "%%%d", register_argument->register_value);
   }
-  free(temporary_registers);
+  return register_string;
 }

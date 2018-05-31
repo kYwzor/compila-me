@@ -10,15 +10,7 @@ typedef enum _label{
 
 typedef struct _al* Arg_list;
 typedef struct node_s *Node;
-typedef struct _rl* Register_list;
 
-//TODO: Free nisto no fim
-typedef struct _rl{
-  char* id;
-  char* updated_register;
-  Label type;
-  Register_list next;
-}r_list;
 typedef struct node_s
 {
   Label label;
@@ -34,6 +26,8 @@ typedef struct _t1{
 	char* name;
 	Label label; 
   Sym_list next;
+  //Meta 4
+  int active;
 }_Sym_list;
 
 
@@ -41,6 +35,8 @@ typedef struct _al{
   char* name;
   Label label;
   Arg_list next;
+  //Meta 4
+  int register_value;
 }_arg_list; 
 
 typedef struct _tl* Table_list;

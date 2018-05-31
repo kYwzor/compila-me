@@ -30,7 +30,6 @@ void encadeados(void){
     double h = 45;
     double j = a = 99;
     double i = h + g + e + c;
-    int j = g + e + c;
 }
 short shawty(void){
     short a = 1;
