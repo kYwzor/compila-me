@@ -124,7 +124,7 @@ void generate_code(Node node)
         }
         else
         {
-          printf("%s = global %s %lf\n", get_register(id->value), get_llvm_type(type_spec->label), /*meter aqui uma versao double*/ eval_int(aux));
+          printf("%s = global %s %lf\n", get_register(id->value), get_llvm_type(type_spec->label), /*meter aqui uma versao double*/ eval_double(aux));
         }
       }
       else
@@ -599,11 +599,111 @@ int eval_int(Node node)
   }
   return ERROR;
 }
+
+double eval_double(Node node)
+{
+  switch (node->label)
+  {
+  case Or:
+    return eval_double(node->child) || eval_double(node->child->brother);
+  case And:
+    return eval_double(node->child) && eval_double(node->child->brother);
+  case Eq:
+    return eval_double(node->child) == eval_double(node->child->brother);
+  case Ne:
+    return eval_double(node->child) != eval_double(node->child->brother);
+  case Lt:
+    return eval_double(node->child) < eval_double(node->child->brother);
+  case Le:
+    return eval_double(node->child) <= eval_double(node->child->brother);
+  case Gt:
+    return eval_double(node->child) > eval_double(node->child->brother);
+  case Ge:
+    return eval_double(node->child) >= eval_double(node->child->brother);
+  case Comma:
+    //Pensar amanha depois de beber um cafe
+    break;
+  case Add:
+    return eval_double(node->child) + eval_double(node->child->brother);
+  case Sub:
+    return eval_double(node->child) - eval_double(node->child->brother);
+  case Mul:
+    return eval_double(node->child) * eval_double(node->child->brother);
+  case Div:
+    return eval_double(node->child) / eval_double(node->child->brother);
+  case Store:
+    //Pensar amanha depois de beber um cafe
+    break;
+  case Not:
+    return !eval_double(node->child);
+  case Minus:
+    return -eval_double(node->child);
+  case Plus:
+    return +eval_double(node->child);
+  case IntLit:
+  {
+    int aux_int;
+    if (node->value[0] == '0')
+    {
+      sscanf(node->value, "%o", &aux_int);
+    }
+    else
+    {
+      sscanf(node->value, "%d", &aux_int);
+    }
+    return aux_int;
+    break;
+  }
+  case ChrLit:
+  {
+    char aux_char = '\0';
+    //printf("value %s\n", value);
+    if (node->value[3] != '\0')
+    {
+      if (node->value[2] == 'n')
+      {
+        aux_char = '\n';
+      }
+      else if (node->value[2] == 't')
+      {
+        aux_char = '\t';
+      }
+      else if (node->value[2] == '\\')
+      {
+        aux_char = '\\';
+      }
+      else if (node->value[2] == '\'')
+      {
+        aux_char = '\'';
+      }
+      else if (node->value[2] == '"')
+      {
+        aux_char = '"';
+      }
+    }
+    else{
+      aux_char = node->value[1];
+    }
+    return aux_char;
+  }
+  case RealLit:{
+      double aux_double;
+    sscanf(node->value, "%lf", &aux_double);
+    return aux_double;
+    break;
+
+  }
+  default:
+    printf("Fatal error in eval_double %s\n", get_label_string(node->label));
+    return ERROR;
+  }
+  return ERROR;
+}
+
 int convert_register(Label target, Label origin_rl, int original_r)
 {
   if (target == origin_rl)
     return original_r; // no conversion needed
-
   switch (target)
   {
   case Char:

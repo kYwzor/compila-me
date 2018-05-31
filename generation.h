@@ -8,3 +8,4 @@ int convert_register(Label target, Label original_l, int original_r);
 char *get_default_value(Label label);
 int eval_int(Node node);
 char* get_register(char* value);
+double eval_double(Node node);
