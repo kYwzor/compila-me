@@ -39,7 +39,11 @@ void generate_code(Node node)
     current_function_type = type_spec->label;
 
     printf("define %s @%s(){\n", get_llvm_type(type_spec->label), id->value);
-    generate_code(paramList->brother);	//funcbody
+    Node aux = paramList->brother->child; //funcbody child
+    while(aux!=NULL){
+      generate_code(aux);
+      aux = aux -> brother;
+    }
 
     printf("\tret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
     if (node->brother != NULL)
@@ -70,9 +74,6 @@ void generate_code(Node node)
       aux1 = convert_register(type_spec->label, aux->type, r_count -1);
       printf("\tstore %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), aux1, get_llvm_type(type_spec->label), id->value);
     }
-
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
   }
 
@@ -95,8 +96,6 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux1 = convert_register(node->type, node->child->brother->type, r_count -1);
     printf("\tstore %s %%%d, %s* %%%s\n", get_llvm_type(node->type), aux1, get_llvm_type(node->type), node->child->value);
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
 
   /*
@@ -123,9 +122,6 @@ void generate_code(Node node)
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
 
   case Ne:
@@ -148,9 +144,6 @@ void generate_code(Node node)
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
   case Lt:
     generate_code(node->child);
@@ -172,9 +165,6 @@ void generate_code(Node node)
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
   case Gt:
     generate_code(node->child);
@@ -196,9 +186,6 @@ void generate_code(Node node)
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
   case Le:
     generate_code(node->child);
@@ -220,9 +207,6 @@ void generate_code(Node node)
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
   case Ge:
     generate_code(node->child);
@@ -244,9 +228,6 @@ void generate_code(Node node)
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
 
   case Add:
@@ -265,9 +246,6 @@ void generate_code(Node node)
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fadd double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
 
   case Sub:
@@ -286,9 +264,6 @@ void generate_code(Node node)
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fsub double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
 
   case Mul:
@@ -307,9 +282,6 @@ void generate_code(Node node)
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fmul double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
 
   case Div:
@@ -328,9 +300,6 @@ void generate_code(Node node)
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fdiv double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
 
   case Mod:
@@ -349,9 +318,6 @@ void generate_code(Node node)
       printf("\t%%%d = frem double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
     */
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
 
   case Not: 
@@ -359,8 +325,6 @@ void generate_code(Node node)
     // Vou assumir que NUNCA ha !Double
     aux1 = convert_register(Int, node->child->type, r_count - 1);
     printf("\t%%%d = icmp eq i32 %%%d, 0\n", r_count++, aux1);
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
 
   case Minus:
@@ -374,13 +338,10 @@ void generate_code(Node node)
       aux1 = convert_register(Double, node->child->type, r_count - 1);
       printf("\t%%%d = fsub double -%s, %%%d\n", r_count++, get_default_value(Double), aux1);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
 
   case Plus:
-    full_generation(node);
+    generate_code(node->child);
     break;
 
   case RealLit:
@@ -420,14 +381,14 @@ void generate_code(Node node)
     else{
       printf("\tcall %s @%s(%s)\n", get_llvm_type(node->type), node->child->value, param_string);
     }
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
   }
   default:
     if (DEBUG)
       printf("Defaulted %s\n", get_label_string(node->label));
-    full_generation(node);
+    //full_generation(node);
+    if (node->child != NULL)
+      generate_code(node->child);
     break;
   }
 }
