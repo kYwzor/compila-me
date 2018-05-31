@@ -3,6 +3,14 @@
 // TODO: REMEMBER TO ALSO CHECK FOR INT CONVERSIONS ON OPERATIONS
 // IT'S POSSIBLE THAT WE HAVE AN ID
 // ALSO CHECK IF TWO CHAR IDS CAN MAKE A CHAR ADD
+typedef struct al_l* Alias_list;
+
+//TODO: Free nisto no fim
+typedef struct al_l{
+  char* default_register;
+  char* updated_register;
+  Alias_list next;
+};
 
 int r_count = 1;
 Label current_function_type = -1;
@@ -148,7 +156,6 @@ void generate_code(Node node)
     generate_code(node->child);
     aux1 = convert_register(current_function_type, node->child->type, r_count -1);
     printf("\tret %s %%%d\n", get_llvm_type(current_function_type), aux1);
-
     break;
   }
 
@@ -158,7 +165,7 @@ void generate_code(Node node)
     printf("\tstore %s %%%d, %s* %%%s\n", get_llvm_type(node->type), aux1, get_llvm_type(node->type), node->child->value);
     break;
 
-  /*
+  /* :(
   case Or:
   case And:
   */
@@ -415,6 +422,7 @@ void generate_code(Node node)
     // sim, tem mesmo que ser i32, porque um chrlit e sempre anotado como int
     break;
   case Id:
+
     printf("\t%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
     break;
   case Call:
