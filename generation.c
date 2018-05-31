@@ -51,12 +51,13 @@ void generate_code(Node node)
     generate_code(paramList);
 
     printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
+    current_function_type = -1;
     if (node->brother != NULL)
       generate_code(node->brother);
 
     break;
   }
-
+/*
   case FuncDeclaration:
   {
     if (DEBUG)
@@ -64,13 +65,13 @@ void generate_code(Node node)
     full_generation(node);
     break;
   }
-
+*/
   case ParamDeclaration:
   {
     Node typeSpec = node->child;
     Node id = typeSpec->brother;
     if(typeSpec->label != Void){
-      printf("%%%d = alloca %s\n", r_count++, get_llvm_type(typeSpec->label));
+      printf("%%%s = alloca %s\n", id->value, get_llvm_type(typeSpec->label));
       printf("store %s %%%s, %s* %%%d\n", get_llvm_type(typeSpec->label), id->value, get_llvm_type(typeSpec->label), r_count - 1);
     }
     if(node->brother != NULL)
@@ -83,14 +84,36 @@ void generate_code(Node node)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Declaration));
     Node type_spec = node->child;
     Node id = type_spec->brother;
-    
-    printf("%%%s = alloca %s\n", id->value, get_llvm_type(type_spec->label));	//align???
     Node aux = id->brother;
-    if (aux != NULL){
-      generate_code(aux);
-      aux1 = convert_register(type_spec->label, aux->type, r_count -1);
-      printf("store %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), aux1, get_llvm_type(type_spec->label), id->value);
+
+    if (current_function_type != -1)
+    {
+      printf("%%%s = alloca %s\n", id->value, get_llvm_type(type_spec->label)); //align???
+      if (aux != NULL)
+      {
+        generate_code(aux);
+        aux1 = convert_register(type_spec->label, aux->type, r_count - 1);
+        printf("store %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), aux1, get_llvm_type(type_spec->label), id->value);
+      }
     }
+    else{
+      if (aux != NULL)
+      {
+        if (type_spec->label != Double)
+        {
+          printf("@%s = global %s %d\n", id->value, get_llvm_type(type_spec->label), eval_int(aux));
+        }
+        else
+        {
+          printf("@%s = global %s %lf\n", id->value, get_llvm_type(type_spec->label), /*meter aqui uma versao double*/ eval_int(aux));
+        }
+      }
+      else
+      {
+        printf("@%s = common global %s %s\n", id->value, get_llvm_type(type_spec->label), get_default_value(type_spec->label));
+      }
+    }
+
 
     if (node->brother != NULL)
       generate_code(node->brother);
@@ -209,6 +232,12 @@ void generate_code(Node node)
     // isto esta provavelmente mal. Devo ter que fazer i8 se possivel ou conversao para i32 beforehand
     break;
   case Id:
+  /*
+  Arg_list arguments = get_function_args(current_function_name);
+  while(arguments != NULL){
+    if(arguments->)
+  }
+  */
     printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
     break;
   case Call:
@@ -253,6 +282,63 @@ void full_generation(Node node)
     generate_code(node->child);
   if (node->brother != NULL)
     generate_code(node->brother);
+}
+
+int eval_int(Node node){
+  switch (node->label)
+  {
+  case Or:
+    return eval_int(node->child) || eval_int(node->child->brother);
+  case And:
+    return eval_int(node->child) && eval_int(node->child->brother);
+  case Eq:
+    return eval_int(node->child) == eval_int(node->child->brother);
+  case Ne:
+    return eval_int(node->child) != eval_int(node->child->brother);
+  case Lt:
+    return eval_int(node->child) < eval_int(node->child->brother);
+  case Le:
+    return eval_int(node->child) <= eval_int(node->child->brother);
+  case Gt:
+    return eval_int(node->child) > eval_int(node->child->brother);
+  case Ge:
+    return eval_int(node->child) >= eval_int(node->child->brother);
+  case Mod:
+    return eval_int(node->child) % eval_int(node->child->brother);
+  case Comma:
+    //Pensar amanha depois de beber um cafe
+    break;
+  case Add:
+    return eval_int(node->child) + eval_int(node->child->brother);
+  case Sub:
+    return eval_int(node->child) - eval_int(node->child->brother);
+  case Mul:
+    return eval_int(node->child) * eval_int(node->child->brother);
+  case Div:
+    return eval_int(node->child) / eval_int(node->child->brother);
+  case BitWiseAnd:
+    return eval_int(node->child) & eval_int(node->child->brother);
+  case BitWiseXor:
+    return eval_int(node->child) ^ eval_int(node->child->brother);
+  case BitWiseOr:
+    return eval_int(node->child) | eval_int(node->child->brother);
+  case Store:
+    //Pensar amanha depois de beber um cafe
+    break;
+  case Not:
+    return !eval_int(node->child);
+  case Minus:
+    return -eval_int(node->child);
+  case Plus:
+    return +eval_int(node->child);
+  case IntLit:
+  case ChrLit:
+    return atoi(node->value);
+  default:
+    printf("Fatal error in eval_int %s\n", get_label_string(node->label));
+    return ERROR;
+  }
+  return ERROR;
 }
 
 int convert_register(Label target, Label original_l, int original_r){

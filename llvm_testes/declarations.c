@@ -42,9 +42,14 @@ int inteligente(void){
     return a;
 }
 
+/*
 int soma(int a,int b){
     return a + b;
 }
+*/
+char g = 'a';
+int u = 2 + 1;
+short s;
 
 int main(void){
     double d  = 1.0;
@@ -55,9 +60,12 @@ int main(void){
     b = charizard();
     int a = 1;
     a = shawty();
+    int h = g;
+    putchar(h);
+    putchar(g);
     char c = inteligente();
     int oi;
-    oi = soma(1,2);
+    //oi = soma(1,2);
     return 1;
 }
 

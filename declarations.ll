@@ -2,6 +2,10 @@
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
+@g = global i8 97, align 1
+@u = global i32 2, align 4
+@s = common global i16 0, align 2
+
 ; Function Attrs: nounwind uwtable
 define void @unary_minus() #0 {
   %a = alloca i32, align 4
@@ -92,24 +96,13 @@ define i32 @inteligente() #0 {
 }
 
 ; Function Attrs: nounwind uwtable
-define i32 @soma(i32 %a, i32 %b) #0 {
-  %1 = alloca i32, align 4
-  %2 = alloca i32, align 4
-  store i32 %a, i32* %1, align 4
-  store i32 %b, i32* %2, align 4
-  %3 = load i32, i32* %1, align 4
-  %4 = load i32, i32* %2, align 4
-  %5 = add nsw i32 %3, %4
-  ret i32 %5
-}
-
-; Function Attrs: nounwind uwtable
 define i32 @main() #0 {
   %1 = alloca i32, align 4
   %d = alloca double, align 8
   %e = alloca double, align 8
   %b = alloca i8, align 1
   %a = alloca i32, align 4
+  %h = alloca i32, align 4
   %c = alloca i8, align 1
   %oi = alloca i32, align 4
   store i32 0, i32* %1, align 4
@@ -125,11 +118,17 @@ define i32 @main() #0 {
   %4 = call signext i16 @shawty()
   %5 = sext i16 %4 to i32
   store i32 %5, i32* %a, align 4
-  %6 = call i32 @inteligente()
-  %7 = trunc i32 %6 to i8
-  store i8 %7, i8* %c, align 1
-  %8 = call i32 @soma(i32 1, i32 2)
-  store i32 %8, i32* %oi, align 4
+  %6 = load i8, i8* @g, align 1
+  %7 = sext i8 %6 to i32
+  store i32 %7, i32* %h, align 4
+  %8 = load i32, i32* %h, align 4
+  %9 = call i32 @putchar(i32 %8)
+  %10 = load i8, i8* @g, align 1
+  %11 = sext i8 %10 to i32
+  %12 = call i32 @putchar(i32 %11)
+  %13 = call i32 @inteligente()
+  %14 = trunc i32 %13 to i8
+  store i8 %14, i8* %c, align 1
   ret i32 1
 }
 
