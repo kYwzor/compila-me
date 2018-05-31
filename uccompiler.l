@@ -88,37 +88,37 @@ void                                                {handleKeyword("VOID"); retu
 %%
 int main(int argc, char** argv)
 {
-    flag = 0;
+    flag = 0;   // LLVM
     errorFlag = 0;
-    int print_tree_flag = 1;
     treeRoot = NULL;
     if(argc == 2){
-        if (strcmp(argv[1],"-l") == 0) flag = 1;
-        else if (strcmp(argv[1],"-t") == 0 || strcmp(argv[1], "-2") == 0) flag = 2;
-        else if (strcmp(argv[1],"-s") == 0) flag = 3;
-    }
-    else if(argc == 1){
-        flag = 4;
+        if (strcmp(argv[1],"-1") == 0) flag = 1;        // lex errors
+        else if (strcmp(argv[1],"-l") == 0) flag = 2;   // tokens + lex errors
+        else if (strcmp(argv[1],"-2") == 0) flag = 3;   // syn and lex errors
+        else if (strcmp(argv[1],"-t") == 0) flag = 4;   // syn and lex errors + AST (if no syn errors)
+        else if (strcmp(argv[1],"-3") == 0) flag = 5;   // sem errors + syn and lex errors
+        else if (strcmp(argv[1],"-s") == 0) flag = 6;   // sem errors + table + annotated AST + syn and lex errors
     }
     yyparse();
-    if(!errorFlag && flag == 2){
-        print_tree(treeRoot, 0);
-        free_tree(treeRoot);
+    if (treeRoot == NULL){
+        return 0;
     }
-    if(treeRoot!=NULL && !errorFlag && flag == 3) {
-        handle_node(treeRoot);
-        print_tables();
-        if(treeRoot!=NULL && print_tree_flag){
+    // if (flag < 4) nothing to do here
+    if(!errorFlag){
+        if (flag == 4) print_tree(treeRoot, 0);
+        else if(flag == 5) handle_node(treeRoot);
+        else if(flag == 6) {
+            handle_node(treeRoot);
+            print_tables();
             print_tree(treeRoot, 0);
-            free_tree(treeRoot);
+        }
+        else if(flag == 0){
+            handle_node(treeRoot);
+            generate_code(treeRoot);
         }
     }
-    if(treeRoot != NULL && !errorFlag && flag == 4){
-        handle_node(treeRoot);
-        if(print_tree_flag)
-            generate_code(treeRoot);
-        free_tree(treeRoot);
-    }
+
+    free_tree(treeRoot);
     return 0;
 }
 
@@ -128,14 +128,14 @@ int yywrap()
 }
 
 void handleKeyword(char* keyword){
-    if(flag==1){
+    if(flag==2){
         printf("%s\n", keyword);
     }
     column += yyleng;
 }
 
 void handleToken(char* token_val){
-    if(flag==1){
+    if(flag==2){
         printf("%s(%s)\n", token_val, yytext);
     }
     column += yyleng;

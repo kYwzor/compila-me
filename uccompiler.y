@@ -255,6 +255,6 @@ Primary_expr:
 %%
 
 void yyerror (char *s) {
-    if(flag!=1) printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
+    if(flag>2) printf("Line %d, col %d: %s: %s\n", line, column-(int)yyleng, s, yytext);
     errorFlag = 1;
 }
