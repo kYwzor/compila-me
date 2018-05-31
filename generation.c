@@ -124,7 +124,7 @@ void generate_code(Node node)
         }
         else
         {
-          printf("%s = global %s %lf\n", get_register(id->value), get_llvm_type(type_spec->label), /*meter aqui uma versao double*/ eval_double(aux));
+          printf("%s = global %s %.16E\n", get_register(id->value), get_llvm_type(type_spec->label), /*meter aqui uma versao double*/ eval_double(aux));
         }
       }
       else
@@ -501,6 +501,8 @@ void full_generation(Node node)
 
 int eval_int(Node node)
 {
+  char aux_str[1024];
+  int aux_int;
   switch (node->label)
   {
   case Or:
@@ -548,51 +550,13 @@ int eval_int(Node node)
   case Plus:
     return +eval_int(node->child);
   case IntLit:
-  {
-    int aux_int;
-    if (node->value[0] == '0')
-    {
-      sscanf(node->value, "%o", &aux_int);
-    }
-    else
-    {
-      sscanf(node->value, "%d", &aux_int);
-    }
+    sscanf(handle_constant(Int, node->value, aux_str), "%d", &aux_int);
     return aux_int;
     break;
-  }
   case ChrLit:
-  {
-    char aux_char = '\0';
-    //printf("value %s\n", value);
-    if (node->value[3] != '\0')
-    {
-      if (node->value[2] == 'n')
-      {
-        aux_char = '\n';
-      }
-      else if (node->value[2] == 't')
-      {
-        aux_char = '\t';
-      }
-      else if (node->value[2] == '\\')
-      {
-        aux_char = '\\';
-      }
-      else if (node->value[2] == '\'')
-      {
-        aux_char = '\'';
-      }
-      else if (node->value[2] == '"')
-      {
-        aux_char = '"';
-      }
-    }
-    else{
-      aux_char = node->value[1];
-    }
-    return aux_char;
-  }
+    sscanf(handle_constant(Char, node->value, aux_str), "%d", &aux_int);
+    return aux_int;
+    break;
   default:
     printf("Fatal error in eval_int %s\n", get_label_string(node->label));
     return ERROR;
@@ -602,6 +566,9 @@ int eval_int(Node node)
 
 double eval_double(Node node)
 {
+  char aux_str[1024];
+  int aux_int;
+  double aux_double;
   switch (node->label)
   {
   case Or:
@@ -641,58 +608,18 @@ double eval_double(Node node)
   case Plus:
     return +eval_double(node->child);
   case IntLit:
-  {
-    int aux_int;
-    if (node->value[0] == '0')
-    {
-      sscanf(node->value, "%o", &aux_int);
-    }
-    else
-    {
-      sscanf(node->value, "%d", &aux_int);
-    }
+    sscanf(handle_constant(Int, node->value, aux_str), "%d", &aux_int);
     return aux_int;
     break;
-  }
   case ChrLit:
-  {
-    char aux_char = '\0';
-    //printf("value %s\n", value);
-    if (node->value[3] != '\0')
-    {
-      if (node->value[2] == 'n')
-      {
-        aux_char = '\n';
-      }
-      else if (node->value[2] == 't')
-      {
-        aux_char = '\t';
-      }
-      else if (node->value[2] == '\\')
-      {
-        aux_char = '\\';
-      }
-      else if (node->value[2] == '\'')
-      {
-        aux_char = '\'';
-      }
-      else if (node->value[2] == '"')
-      {
-        aux_char = '"';
-      }
-    }
-    else{
-      aux_char = node->value[1];
-    }
-    return aux_char;
-  }
-  case RealLit:{
-      double aux_double;
+    sscanf(handle_constant(Char, node->value, aux_str), "%d", &aux_int);
+    return aux_int;
+    break;
+  case RealLit:
     sscanf(node->value, "%lf", &aux_double);
     return aux_double;
     break;
 
-  }
   default:
     printf("Fatal error in eval_double %s\n", get_label_string(node->label));
     return ERROR;
@@ -847,7 +774,7 @@ char *handle_constant(Label type, char *value, char *aux_str)
     char aux_char = '\0';
     //TODO: Temos de fazer um caso especial para os caracteres \t \n e assim
     //printf("value %s\n", value);
-    if (value[3] != '\0')
+    if (value[1] == '\\')
     {
       if (value[2] == 'n')
       {
@@ -869,10 +796,18 @@ char *handle_constant(Label type, char *value, char *aux_str)
       {
         aux_char = '"';
       }
+      else{
+        value = value + 2;
+        int aux_int = 0;
+        for (; value[aux_int]!='\''; aux_int++){}
+        value[aux_int] = '\0';
+        sscanf(value, "%o", &aux_int);
+        aux_char = (char) aux_int;
+      }
     }
     else
     {
-      sscanf(value, "'%c'", &aux_char); //thought this would work :(
+      aux_char = value[1];
     }
     //printf("aux_char %c\n", aux_char);
     sprintf(aux_str, "%d", aux_char);
