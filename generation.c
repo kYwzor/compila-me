@@ -89,8 +89,11 @@ void generate_code(Node node)
     Node id = typeSpec->brother;
     if (typeSpec->label != Void)
     {
-      printf("%%%s = alloca %s\n", id->value, get_llvm_type(typeSpec->label));
+      printf("%%%d = alloca %s\n", r_count++, get_llvm_type(typeSpec->label));
       printf("store %s %%%s, %s* %%%d\n", get_llvm_type(typeSpec->label), id->value, get_llvm_type(typeSpec->label), r_count - 1);
+      Table_list table = find_function_entry(current_function);
+      Arg_list arg = find_parameter(table, id->value);
+      arg->register_value = r_count - 1; 
     }
     if (node->brother != NULL)
       generate_code(node->brother);
