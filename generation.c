@@ -1,9 +1,5 @@
 #include "generation.h"
 
-// TODO: REMEMBER TO ALSO CHECK FOR INT CONVERSIONS ON OPERATIONS
-// IT'S POSSIBLE THAT WE HAVE AN ID
-// ALSO CHECK IF TWO CHAR IDS CAN MAKE A CHAR ADD
-
 int r_count = 1;
 char* current_function = NULL;
 void generate_code(Node node)
@@ -458,7 +454,7 @@ void generate_code(Node node)
   case Call:
   {
     Node aux = node->child->brother;
-    char *param_string = (char *)malloc(sizeof(char) * 1024);
+    char param_string[1024];
     char aux_string[1024];
     strcpy(param_string, "");
     Arg_list arguments = get_function_args(node->child->value);
