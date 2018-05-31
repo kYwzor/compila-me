@@ -46,11 +46,9 @@ int inteligente(void){
     return a;
 }
 
-/*
 int soma(int a,int b){
     return a + b;
 }
-*/
 
 int main(void){
     double d  = 1.0;

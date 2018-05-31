@@ -449,7 +449,7 @@ void generate_code(Node node)
     Sym_list global_sym = find_symbol(global_table, node->value);
     Label label;
     if(global_sym != NULL) label = global_sym->label;
-    if(sym != NULL) label = sym->label;
+    if(sym != NULL && sym->active == 1) label = sym->label;
     if(arg != NULL) label = arg->label;
     printf("\t%%%d = load %s, %s* %s\n", r_count++, get_llvm_type(label), get_llvm_type(label), get_register(node->value));
     convert_register(node->type, label, r_count - 1);
