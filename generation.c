@@ -1,5 +1,9 @@
 #include "generation.h"
 
+// TODO: REMEMBER TO ALSO CHECK FOR INT CONVERSIONS ON OPERATIONS
+// IT'S POSSIBLE THAT WE HAVE AN ID
+// ALSO CHECK IF TWO CHAR IDS CAN MAKE A CHAR ADD
+
 int r_count = 1;
 Label current_function_type = -1;
 void generate_code(Node node)
@@ -19,7 +23,11 @@ void generate_code(Node node)
     printf("declare i32 @putchar(i32)\n");
     printf("declare i32 @getchar()\n");
 
-    full_generation(node);
+    Node aux = node->child;
+    while (aux != NULL){
+      generate_code(aux);
+      aux = aux -> brother;
+    }
 
     break;
   }
@@ -48,13 +56,17 @@ void generate_code(Node node)
       aux = aux->brother;
    }
     printf("define %s @%s(%s){\n", get_llvm_type(type_spec->label), id->value, param_string);
-    generate_code(paramList);
+    generate_code(aux);
 
-    printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
+    //printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
+    aux = paramList->brother->child; //funcbody child
+    while(aux!=NULL){
+      generate_code(aux);
+      aux = aux -> brother;
+    }
     current_function_type = -1;
-    if (node->brother != NULL)
-      generate_code(node->brother);
 
+    printf("\tret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
     break;
   }
 /*
@@ -62,7 +74,7 @@ void generate_code(Node node)
   {
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDeclaration));
-    full_generation(node);
+    //full_generation(node);
     break;
   }
 */
@@ -95,6 +107,13 @@ void generate_code(Node node)
         aux1 = convert_register(type_spec->label, aux->type, r_count - 1);
         printf("store %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), aux1, get_llvm_type(type_spec->label), id->value);
       }
+      aux = id->brother;
+      if (aux != NULL)
+      {
+        generate_code(aux);
+        aux1 = convert_register(type_spec->label, aux->type, r_count - 1);
+        printf("\tstore %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), aux1, get_llvm_type(type_spec->label), id->value);
+    }
     }
     else{
       if (aux != NULL)
@@ -115,8 +134,6 @@ void generate_code(Node node)
     }
 
 
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
   }
 
@@ -125,132 +142,292 @@ void generate_code(Node node)
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Return));
     if(node->child == NULL){
-      printf("ret void\n");
+      printf("\tret void\n");
       break;
     }
     generate_code(node->child);
     aux1 = convert_register(current_function_type, node->child->type, r_count -1);
-    printf("ret %s %%%d\n", get_llvm_type(node->child->type), aux1);
+    printf("\tret %s %%%d\n", get_llvm_type(current_function_type), aux1);
 
     break;
   }
-  case Minus:
-    generate_code(node->child);
-    aux1 = r_count - 1;
-    printf("%%%d = sub nsw %s 0, %%%d\n", r_count++, get_llvm_type(node->child->type), aux1);
-    break;
+
   case Store:
     generate_code(node->child->brother);
     aux1 = convert_register(node->type, node->child->brother->type, r_count -1);
-    printf("store %s %%%d, %s* %%%s\n", get_llvm_type(node->type), aux1, get_llvm_type(node->type), node->child->value);
-    if (node->brother != NULL)
-      generate_code(node->brother);
+    printf("\tstore %s %%%d, %s* %%%s\n", get_llvm_type(node->type), aux1, get_llvm_type(node->type), node->child->value);
     break;
+
+  /*
+  case Or:
+  case And:
+  */
+  case Eq:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+
+    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+      aux1 = convert_register(Int, node->child->type, aux1);
+      aux2 = convert_register(Int, node->child->brother->type, aux2);
+      printf("\t%%%d = icmp eq i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    else{
+      aux1 = convert_register(Double, node->child->type, aux1);
+      aux2 = convert_register(Double, node->child->brother->type, aux2);
+      printf("\t%%%d = fcmp oeq double %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    break;
+
+  case Ne:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+
+    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+      aux1 = convert_register(Int, node->child->type, aux1);
+      aux2 = convert_register(Int, node->child->brother->type, aux2);
+      printf("\t%%%d = icmp ne i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    else{
+      aux1 = convert_register(Double, node->child->type, aux1);
+      aux2 = convert_register(Double, node->child->brother->type, aux2);
+      printf("\t%%%d = fcmp une double %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    break;
+  case Lt:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+
+    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+      aux1 = convert_register(Int, node->child->type, aux1);
+      aux2 = convert_register(Int, node->child->brother->type, aux2);
+      printf("\t%%%d = icmp slt i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    else{
+      aux1 = convert_register(Double, node->child->type, aux1);
+      aux2 = convert_register(Double, node->child->brother->type, aux2);
+      printf("\t%%%d = fcmp olt double %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    break;
+  case Gt:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+
+    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+      aux1 = convert_register(Int, node->child->type, aux1);
+      aux2 = convert_register(Int, node->child->brother->type, aux2);
+      printf("\t%%%d = icmp sgt i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    else{
+      aux1 = convert_register(Double, node->child->type, aux1);
+      aux2 = convert_register(Double, node->child->brother->type, aux2);
+      printf("\t%%%d = fcmp ogt double %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    break;
+  case Le:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+
+    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+      aux1 = convert_register(Int, node->child->type, aux1);
+      aux2 = convert_register(Int, node->child->brother->type, aux2);
+      printf("\t%%%d = icmp sle i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    else{
+      aux1 = convert_register(Double, node->child->type, aux1);
+      aux2 = convert_register(Double, node->child->brother->type, aux2);
+      printf("\t%%%d = fcmp ole double %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    break;
+  case Ge:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+
+    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+      aux1 = convert_register(Int, node->child->type, aux1);
+      aux2 = convert_register(Int, node->child->brother->type, aux2);
+      printf("\t%%%d = icmp sge i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    else{
+      aux1 = convert_register(Double, node->child->type, aux1);
+      aux2 = convert_register(Double, node->child->brother->type, aux2);
+      printf("\t%%%d = fcmp oge double %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux1 = r_count - 1;
+      printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+    }
+    break;
+
   case Add:
     generate_code(node->child);
     aux1 = r_count - 1;
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if (node->type == Int){
-      printf("%%%d = add i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+    if (node->type != Double){
+      aux1 = convert_register(node->type, node->child->type, aux1);
+      aux2 = convert_register(node->type, node->child->brother->type, aux2);
+      printf("\t%%%d = add %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
     }
     else{
-      //THIS SOULD ALWAYS BE DOUBLE
       aux1 = convert_register(Double, node->child->type, aux1);
-      aux2 = convert_register(Double, node->child->type, aux2);
-      printf("%%%d = fadd double %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux2 = convert_register(Double, node->child->brother->type, aux2);
+      printf("\t%%%d = fadd double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
+
   case Sub:
     generate_code(node->child);
     aux1 = r_count - 1;
     generate_code(node->child->brother);
     aux2 = r_count - 1;
-    if (node->type == Int){
-      printf("%%%d = sub i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+
+    if (node->type != Double){
+      aux1 = convert_register(node->type, node->child->type, aux1);
+      aux2 = convert_register(node->type, node->child->brother->type, aux2);
+      printf("\t%%%d = sub %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
     }
     else{
-      //THIS SOULD ALWAYS BE DOUBLE
       aux1 = convert_register(Double, node->child->type, aux1);
-      aux2 = convert_register(Double, node->child->type, aux2);
-      printf("%%%d = fsub double %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux2 = convert_register(Double, node->child->brother->type, aux2);
+      printf("\t%%%d = fsub double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
+
   case Mul:
     generate_code(node->child);
     aux1 = r_count - 1;
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if (node->type == Int){
-      printf("%%%d = mul i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+    if (node->type != Double){
+      aux1 = convert_register(node->type, node->child->type, aux1);
+      aux2 = convert_register(node->type, node->child->brother->type, aux2);
+      printf("\t%%%d = mul %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
     }
     else{
-      //THIS SOULD ALWAYS BE DOUBLE
       aux1 = convert_register(Double, node->child->type, aux1);
-      aux2 = convert_register(Double, node->child->type, aux2);
-      printf("%%%d = fmul double %%%d, %%%d\n", r_count++, aux1, aux2);
+      aux2 = convert_register(Double, node->child->brother->type, aux2);
+      printf("\t%%%d = fmul double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
     break;
+
   case Div:
     generate_code(node->child);
     aux1 = r_count - 1;
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if (node->type == Int){
-      printf("%%%d = sdiv i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+    if (node->type != Double){
+      aux1 = convert_register(node->type, node->child->type, aux1);
+      aux2 = convert_register(node->type, node->child->brother->type, aux2);
+      printf("\t%%%d = sdiv %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
     }
     else{
-      //THIS SOULD ALWAYS BE DOUBLE
+      aux1 = convert_register(Double, node->child->type, aux1);
+      aux2 = convert_register(Double, node->child->brother->type, aux2);
+      printf("\t%%%d = fdiv double %%%d, %%%d\n", r_count++, aux1, aux2);
+    }
+    break;
+
+  case Mod:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+    aux1 = convert_register(Int, node->child->type, aux1);
+    aux2 = convert_register(Int, node->child->brother->type, aux2);
+    printf("\t%%%d = srem i32 %%%d, %%%d\n", r_count++, aux1, aux2);
+    /*
+    fairly sure que nao ha divisao inteira de doubles em c
+    else{
       aux1 = convert_register(Double, node->child->type, aux1);
       aux2 = convert_register(Double, node->child->type, aux2);
-      printf("%%%d = fdiv double %%%d, %%%d\n", r_count++, aux1, aux2);
+      printf("\t%%%d = frem double %%%d, %%%d\n", r_count++, aux1, aux2);
     }
-    
-    if (node->brother != NULL)
-      generate_code(node->brother);
+    */
     break;
+
+  case Not: 
+    generate_code(node->child);
+    // Vou assumir que NUNCA ha !Double
+    aux1 = convert_register(Int, node->child->type, r_count - 1);
+    printf("\t%%%d = icmp eq i32 %%%d, 0\n", r_count++, aux1);
     break;
+
+  case Minus:
+    generate_code(node->child);
+
+    if (node->type != Double){
+      aux1 = r_count - 1;
+      printf("\t%%%d = sub nsw %s %s, %%%d\n", r_count++, get_llvm_type(node->type), get_default_value(node->type), aux1);
+    }
+    else{
+      aux1 = convert_register(Double, node->child->type, r_count - 1);
+      printf("\t%%%d = fsub double -%s, %%%d\n", r_count++, get_default_value(Double), aux1);
+    }
+    break;
+
+  case Plus:
+    generate_code(node->child);
+    break;
+
   case RealLit:
-    printf("%%%d = fadd double %s, %s\n", r_count++, get_default_value(Double), handle_constant(Double, node->value));
+    printf("\t%%%d = fadd double %s, %s\n", r_count++, get_default_value(Double), handle_constant(Double, node->value));
     break;
   case IntLit:
-    printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Int), handle_constant(Int, node->value));
+    printf("\t%%%d = add i32 %s, %s\n", r_count++, get_default_value(Int), handle_constant(Int, node->value));
     break;
   case ChrLit:
-    printf("%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
-    // isto esta provavelmente mal. Devo ter que fazer i8 se possivel ou conversao para i32 beforehand
+    printf("\t%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
+    // sim, tem mesmo que ser i32, porque um chrlit e sempre anotado como int
     break;
   case Id:
-  /*
-  Arg_list arguments = get_function_args(current_function_name);
-  while(arguments != NULL){
-    if(arguments->)
-  }
-  */
-    printf("%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
+    printf("\t%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
     break;
   case Call:
   {
     Node aux = node->child->brother;
-    
     char *param_string = (char *)malloc(sizeof(char) * 1024);
+    char aux_string[1024];
     strcpy(param_string, "");
     Arg_list arguments = get_function_args(node->child->value);
     while (aux != NULL)
     {
       generate_code(aux);
-      char *aux_string = (char *)malloc(sizeof(char) * 1024);
+      aux_string[0] = '\0';
       if (param_string[0] != '\0')
         sprintf(aux_string, ", %s %%%d", get_llvm_type(arguments->label), convert_register(arguments->label, aux->type, r_count - 1));
       else
@@ -259,19 +436,21 @@ void generate_code(Node node)
       aux = aux->brother;
       arguments = arguments->next;
     }
-    if (node->type != Void)
-      printf("%%%d = call %s @%s(%s", r_count++, get_llvm_type(node->type), node->child->value, param_string);
-    else
-      printf("call %s @%s(%s", get_llvm_type(node->type), node->child->value, param_string);
-    printf(")\n");
-    if (node->brother != NULL)
-      generate_code(node->brother);
+    if (node->type != Void){
+
+      printf("\t%%%d = call %s @%s(%s)\n", r_count++, get_llvm_type(node->type), node->child->value, param_string);
+    }
+    else{
+      printf("\tcall %s @%s(%s)\n", get_llvm_type(node->type), node->child->value, param_string);
+    }
     break;
   }
   default:
     if (DEBUG)
       printf("Defaulted %s\n", get_label_string(node->label));
-    full_generation(node);
+    //full_generation(node);
+    if (node->child != NULL)
+      generate_code(node->child);
     break;
   }
 }
@@ -349,34 +528,34 @@ int convert_register(Label target, Label original_l, int original_r){
   {
   case Char:
     if (original_l == Double){
-      printf("%%%d = fptosi double %%%d to i8\n", r_count++, original_r);
+      printf("\t%%%d = fptosi double %%%d to i8\n", r_count++, original_r);
       break;
     }
-    printf("%%%d = trunc %s %%%d to i8\n", r_count++, get_llvm_type(original_l), original_r);
+    printf("\t%%%d = trunc %s %%%d to i8\n", r_count++, get_llvm_type(original_l), original_r);
     break;
 
   case Short:
     if (original_l == Double){
-      printf("%%%d = fptosi double %%%d to i16\n", r_count++, original_r);
+      printf("\t%%%d = fptosi double %%%d to i16\n", r_count++, original_r);
       break;
     }
     if (original_l == Char){
-      printf("%%%d = sext i8 %%%d to i16\n", r_count++, original_r);
+      printf("\t%%%d = sext i8 %%%d to i16\n", r_count++, original_r);
       break;
     }
-    printf("%%%d = trunc %s %%%d to i16\n", r_count++, get_llvm_type(original_l), original_r);
+    printf("\t%%%d = trunc %s %%%d to i16\n", r_count++, get_llvm_type(original_l), original_r);
     break;
 
   case Int:
     if (original_l == Double){
-      printf("%%%d = fptosi double %%%d to i32\n", r_count++, original_r);
+      printf("\t%%%d = fptosi double %%%d to i32\n", r_count++, original_r);
       break;
     }
-    printf("%%%d = sext %s %%%d to i32\n", r_count++, get_llvm_type(original_l), original_r);
+    printf("\t%%%d = sext %s %%%d to i32\n", r_count++, get_llvm_type(original_l), original_r);
     break;
 
   case Double:
-    printf("%%%d = sitofp %s %%%d to double\n", r_count++, get_llvm_type(original_l), original_r);
+    printf("\t%%%d = sitofp %s %%%d to double\n", r_count++, get_llvm_type(original_l), original_r);
     break;
 
   default:
