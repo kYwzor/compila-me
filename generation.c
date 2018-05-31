@@ -23,7 +23,11 @@ void generate_code(Node node)
     printf("declare i32 @putchar(i32)\n");
     printf("declare i32 @getchar()\n");
 
-    full_generation(node);
+    Node aux = node->child;
+    while (aux != NULL){
+      generate_code(aux);
+      aux = aux -> brother;
+    }
 
     break;
   }
@@ -46,9 +50,6 @@ void generate_code(Node node)
     }
 
     printf("\tret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
-    if (node->brother != NULL)
-      generate_code(node->brother);
-
     break;
   }
 
@@ -56,7 +57,7 @@ void generate_code(Node node)
   {
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDeclaration));
-    full_generation(node);
+    //full_generation(node);
     break;
   }
 
