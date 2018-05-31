@@ -10,6 +10,7 @@ Register_list register_list;
 void generate_code(Node node)
 {
   int aux1, aux2;
+  char aux_str[1024];
   if (DEBUG)
 
     printf("\tHandling %s %s\n", node->value, get_label_string(node->label));
@@ -50,11 +51,12 @@ void generate_code(Node node)
     current_function_type = type_spec->label;
 
     Node aux = paramList->child;
-    char *param_string = (char *)malloc(sizeof(char) * 1024);
+    char param_string[1024];
+    char aux_string[1024];
     strcpy(param_string, "");
     while (aux != NULL && aux->child->label != Void)
     {
-      char *aux_string = (char *)malloc(sizeof(char) * 1024);
+      aux_string[0] = '\0';
       if (param_string[0] != '\0')
         sprintf(aux_string, ", %s %%%s", get_llvm_type(aux->child->label), aux->child->brother->value);
       else
@@ -63,6 +65,8 @@ void generate_code(Node node)
       aux = aux->brother;
     }
     printf("define %s @%s(%s){\n", get_llvm_type(type_spec->label), id->value, param_string);
+    
+    aux = paramList->child;
     generate_code(aux);
 
     //printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
@@ -433,13 +437,13 @@ void generate_code(Node node)
     break;
 
   case RealLit:
-    printf("\t%%%d = fadd double %s, %s\n", r_count++, get_default_value(Double), handle_constant(Double, node->value));
+    printf("\t%%%d = fadd double %s, %s\n", r_count++, get_default_value(Double), handle_constant(Double, node->value, aux_str));
     break;
   case IntLit:
-    printf("\t%%%d = add i32 %s, %s\n", r_count++, get_default_value(Int), handle_constant(Int, node->value));
+    printf("\t%%%d = add i32 %s, %s\n", r_count++, get_default_value(Int), handle_constant(Int, node->value, aux_str));
     break;
   case ChrLit:
-    printf("\t%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value));
+    printf("\t%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value, aux_str));
     // sim, tem mesmo que ser i32, porque um chrlit e sempre anotado como int
     break;
   case Id:
@@ -907,21 +911,18 @@ Arg_list get_function_args(char *name)
   return NULL;
 }
 
-char *handle_constant(Label type, char *value)
+char *handle_constant(Label type, char *value, char *aux_str)
 {
-  char *s = NULL;
   switch (type)
   {
   case Double:
   {
     double aux_double;
-    char aux_str[1024]; // this seems dangerous to me... returning something created here...
     //printf("value %s\n", value);
     sscanf(value, "%lf", &aux_double);
     //printf("aux_double %lf\n", aux_double);
     sprintf(aux_str, "%.16E", aux_double); //verificar quantas casas devem ser
     //printf("aux_str %s\n", aux_str);
-    s = aux_str;
     break;
   }
   case Short:
@@ -936,26 +937,23 @@ char *handle_constant(Label type, char *value)
       sscanf(value, "%lf", &aux);
     }
     */
-    s = value;
+    aux_str = value;
     break;
   case Int:
     if (value[0] == '0')
     {
       int aux_int;
-      char aux_str[1024]; // this seems dangerous to me... returning something created here...
       sscanf(value, "%o", &aux_int);
       sprintf(aux_str, "%d", aux_int);
-      s = aux_str;
     }
     else
     {
-      s = value;
+      aux_str = value;
     }
     break;
   case Char:
   {
     char aux_char = '\0';
-    char aux_str[1024]; // this seems dangerous to me... returning something created here...
     //TODO: Temos de fazer um caso especial para os caracteres \t \n e assim
     //printf("value %s\n", value);
     if (value[3] != '\0')
@@ -988,16 +986,15 @@ char *handle_constant(Label type, char *value)
     //printf("aux_char %c\n", aux_char);
     sprintf(aux_str, "%d", aux_char);
     //printf("aux_str %s\n", aux_str);
-    s = aux_str;
     break;
   }
   case Void:
-    s = "";
+    sprintf(aux_str, "");
     break;
   default:
     printf("FATAL: Invalid constant type\n");
   }
-  return s;
+  return aux_str;
 }
 
 void insert_alias(char *id, char *updated_register, Label type)
