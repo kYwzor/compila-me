@@ -160,7 +160,7 @@ void generate_code(Node node)
   case Store:
     generate_code(node->child->brother);
     aux1 = convert_register(node->type, node->child->brother->type, r_count - 1);
-    printf("\tstore %s %%%d, %s* %%%s\n", get_llvm_type(node->type), aux1, get_llvm_type(node->type), node->child->value);
+    printf("\tstore %s %%%d, %s* %s\n", get_llvm_type(node->type), aux1, get_llvm_type(node->type), get_register(node->child->value));
     break;
 
   /* :(
@@ -602,56 +602,6 @@ int eval_int(Node node)
     return ERROR;
   }
   return ERROR;
-}
-char * convert_register_id(Label target, Label origin_rl, char* id)
-{
-  if (target == origin_rl)
-    return id; // no conversion needed
-
-  char * register_id = (char*)malloc(sizeof(char) * 1024);
-  switch (target)
-  {
-  case Char:
-    if (origin_rl == Double)
-    {
-      printf("\t%%%d = fptosi double %%%s to i8\n", r_count++, id);
-      break;
-    }
-    printf("\t%%%d = trunc %s %%%s to i8\n", r_count++, get_llvm_type(origin_rl), id);
-    break;
-
-  case Short:
-    if (origin_rl == Double)
-    {
-      printf("\t%%%d = fptosi double %%%s to i16\n", r_count++, id);
-      break;
-    }
-    if (origin_rl == Char)
-    {
-      printf("\t%%%d = sext i8 %%%s to i16\n", r_count++, id);
-      break;
-    }
-    printf("\t%%%d = trunc %s %%%s to i16\n", r_count++, get_llvm_type(origin_rl), id);
-    break;
-
-  case Int:
-    if (origin_rl == Double)
-    {
-      printf("\t%%%d = fptosi double %%%s to i32\n", r_count++, id);
-      break;
-    }
-    printf("\t%%%d = sext %s %%%s to i32\n", r_count++, get_llvm_type(origin_rl), id);
-    break;
-
-  case Double:
-    printf("\t%%%d = sitofp %s %%%s to double\n", r_count++, get_llvm_type(origin_rl), id);
-    break;
-
-  default:
-    printf("FATAL: Invalid conversion type %s\n", get_label_string(target));
-  }
-  sprintf(register_id, "%d", r_count - 1);
-  return register_id;
 }
 int convert_register(Label target, Label origin_rl, int original_r)
 {
