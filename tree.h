@@ -1,4 +1,4 @@
-#include "semantics.h" 
+#include "generation.h" 
 
 Node create_node(Label label, char *value);
 void add_child(Node father, Node child);

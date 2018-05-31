@@ -10,4 +10,5 @@ Table_list create_function_entry(char* name, Label label, Node paramList, int is
 void put_type(Node node);
 Label get_type(Node node);
 Label resolve_type(Label label1, Label label2);
-
+char *get_label_string(Label label);
+Arg_list get_function_args(char * name);

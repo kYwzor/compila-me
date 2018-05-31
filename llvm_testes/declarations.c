@@ -1,4 +1,8 @@
 //#include <stdio.h>
+
+char g = 'a';
+int u = 2 + 1;
+short s;
 void unary_minus(void){
     int a = 1;
     int b = -a;
@@ -25,8 +29,8 @@ void encadeados(void){
     char g = a = 38;
     double h = 45;
     double j = a = 99;
-    //double i = h + g + e + c;
-    //int j = g + e + c;
+    double i = h + g + e + c;
+    int j = g + e + c;
 }
 short shawty(void){
     short a = 1;
@@ -39,6 +43,7 @@ char charizard(void){
 }
 int inteligente(void){
     int a = 1;
+    putchar(g);
     return a;
 }
 
@@ -47,9 +52,6 @@ int soma(int a,int b){
     return a + b;
 }
 */
-char g = 'a';
-int u = 2 + 1;
-short s;
 
 int main(void){
     double d  = 1.0;

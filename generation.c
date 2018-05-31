@@ -7,6 +7,7 @@
 int r_count = 1;
 Label current_function_type = -1;
 Register_list register_list;
+Register_list temporary_registers;
 void generate_code(Node node)
 {
   int aux1, aux2;
@@ -64,14 +65,21 @@ void generate_code(Node node)
     }
     printf("define %s @%s(%s){\n", get_llvm_type(type_spec->label), id->value, param_string);
     generate_code(aux);
-
-    //printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
+    Register_list prev_temporary = temporary_registers;
+    temporary_registers = (Register_list)malloc(sizeof(struct _rl));
+    temporary_registers->next = NULL;
+    temporary_registers->id = (char *)malloc(sizeof(char) * 1024);
+    temporary_registers->updated_register = (char *)malloc(sizeof(char) * 1024);
+    temporary_registers->id = "Hi i'm list head";
+    temporary_registers->updated_register = "Hi i'm list head";    //printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
     aux = paramList->brother->child; //funcbody child
     while (aux != NULL)
     {
       generate_code(aux);
       aux = aux->brother;
     }
+    clean_up_register();
+    temporary_registers = prev_temporary;
     current_function_type = -1;
 
     printf("\tret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
@@ -749,163 +757,6 @@ char *get_default_value(Label label)
   return s;
 }
 
-char *get_label_string(Label label)
-{
-  char *s;
-  switch (label)
-  {
-  case Empty:
-    s = "Empty";
-    break;
-  case undef:
-    s = "undef";
-    break;
-  case Program:
-    s = "Program";
-    break;
-  case Declaration:
-    s = "Declaration";
-    break;
-  case FuncDeclaration:
-    s = "FuncDeclaration";
-    break;
-  case FuncDefinition:
-    s = "FuncDefinition";
-    break;
-  case ParamList:
-    s = "ParamList";
-    break;
-  case FuncBody:
-    s = "FuncBody";
-    break;
-  case ParamDeclaration:
-    s = "ParamDeclaration";
-    break;
-  case StatList:
-    s = "StatList";
-    break;
-  case If:
-    s = "If";
-    break;
-  case While:
-    s = "While";
-    break;
-  case Return:
-    s = "Return";
-    break;
-  case Or:
-    s = "Or";
-    break;
-  case And:
-    s = "And";
-    break;
-  case Eq:
-    s = "Eq";
-    break;
-  case Ne:
-    s = "Ne";
-    break;
-  case Lt:
-    s = "Lt";
-    break;
-  case Gt:
-    s = "Gt";
-    break;
-  case Le:
-    s = "Le";
-    break;
-  case Ge:
-    s = "Ge";
-    break;
-  case Add:
-    s = "Add";
-    break;
-  case Sub:
-    s = "Sub";
-    break;
-  case Mul:
-    s = "Mul";
-    break;
-  case Div:
-    s = "Div";
-    break;
-  case Mod:
-    s = "Mod";
-    break;
-  case Not:
-    s = "Not";
-    break;
-  case Minus:
-    s = "Minus";
-    break;
-  case Plus:
-    s = "Plus";
-    break;
-  case Store:
-    s = "Store";
-    break;
-  case Comma:
-    s = "Comma";
-    break;
-  case Call:
-    s = "Call";
-    break;
-  case BitWiseAnd:
-    s = "BitWiseAnd";
-    break;
-  case BitWiseXor:
-    s = "BitWiseXor";
-    break;
-  case BitWiseOr:
-    s = "BitWiseOr";
-    break;
-  case Char:
-    s = "Char";
-    break;
-  case ChrLit:
-    s = "ChrLit";
-    break;
-  case Id:
-    s = "Id";
-    break;
-  case Int:
-    s = "Int";
-    break;
-  case Short:
-    s = "Short";
-    break;
-  case IntLit:
-    s = "IntLit";
-    break;
-  case Double:
-    s = "Double";
-    break;
-  case RealLit:
-    s = "RealLit";
-    break;
-  case Void:
-    s = "Void";
-    break;
-  case Null:
-    s = "Null";
-    break;
-  }
-  return s;
-}
-
-Arg_list get_function_args(char *name)
-{
-  Table_list aux = global_table;
-  while (aux != NULL)
-  {
-    if (strcmp(aux->table_node->name, name) == 0)
-    {
-      return aux->arg_list;
-    }
-    aux = aux->next;
-  }
-  return NULL;
-}
 
 char *handle_constant(Label type, char *value)
 {
@@ -1002,6 +853,7 @@ char *handle_constant(Label type, char *value)
 
 void insert_alias(char *id, char *updated_register, Label type)
 {
+  /*
   Register_list aux = register_list;
   while (aux != NULL)
   {
@@ -1015,12 +867,22 @@ void insert_alias(char *id, char *updated_register, Label type)
     }
     aux = aux->next;
   }
+  */
   Register_list alias = (Register_list)malloc(sizeof(struct _rl));
   alias->id = id;
   alias->updated_register = updated_register;
   alias->next = register_list;
   alias->type = type;
   register_list = alias;
+  if(temporary_registers != NULL){
+  Register_list temp = (Register_list)malloc(sizeof(struct _rl));
+  temp->id = id;
+  temp->updated_register = updated_register;
+  temp->next = temporary_registers;
+  temp->type = type;
+  temporary_registers = alias;
+
+  }
 }
 
 Register_list get_register(char *id)
@@ -1036,4 +898,18 @@ Register_list get_register(char *id)
   }
   printf("This should never happen, could not find register\n");
   return NULL;
+}
+
+void clean_up_register(){
+  while(temporary_registers->next != NULL){
+    printf("A\n");
+    Register_list aux1 = register_list->next;
+    Register_list aux2 = temporary_registers->next;
+    free(register_list);
+    free(temporary_registers);
+    printf("B\n");
+    register_list = aux1;
+    temporary_registers = aux2;
+  }
+  free(temporary_registers);
 }
