@@ -6,7 +6,7 @@ void unary_minus(void){
     a = 2;
     char c = 'a';
     char d = -c;
-    putchar(c);
+    //putchar(c);
 }
 
 char exemplo(void){
@@ -60,7 +60,9 @@ int main(void){
     b = charizard();
     int a = 1;
     a = shawty();
+    int k = a;
     int h = g;
+    int g = 'b';
     putchar(h);
     putchar(g);
     char c = inteligente();

@@ -3,17 +3,10 @@
 // TODO: REMEMBER TO ALSO CHECK FOR INT CONVERSIONS ON OPERATIONS
 // IT'S POSSIBLE THAT WE HAVE AN ID
 // ALSO CHECK IF TWO CHAR IDS CAN MAKE A CHAR ADD
-typedef struct al_l* Alias_list;
-
-//TODO: Free nisto no fim
-typedef struct al_l{
-  char* default_register;
-  char* updated_register;
-  Alias_list next;
-};
 
 int r_count = 1;
 Label current_function_type = -1;
+Register_list register_list;
 void generate_code(Node node)
 {
   int aux1, aux2;
@@ -30,11 +23,17 @@ void generate_code(Node node)
 
     printf("declare i32 @putchar(i32)\n");
     printf("declare i32 @getchar()\n");
-
+    register_list = (Register_list)malloc(sizeof(struct _rl));
+    register_list->next = NULL;
+    register_list->id = (char *)malloc(sizeof(char) * 1024);
+    register_list->updated_register = (char *)malloc(sizeof(char) * 1024);
+    register_list->id = "Hi i'm list head";
+    register_list->updated_register = "Hi i'm list head";
     Node aux = node->child;
-    while (aux != NULL){
+    while (aux != NULL)
+    {
       generate_code(aux);
-      aux = aux -> brother;
+      aux = aux->brother;
     }
 
     break;
@@ -62,22 +61,23 @@ void generate_code(Node node)
         sprintf(aux_string, "%s %%%s", get_llvm_type(aux->child->label), aux->child->brother->value);
       strcat(param_string, aux_string);
       aux = aux->brother;
-   }
+    }
     printf("define %s @%s(%s){\n", get_llvm_type(type_spec->label), id->value, param_string);
     generate_code(aux);
 
     //printf("ret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
     aux = paramList->brother->child; //funcbody child
-    while(aux!=NULL){
+    while (aux != NULL)
+    {
       generate_code(aux);
-      aux = aux -> brother;
+      aux = aux->brother;
     }
     current_function_type = -1;
 
     printf("\tret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
     break;
   }
-/*
+    /*
   case FuncDeclaration:
   {
     if (DEBUG)
@@ -90,12 +90,13 @@ void generate_code(Node node)
   {
     Node typeSpec = node->child;
     Node id = typeSpec->brother;
-    if(typeSpec->label != Void){
+    if (typeSpec->label != Void)
+    {
       printf("%%%s = alloca %s\n", id->value, get_llvm_type(typeSpec->label));
       printf("store %s %%%s, %s* %%%d\n", get_llvm_type(typeSpec->label), id->value, get_llvm_type(typeSpec->label), r_count - 1);
     }
-    if(node->brother != NULL)
-    generate_code(node->brother);
+    if (node->brother != NULL)
+      generate_code(node->brother);
     break;
   }
   case Declaration:
@@ -105,42 +106,39 @@ void generate_code(Node node)
     Node type_spec = node->child;
     Node id = type_spec->brother;
     Node aux = id->brother;
-
+    char *register_id = (char *)malloc(sizeof(char) * 1024);
     if (current_function_type != -1)
     {
-      printf("%%%s = alloca %s\n", id->value, get_llvm_type(type_spec->label)); //align???
-      if (aux != NULL)
-      {
-        generate_code(aux);
-        aux1 = convert_register(type_spec->label, aux->type, r_count - 1);
-        printf("store %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), aux1, get_llvm_type(type_spec->label), id->value);
-      }
-      aux = id->brother;
+      sprintf(register_id, "%%%s", id->value);
+      insert_alias(id->value, register_id, type_spec->label);
+      printf("%s = alloca %s\n", get_register(id->value)->updated_register, get_llvm_type(type_spec->label)); //align???
       if (aux != NULL)
       {
         generate_code(aux);
         aux1 = convert_register(type_spec->label, aux->type, r_count - 1);
         printf("\tstore %s %%%d, %s* %%%s\n", get_llvm_type(type_spec->label), aux1, get_llvm_type(type_spec->label), id->value);
+      }
     }
-    }
-    else{
+    else
+    {
+      sprintf(register_id, "@%s", id->value);
+      insert_alias(id->value, register_id, type_spec->label);
       if (aux != NULL)
       {
         if (type_spec->label != Double)
         {
-          printf("@%s = global %s %d\n", id->value, get_llvm_type(type_spec->label), eval_int(aux));
+          printf("%s = global %s %d\n", get_register(id->value)->updated_register, get_llvm_type(type_spec->label), eval_int(aux));
         }
         else
         {
-          printf("@%s = global %s %lf\n", id->value, get_llvm_type(type_spec->label), /*meter aqui uma versao double*/ eval_int(aux));
+          printf("%s = global %s %lf\n", get_register(id->value)->updated_register, get_llvm_type(type_spec->label), /*meter aqui uma versao double*/ eval_int(aux));
         }
       }
       else
       {
-        printf("@%s = common global %s %s\n", id->value, get_llvm_type(type_spec->label), get_default_value(type_spec->label));
+        printf("%s = common global %s %s\n", get_register(id->value)->updated_register, get_llvm_type(type_spec->label), get_default_value(type_spec->label));
       }
     }
-
 
     break;
   }
@@ -149,19 +147,20 @@ void generate_code(Node node)
   {
     if (DEBUG)
       printf("%s is %s\n", get_label_string(node->label), get_label_string(Return));
-    if(node->child == NULL){
+    if (node->child == NULL)
+    {
       printf("\tret void\n");
       break;
     }
     generate_code(node->child);
-    aux1 = convert_register(current_function_type, node->child->type, r_count -1);
+    aux1 = convert_register(current_function_type, node->child->type, r_count - 1);
     printf("\tret %s %%%d\n", get_llvm_type(current_function_type), aux1);
     break;
   }
 
   case Store:
     generate_code(node->child->brother);
-    aux1 = convert_register(node->type, node->child->brother->type, r_count -1);
+    aux1 = convert_register(node->type, node->child->brother->type, r_count - 1);
     printf("\tstore %s %%%d, %s* %%%s\n", get_llvm_type(node->type), aux1, get_llvm_type(node->type), node->child->value);
     break;
 
@@ -175,14 +174,16 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+    if ((node->child->type != Double) && (node->child->brother->type != Double))
+    {
       aux1 = convert_register(Int, node->child->type, aux1);
       aux2 = convert_register(Int, node->child->brother->type, aux2);
       printf("\t%%%d = icmp eq i32 %%%d, %%%d\n", r_count++, aux1, aux2);
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    else{
+    else
+    {
       aux1 = convert_register(Double, node->child->type, aux1);
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fcmp oeq double %%%d, %%%d\n", r_count++, aux1, aux2);
@@ -197,14 +198,16 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+    if ((node->child->type != Double) && (node->child->brother->type != Double))
+    {
       aux1 = convert_register(Int, node->child->type, aux1);
       aux2 = convert_register(Int, node->child->brother->type, aux2);
       printf("\t%%%d = icmp ne i32 %%%d, %%%d\n", r_count++, aux1, aux2);
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    else{
+    else
+    {
       aux1 = convert_register(Double, node->child->type, aux1);
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fcmp une double %%%d, %%%d\n", r_count++, aux1, aux2);
@@ -218,14 +221,16 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+    if ((node->child->type != Double) && (node->child->brother->type != Double))
+    {
       aux1 = convert_register(Int, node->child->type, aux1);
       aux2 = convert_register(Int, node->child->brother->type, aux2);
       printf("\t%%%d = icmp slt i32 %%%d, %%%d\n", r_count++, aux1, aux2);
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    else{
+    else
+    {
       aux1 = convert_register(Double, node->child->type, aux1);
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fcmp olt double %%%d, %%%d\n", r_count++, aux1, aux2);
@@ -239,14 +244,16 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+    if ((node->child->type != Double) && (node->child->brother->type != Double))
+    {
       aux1 = convert_register(Int, node->child->type, aux1);
       aux2 = convert_register(Int, node->child->brother->type, aux2);
       printf("\t%%%d = icmp sgt i32 %%%d, %%%d\n", r_count++, aux1, aux2);
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    else{
+    else
+    {
       aux1 = convert_register(Double, node->child->type, aux1);
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fcmp ogt double %%%d, %%%d\n", r_count++, aux1, aux2);
@@ -260,14 +267,16 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+    if ((node->child->type != Double) && (node->child->brother->type != Double))
+    {
       aux1 = convert_register(Int, node->child->type, aux1);
       aux2 = convert_register(Int, node->child->brother->type, aux2);
       printf("\t%%%d = icmp sle i32 %%%d, %%%d\n", r_count++, aux1, aux2);
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    else{
+    else
+    {
       aux1 = convert_register(Double, node->child->type, aux1);
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fcmp ole double %%%d, %%%d\n", r_count++, aux1, aux2);
@@ -281,14 +290,16 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if ((node->child->type != Double) && (node->child->brother->type != Double)){
+    if ((node->child->type != Double) && (node->child->brother->type != Double))
+    {
       aux1 = convert_register(Int, node->child->type, aux1);
       aux2 = convert_register(Int, node->child->brother->type, aux2);
       printf("\t%%%d = icmp sge i32 %%%d, %%%d\n", r_count++, aux1, aux2);
       aux1 = r_count - 1;
       printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     }
-    else{
+    else
+    {
       aux1 = convert_register(Double, node->child->type, aux1);
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fcmp oge double %%%d, %%%d\n", r_count++, aux1, aux2);
@@ -303,12 +314,14 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if (node->type != Double){
+    if (node->type != Double)
+    {
       aux1 = convert_register(node->type, node->child->type, aux1);
       aux2 = convert_register(node->type, node->child->brother->type, aux2);
       printf("\t%%%d = add %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
     }
-    else{
+    else
+    {
       aux1 = convert_register(Double, node->child->type, aux1);
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fadd double %%%d, %%%d\n", r_count++, aux1, aux2);
@@ -321,12 +334,14 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if (node->type != Double){
+    if (node->type != Double)
+    {
       aux1 = convert_register(node->type, node->child->type, aux1);
       aux2 = convert_register(node->type, node->child->brother->type, aux2);
       printf("\t%%%d = sub %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
     }
-    else{
+    else
+    {
       aux1 = convert_register(Double, node->child->type, aux1);
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fsub double %%%d, %%%d\n", r_count++, aux1, aux2);
@@ -339,12 +354,14 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if (node->type != Double){
+    if (node->type != Double)
+    {
       aux1 = convert_register(node->type, node->child->type, aux1);
       aux2 = convert_register(node->type, node->child->brother->type, aux2);
       printf("\t%%%d = mul %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
     }
-    else{
+    else
+    {
       aux1 = convert_register(Double, node->child->type, aux1);
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fmul double %%%d, %%%d\n", r_count++, aux1, aux2);
@@ -357,12 +374,14 @@ void generate_code(Node node)
     generate_code(node->child->brother);
     aux2 = r_count - 1;
 
-    if (node->type != Double){
+    if (node->type != Double)
+    {
       aux1 = convert_register(node->type, node->child->type, aux1);
       aux2 = convert_register(node->type, node->child->brother->type, aux2);
       printf("\t%%%d = sdiv %s %%%d, %%%d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
     }
-    else{
+    else
+    {
       aux1 = convert_register(Double, node->child->type, aux1);
       aux2 = convert_register(Double, node->child->brother->type, aux2);
       printf("\t%%%d = fdiv double %%%d, %%%d\n", r_count++, aux1, aux2);
@@ -387,7 +406,7 @@ void generate_code(Node node)
     */
     break;
 
-  case Not: 
+  case Not:
     generate_code(node->child);
     // Vou assumir que NUNCA ha !Double
     aux1 = convert_register(Int, node->child->type, r_count - 1);
@@ -397,11 +416,13 @@ void generate_code(Node node)
   case Minus:
     generate_code(node->child);
 
-    if (node->type != Double){
+    if (node->type != Double)
+    {
       aux1 = r_count - 1;
       printf("\t%%%d = sub nsw %s %s, %%%d\n", r_count++, get_llvm_type(node->type), get_default_value(node->type), aux1);
     }
-    else{
+    else
+    {
       aux1 = convert_register(Double, node->child->type, r_count - 1);
       printf("\t%%%d = fsub double -%s, %%%d\n", r_count++, get_default_value(Double), aux1);
     }
@@ -422,9 +443,12 @@ void generate_code(Node node)
     // sim, tem mesmo que ser i32, porque um chrlit e sempre anotado como int
     break;
   case Id:
-
-    printf("\t%%%d = load %s, %s* %%%s\n", r_count++, get_llvm_type(node->type), get_llvm_type(node->type), node->value);
+  {
+    Register_list aux = get_register(node->value);
+    printf("\t%%%d = load %s, %s* %s\n", r_count++, get_llvm_type(aux->type), get_llvm_type(aux->type), aux->updated_register);
+    convert_register(node->type, aux->type, r_count - 1);
     break;
+  }
   case Call:
   {
     Node aux = node->child->brother;
@@ -444,11 +468,13 @@ void generate_code(Node node)
       aux = aux->brother;
       arguments = arguments->next;
     }
-    if (node->type != Void){
+    if (node->type != Void)
+    {
 
       printf("\t%%%d = call %s @%s(%s)\n", r_count++, get_llvm_type(node->type), node->child->value, param_string);
     }
-    else{
+    else
+    {
       printf("\tcall %s @%s(%s)\n", get_llvm_type(node->type), node->child->value, param_string);
     }
     break;
@@ -471,7 +497,8 @@ void full_generation(Node node)
     generate_code(node->brother);
 }
 
-int eval_int(Node node){
+int eval_int(Node node)
+{
   switch (node->label)
   {
   case Or:
@@ -519,51 +546,148 @@ int eval_int(Node node){
   case Plus:
     return +eval_int(node->child);
   case IntLit:
+  {
+    int aux_int;
+    if (node->value[0] == '0')
+    {
+      sscanf(node->value, "%o", &aux_int);
+    }
+    else
+    {
+      sscanf(node->value, "%d", &aux_int);
+    }
+    return aux_int;
+    break;
+  }
   case ChrLit:
-    return atoi(node->value);
+  {
+    char aux_char = '\0';
+    //printf("value %s\n", value);
+    if (node->value[3] != '\0')
+    {
+      if (node->value[2] == 'n')
+      {
+        aux_char = '\n';
+      }
+      else if (node->value[2] == 't')
+      {
+        aux_char = '\t';
+      }
+      else if (node->value[2] == '\\')
+      {
+        aux_char = '\\';
+      }
+      else if (node->value[2] == '\'')
+      {
+        aux_char = '\'';
+      }
+      else if (node->value[2] == '"')
+      {
+        aux_char = '"';
+      }
+    }
+    else{
+      aux_char = node->value[1];
+    }
+    return aux_char;
+  }
   default:
     printf("Fatal error in eval_int %s\n", get_label_string(node->label));
     return ERROR;
   }
   return ERROR;
 }
+char * convert_register_id(Label target, Label origin_rl, char* id)
+{
+  if (target == origin_rl)
+    return id; // no conversion needed
 
-int convert_register(Label target, Label original_l, int original_r){
-  if (target == original_l)
-    return original_r;  // no conversion needed
+  char * register_id = (char*)malloc(sizeof(char) * 1024);
+  switch (target)
+  {
+  case Char:
+    if (origin_rl == Double)
+    {
+      printf("\t%%%d = fptosi double %%%s to i8\n", r_count++, id);
+      break;
+    }
+    printf("\t%%%d = trunc %s %%%s to i8\n", r_count++, get_llvm_type(origin_rl), id);
+    break;
+
+  case Short:
+    if (origin_rl == Double)
+    {
+      printf("\t%%%d = fptosi double %%%s to i16\n", r_count++, id);
+      break;
+    }
+    if (origin_rl == Char)
+    {
+      printf("\t%%%d = sext i8 %%%s to i16\n", r_count++, id);
+      break;
+    }
+    printf("\t%%%d = trunc %s %%%s to i16\n", r_count++, get_llvm_type(origin_rl), id);
+    break;
+
+  case Int:
+    if (origin_rl == Double)
+    {
+      printf("\t%%%d = fptosi double %%%s to i32\n", r_count++, id);
+      break;
+    }
+    printf("\t%%%d = sext %s %%%s to i32\n", r_count++, get_llvm_type(origin_rl), id);
+    break;
+
+  case Double:
+    printf("\t%%%d = sitofp %s %%%s to double\n", r_count++, get_llvm_type(origin_rl), id);
+    break;
+
+  default:
+    printf("FATAL: Invalid conversion type %s\n", get_label_string(target));
+  }
+  sprintf(register_id, "%d", r_count - 1);
+  return register_id;
+}
+int convert_register(Label target, Label origin_rl, int original_r)
+{
+  if (target == origin_rl)
+    return original_r; // no conversion needed
 
   switch (target)
   {
   case Char:
-    if (original_l == Double){
+    if (origin_rl == Double)
+    {
       printf("\t%%%d = fptosi double %%%d to i8\n", r_count++, original_r);
       break;
     }
-    printf("\t%%%d = trunc %s %%%d to i8\n", r_count++, get_llvm_type(original_l), original_r);
+    printf("\t%%%d = trunc %s %%%d to i8\n", r_count++, get_llvm_type(origin_rl), original_r);
     break;
 
   case Short:
-    if (original_l == Double){
+    if (origin_rl == Double)
+    {
       printf("\t%%%d = fptosi double %%%d to i16\n", r_count++, original_r);
       break;
     }
-    if (original_l == Char){
+    if (origin_rl == Char)
+    {
       printf("\t%%%d = sext i8 %%%d to i16\n", r_count++, original_r);
       break;
     }
-    printf("\t%%%d = trunc %s %%%d to i16\n", r_count++, get_llvm_type(original_l), original_r);
+    printf("\t%%%d = trunc %s %%%d to i16\n", r_count++, get_llvm_type(origin_rl), original_r);
     break;
 
   case Int:
-    if (original_l == Double){
+    if (origin_rl == Double)
+    {
       printf("\t%%%d = fptosi double %%%d to i32\n", r_count++, original_r);
       break;
     }
-    printf("\t%%%d = sext %s %%%d to i32\n", r_count++, get_llvm_type(original_l), original_r);
+    printf("\t%%%d = sext %s %%%d to i32\n", r_count++, get_llvm_type(origin_rl), original_r);
     break;
 
   case Double:
-    printf("\t%%%d = sitofp %s %%%d to double\n", r_count++, get_llvm_type(original_l), original_r);
+    printf("\t%%%d = sitofp %s %%%d to double\n", r_count++, get_llvm_type(origin_rl), original_r);
     break;
 
   default:
@@ -834,25 +958,32 @@ char *handle_constant(Label type, char *value)
     char aux_str[1024]; // this seems dangerous to me... returning something created here...
     //TODO: Temos de fazer um caso especial para os caracteres \t \n e assim
     //printf("value %s\n", value);
-    if(value[3] != '\0'){
-      if(value[2] == 'n'){
+    if (value[3] != '\0')
+    {
+      if (value[2] == 'n')
+      {
         aux_char = '\n';
       }
-      else if(value[2] == 't'){
+      else if (value[2] == 't')
+      {
         aux_char = '\t';
       }
-      else if(value[2] == '\\'){
+      else if (value[2] == '\\')
+      {
         aux_char = '\\';
       }
-      else if(value[2] == '\''){
+      else if (value[2] == '\'')
+      {
         aux_char = '\'';
       }
-      else if(value[2] == '"'){
+      else if (value[2] == '"')
+      {
         aux_char = '"';
       }
     }
-    else{
-    sscanf(value, "'%c'", &aux_char);	//thought this would work :(
+    else
+    {
+      sscanf(value, "'%c'", &aux_char); //thought this would work :(
     }
     //printf("aux_char %c\n", aux_char);
     sprintf(aux_str, "%d", aux_char);
@@ -867,4 +998,42 @@ char *handle_constant(Label type, char *value)
     printf("FATAL: Invalid constant type\n");
   }
   return s;
+}
+
+void insert_alias(char *id, char *updated_register, Label type)
+{
+  Register_list aux = register_list;
+  while (aux != NULL)
+  {
+    if (strcmp(aux->id, id) == 0)
+    {
+      if (DEBUG)
+        printf("Updated %s register from %s to %s\n", id, aux->updated_register, updated_register);
+      aux->updated_register = updated_register;
+      aux->type = type;
+      return;
+    }
+    aux = aux->next;
+  }
+  Register_list alias = (Register_list)malloc(sizeof(struct _rl));
+  alias->id = id;
+  alias->updated_register = updated_register;
+  alias->next = register_list;
+  alias->type = type;
+  register_list = alias;
+}
+
+Register_list get_register(char *id)
+{
+  Register_list aux = register_list;
+  while (aux != NULL)
+  {
+    if (strcmp(aux->id, id) == 0)
+    {
+      return aux;
+    }
+    aux = aux->next;
+  }
+  printf("This should never happen, could not find register\n");
+  return NULL;
 }
