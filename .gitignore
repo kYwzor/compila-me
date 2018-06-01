@@ -13,6 +13,7 @@ y.output
 # LLVM stuff
 *.s
 *.ll
+god
 
 # Outputs produced
 *.out
