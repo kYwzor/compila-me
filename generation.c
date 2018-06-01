@@ -4,6 +4,7 @@ int r_count = 1;
 int andor_count = 1;
 int if_count = 1;
 int while_count = 1;
+int found_return = 0;
 char* current_function = NULL;
 void generate_code(Node node)
 {
@@ -56,7 +57,11 @@ void generate_code(Node node)
     aux = paramList->brother->child; //funcbody child
     while (aux != NULL)
     {
+      found_return = 0;
       generate_code(aux);
+      if (found_return){
+        break;
+      }
       aux = aux->brother;
     }
     current_function = NULL;
@@ -125,9 +130,13 @@ void generate_code(Node node)
   {
     Node aux = node->child;
     while(aux != NULL){
+      found_return = 0;
       generate_code(aux);
+      if (found_return)
+        break;
       aux = aux -> brother;
-    } 
+    }
+
     break;
   } 
 
@@ -140,42 +149,31 @@ void generate_code(Node node)
     printf("label.if.start%d:\n", aux_l);
     printf("\t%%%d = icmp eq i32 %%%d, 1\n", r_count++, aux1);
     if(node->child->brother->brother->label != Null)
-    printf("\tbr i1 %%%d, label %%label.if.then%d, label %%label.if.else%d\n", r_count - 1, aux_l, aux_l);
+      printf("\tbr i1 %%%d, label %%label.if.then%d, label %%label.if.else%d\n", r_count - 1, aux_l, aux_l);
     else
-    printf("\tbr i1 %%%d, label %%label.if.then%d, label %%label.if.end%d\n", r_count - 1, aux_l, aux_l);
+      printf("\tbr i1 %%%d, label %%label.if.then%d, label %%label.if.end%d\n", r_count - 1, aux_l, aux_l);
 
     printf("label.if.then%d:\n", aux_l);
+    found_return = 0;
     generate_code(node->child->brother);
-    int no_break = 0;
-    Node then_child = node->child->brother;
-    Node find_return = then_child->child;
-    if(then_child->label == Return) no_break = 1;
-    while(find_return != NULL && no_break == 0){
-      if(find_return->label == Return)
-      no_break = 1;
-      find_return = find_return->brother;
-    }
-    if(no_break == 0)
-    printf("\tbr label %%label.if.end%d\n", aux_l);
+    if(!found_return)
+      printf("\tbr label %%label.if.end%d\n", aux_l);
 
+    int aux_ret = found_return;
+    found_return = 0;
     if (node->child->brother->brother->label != Null)
     { 
-         no_break = 0;
-    Node else_child = node->child->brother->brother;
-    Node find_return = else_child->child;
-    if(else_child->label == Return) no_break = 1;
-    while(find_return != NULL && no_break == 0){
-      if(find_return->label == Return)
-      no_break = 1;
-      find_return = find_return->brother;
-    }
       printf("label.if.else%d:\n", aux_l);
       generate_code(node->child->brother->brother);
-      if(no_break == 0)
-      printf("\tbr label %%label.if.end%d\n", aux_l);
+      if(!found_return)
+        printf("\tbr label %%label.if.end%d\n", aux_l);
     }
-
+    if (aux_ret && found_return){
+      // both options end in a return
+      break;
+    }
     printf("label.if.end%d:\n", aux_l);
+    found_return = 0;
     break;
 
   case While:
@@ -190,19 +188,12 @@ void generate_code(Node node)
     printf("\tbr i1 %%%d, label %%label.while.loop%d, label %%label.while.stop%d\n", r_count - 1, aux_l, aux_l);
 
     printf("label.while.loop%d:\n", aux_l);
+    found_return = 0;
     generate_code(node->child->brother);
-        int no_break = 0;
-    Node then_child = node->child->brother;
-    Node find_return = then_child->child;
-    if(then_child->label == Return) no_break = 1;
-    while(find_return != NULL && no_break == 0){
-      if(find_return->label == Return)
-      no_break = 1;
-      find_return = find_return->brother;
-    }
-    if(no_break == 0)
-    printf("\tbr label %%label.while.condition%d\n", aux_l);
+    if(!found_return)
+      printf("\tbr label %%label.while.condition%d\n", aux_l);
 
+    found_return = 0;
     printf("label.while.stop%d:\n", aux_l);    
     break;
   }
@@ -219,6 +210,7 @@ void generate_code(Node node)
     Label current_function_type = function_entry->table_node->label;
     aux1 = convert_register(current_function_type, node->child->type, r_count - 1);
     printf("\tret %s %%%d\n", get_llvm_type(current_function_type), aux1);
+    found_return = 1;
     break;
   }
 
