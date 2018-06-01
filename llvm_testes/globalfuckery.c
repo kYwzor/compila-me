@@ -1,11 +1,14 @@
 int a = 1;
 int b; 
 int c = 3;
+int d;
 
 int main(void){
 	int b = -4;
 
 	putchar(c + 'A');
+	putchar('\n');
+	putchar(d + 'A');
 	putchar('\n');
 	hm(b, a);
 	int a = -2;
