@@ -111,11 +111,11 @@ void generate_code(Node node)
       {
         if (type_spec->label != Double)
         {
-          printf("%s = global %s %d\n", get_register(id->value), get_llvm_type(type_spec->label), eval_int(aux));
+          printf("%s = common global %s %d\n", get_register(id->value), get_llvm_type(type_spec->label), eval_int(aux));
         }
         else
         {
-          printf("%s = global %s %.16E\n", get_register(id->value), get_llvm_type(type_spec->label), /*meter aqui uma versao double*/ eval_double(aux));
+          printf("%s = common global %s %.16E\n", get_register(id->value), get_llvm_type(type_spec->label), /*meter aqui uma versao double*/ eval_double(aux));
         }
       }
       else
@@ -147,7 +147,7 @@ void generate_code(Node node)
     printf("\tbr label %%label.if.start%d\n", aux_l);
     
     printf("label.if.start%d:\n", aux_l);
-    printf("\t%%%d = icmp eq i32 %%%d, 1\n", r_count++, aux1);
+    printf("\t%%%d = icmp ne i32 %%%d, 0\n", r_count++, aux1);
     if(node->child->brother->brother->label != Null)
       printf("\tbr i1 %%%d, label %%label.if.then%d, label %%label.if.else%d\n", r_count - 1, aux_l, aux_l);
     else
@@ -184,7 +184,7 @@ void generate_code(Node node)
     printf("label.while.condition%d:\n", aux_l);
     generate_code(node->child);
     aux1 = convert_register(Int, node->child->type, r_count - 1);
-    printf("\t%%%d = icmp eq i32 %%%d, 1\n", r_count++, aux1);
+    printf("\t%%%d = icmp ne i32 %%%d, 0\n", r_count++, aux1);
     printf("\tbr i1 %%%d, label %%label.while.loop%d, label %%label.while.stop%d\n", r_count - 1, aux_l, aux_l);
 
     printf("label.while.loop%d:\n", aux_l);
@@ -240,7 +240,7 @@ void generate_code(Node node)
     printf("label.middle%d:\n", aux_l);
     generate_code(node->child->brother);
     aux2 = convert_register(Int, node->child->brother->type, r_count - 1);
-    printf("\t%%%d = icmp eq i32 %%%d, 1\n", r_count++, aux2);
+    printf("\t%%%d = icmp ne i32 %%%d, 0\n", r_count++, aux2);
     printf("\tbr label %%label.end%d\n", aux_l);
 
     printf("label.end%d:\n", aux_l);
