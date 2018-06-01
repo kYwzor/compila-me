@@ -7,7 +7,8 @@ int main(void)
   n = getchar();
   
   while(i <= n){
-	putchar(f(i));
+	putchar(f(i) + 'A');
+  putchar('\n');
 	i = i + 1;
   }
   

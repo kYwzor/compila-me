@@ -5,7 +5,12 @@ int main(void)
       int a;
       int p,m;
 
-      putchar(bigmod(5,55,231));
+      putchar(bigmod(5,55,231) + 'A');
+      putchar('\n');
+      putchar(bigmod(3,5,3) + 'A');
+      putchar('\n');
+      putchar(bigmod(2946,5,5545362) + 'A');
+      putchar('\n');
 
       return 0;
 }
