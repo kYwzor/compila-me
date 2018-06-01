@@ -208,6 +208,11 @@ void generate_code(Node node)
     generate_code(node->child);
     Table_list function_entry = find_function_entry(current_function);
     Label current_function_type = function_entry->table_node->label;
+    if (current_function_type == Void){
+      printf("\tret void\n");
+      found_return = 1;
+      break; 
+    }
     aux1 = convert_register(current_function_type, node->child->type, r_count - 1);
     printf("\tret %s %%%d\n", get_llvm_type(current_function_type), aux1);
     found_return = 1;
