@@ -1,3 +1,16 @@
+int main(void){
+    while (1)
+    {
+        if(1){
+            return 1;
+        }
+    }
+    if (1)
+    {
+        return 1;
+    }
+}
+
 int mainInt(void){
     return 1;
 }
@@ -24,3 +37,4 @@ char mainCharTricky(void){
 short mainShort(void){
     return 1;
 }
+
