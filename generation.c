@@ -82,8 +82,8 @@ void generate_code(Node node)
     Node id = typeSpec->brother;
     if (typeSpec->label != Void)
     {
-      printf("%%%d = alloca %s\n", r_count++, get_llvm_type(typeSpec->label));
-      printf("store %s %%%s, %s* %%%d\n", get_llvm_type(typeSpec->label), id->value, get_llvm_type(typeSpec->label), r_count - 1);
+      printf("\t%%%d = alloca %s\n", r_count++, get_llvm_type(typeSpec->label));
+      printf("\tstore %s %%%s, %s* %%%d\n", get_llvm_type(typeSpec->label), id->value, get_llvm_type(typeSpec->label), r_count - 1);
       Table_list table = find_function_entry(current_function);
       Arg_list arg = find_parameter(table, id->value);
       arg->register_value = r_count - 1; 
@@ -103,7 +103,7 @@ void generate_code(Node node)
     {
       //Marcar o simbolo como ativo
       find_symbol(find_function_entry(current_function), id->value)->active = 1;
-      printf("%s = alloca %s\n", get_register(id->value), get_llvm_type(type_spec->label)); //align???
+      printf("\t%s = alloca %s\n", get_register(id->value), get_llvm_type(type_spec->label)); //align???
       if (aux != NULL)
       {
         generate_code(aux);
@@ -148,17 +148,17 @@ void generate_code(Node node)
     int aux_l = if_count++;
     printf("\tbr label %%label.if.start%d\n", aux_l);
     
-    printf("label.if.start%d:", aux_l);
+    printf("label.if.start%d:\n", aux_l);
     printf("\t%%%d = icmp eq i32 %%%d, 1\n", r_count++, aux1);
     printf("\tbr i1 %%%d, label %%label.if.then%d, label %%label.if.else%d\n", r_count - 1, aux_l, aux_l);
 
     printf("label.if.then%d:\n", aux_l);
     generate_code(node->child->brother);
-    printf("br label %%label.if.end%d\n", aux_l);
+    printf("\tbr label %%label.if.end%d\n", aux_l);
 
     printf("label.if.else%d:\n", aux_l);
     generate_code(node->child->brother->brother);
-    printf("br label %%label.if.end%d\n", aux_l);
+    printf("\tbr label %%label.if.end%d\n", aux_l);
 
     printf("label.if.end%d:\n", aux_l);
     break;
@@ -168,7 +168,7 @@ void generate_code(Node node)
     int aux_l = while_count++;
     printf("\tbr label %%label.while.condition%d\n", aux_l);
     
-    printf("label.while.condition%d:", aux_l);
+    printf("label.while.condition%d:\n", aux_l);
     generate_code(node->child);
     aux1 = convert_register(Int, node->child->type, r_count - 1);
     printf("\t%%%d = icmp eq i32 %%%d, 1\n", r_count++, aux1);
@@ -176,7 +176,7 @@ void generate_code(Node node)
 
     printf("label.while.loop%d:\n", aux_l);
     generate_code(node->child->brother);
-    printf("br label %%label.while.condition%d\n", aux_l);
+    printf("\tbr label %%label.while.condition%d\n", aux_l);
 
     printf("label.while.stop%d:\n", aux_l);    
     break;
@@ -629,9 +629,8 @@ void generate_code(Node node)
   default:
     if (DEBUG)
       printf("Defaulted %s\n", get_label_string(node->label));
-    //full_generation(node);
-    if (node->child != NULL)
-      generate_code(node->child);
+
+    printf("FATAL: defaulted call in code generation %s\n", get_label_string(node->label));
     break;
   }
 }
@@ -703,7 +702,7 @@ int eval_int(Node node)
     return aux_int;
     break;
   default:
-    printf("Fatal error in eval_int %s\n", get_label_string(node->label));
+    printf("FATAL: error in eval_int %s\n", get_label_string(node->label));
     return ERROR;
   }
   return ERROR;
@@ -766,7 +765,7 @@ double eval_double(Node node)
     break;
 
   default:
-    printf("Fatal error in eval_double %s\n", get_label_string(node->label));
+    printf("FATAL: error in eval_double %s\n", get_label_string(node->label));
     return ERROR;
   }
   return ERROR;
