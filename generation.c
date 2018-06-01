@@ -1,6 +1,9 @@
 #include "generation.h"
 
 int r_count = 1;
+int andor_count = 1;
+int if_count = 1;
+int while_count = 1;
 char* current_function = NULL;
 void generate_code(Node node)
 {
@@ -70,23 +73,17 @@ void generate_code(Node node)
     printf("\tret %s %s\n}\n", get_llvm_type(type_spec->label), get_default_value(type_spec->label)); //return default, fica no final da funcao, provavelmente inalcancavel. Isto e suposto ser assim
     break;
   }
-    /*
   case FuncDeclaration:
-  {
-    if (DEBUG)
-      printf("%s is %s\n", get_label_string(node->label), get_label_string(FuncDeclaration));
-    //full_generation(node);
     break;
-  }
-*/
+
   case ParamDeclaration:
   {
     Node typeSpec = node->child;
     Node id = typeSpec->brother;
     if (typeSpec->label != Void)
     {
-      printf("%%%d = alloca %s\n", r_count++, get_llvm_type(typeSpec->label));
-      printf("store %s %%%s, %s* %%%d\n", get_llvm_type(typeSpec->label), id->value, get_llvm_type(typeSpec->label), r_count - 1);
+      printf("\t%%%d = alloca %s\n", r_count++, get_llvm_type(typeSpec->label));
+      printf("\tstore %s %%%s, %s* %%%d\n", get_llvm_type(typeSpec->label), id->value, get_llvm_type(typeSpec->label), r_count - 1);
       Table_list table = find_function_entry(current_function);
       Arg_list arg = find_parameter(table, id->value);
       arg->register_value = r_count - 1; 
@@ -106,7 +103,7 @@ void generate_code(Node node)
     {
       //Marcar o simbolo como ativo
       find_symbol(find_function_entry(current_function), id->value)->active = 1;
-      printf("%s = alloca %s\n", get_register(id->value), get_llvm_type(type_spec->label)); //align???
+      printf("\t%s = alloca %s\n", get_register(id->value), get_llvm_type(type_spec->label)); //align???
       if (aux != NULL)
       {
         generate_code(aux);
@@ -135,6 +132,55 @@ void generate_code(Node node)
 
     break;
   }
+  case StatList:
+  {
+    Node aux = node->child;
+    while(aux != NULL){
+      generate_code(aux);
+      aux = aux -> brother;
+    } 
+    break;
+  } 
+
+  case If:
+    generate_code(node->child);
+    aux1 = convert_register(Int, node->child->type, r_count - 1);
+    int aux_l = if_count++;
+    printf("\tbr label %%label.if.start%d\n", aux_l);
+    
+    printf("label.if.start%d:\n", aux_l);
+    printf("\t%%%d = icmp eq i32 %%%d, 1\n", r_count++, aux1);
+    printf("\tbr i1 %%%d, label %%label.if.then%d, label %%label.if.else%d\n", r_count - 1, aux_l, aux_l);
+
+    printf("label.if.then%d:\n", aux_l);
+    generate_code(node->child->brother);
+    printf("\tbr label %%label.if.end%d\n", aux_l);
+
+    printf("label.if.else%d:\n", aux_l);
+    generate_code(node->child->brother->brother);
+    printf("\tbr label %%label.if.end%d\n", aux_l);
+
+    printf("label.if.end%d:\n", aux_l);
+    break;
+
+  case While:
+  {
+    int aux_l = while_count++;
+    printf("\tbr label %%label.while.condition%d\n", aux_l);
+    
+    printf("label.while.condition%d:\n", aux_l);
+    generate_code(node->child);
+    aux1 = convert_register(Int, node->child->type, r_count - 1);
+    printf("\t%%%d = icmp eq i32 %%%d, 1\n", r_count++, aux1);
+    printf("\tbr i1 %%%d, label %%label.while.loop%d, label %%label.while.stop%d\n", r_count - 1, aux_l, aux_l);
+
+    printf("label.while.loop%d:\n", aux_l);
+    generate_code(node->child->brother);
+    printf("\tbr label %%label.while.condition%d\n", aux_l);
+
+    printf("label.while.stop%d:\n", aux_l);    
+    break;
+  }
 
   case Return:
   {
@@ -159,13 +205,66 @@ void generate_code(Node node)
     printf("\tstore %s %%%d, %s* %s\n", get_llvm_type(node->type), aux1, get_llvm_type(node->type), get_register(node->child->value));
     break;
 
-  /*
-  case Or:
 
+  case Or:
+  {
+    generate_code(node->child);
+    aux1 = convert_register(Int, node->child->type, r_count - 1);
+    int aux_l = andor_count++;
+    printf("\tbr label %%label.start%d\n", aux_l);
+
+    printf("label.start%d:\n", aux_l);
+    printf("\t%%%d = icmp eq i32 %%%d, 0\n", r_count++, aux1);
+    printf("\tbr i1 %%%d, label %%label.middle%d, label %%label.end%d\n", r_count - 1, aux_l, aux_l);
+
+    printf("label.middle%d:\n", aux_l);
+    generate_code(node->child->brother);
+    aux2 = convert_register(Int, node->child->brother->type, r_count - 1);
+    printf("\t%%%d = icmp eq i32 %%%d, 1\n", r_count++, aux2);
+    printf("\tbr label %%label.end%d\n", aux_l);
+
+    printf("label.end%d:\n", aux_l);
+    if(aux_l == andor_count - 1){
+      printf("\t%%%d = phi i1 [1, %%label.start%d], [%%%d, %%label.middle%d]\n", r_count, aux_l, r_count - 1, aux_l);
+    }
+    else{
+      printf("\t%%%d = phi i1 [1, %%label.start%d], [%%%d, %%label.end%d]\n", r_count, aux_l, r_count - 1, aux_l + 1);
+    }
+    r_count++;
+    aux1 = r_count - 1;
+    printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     break;
+  }
+
   case And:
+  {
+    generate_code(node->child);
+    aux1 = convert_register(Int, node->child->type, r_count - 1);
+    int aux_l = andor_count++;
+    printf("\tbr label %%label.start%d\n", aux_l);
+
+    printf("label.start%d:\n", aux_l);
+    printf("\t%%%d = icmp eq i32 %%%d, 1\n", r_count++, aux1);
+    printf("\tbr i1 %%%d, label %%label.middle%d, label %%label.end%d\n", r_count - 1, aux_l, aux_l);
+
+    printf("label.middle%d:\n", aux_l);
+    generate_code(node->child->brother);
+    aux2 = convert_register(Int, node->child->brother->type, r_count - 1);
+    printf("\t%%%d = icmp eq i32 %%%d, 1\n", r_count++, aux2);
+    printf("\tbr label %%label.end%d\n", aux_l);
+
+    printf("label.end%d:\n", aux_l);
+    if(aux_l == andor_count - 1){
+      printf("\t%%%d = phi i1 [0, %%label.start%d], [%%%d, %%label.middle%d]\n", r_count, aux_l, r_count - 1, aux_l);
+    }
+    else{
+      printf("\t%%%d = phi i1 [0, %%label.start%d], [%%%d, %%label.end%d]\n", r_count, aux_l, r_count - 1, aux_l + 1);
+    }
+    r_count++;
+    aux1 = r_count - 1;
+    printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
     break;
-  */
+  }
 
   case Eq:
     generate_code(node->child);
@@ -434,6 +533,11 @@ void generate_code(Node node)
     generate_code(node->child);
     break;
 
+  case Comma:
+    generate_code(node->child);
+    generate_code(node->child->brother);
+    break;
+
   case BitWiseAnd:
     generate_code(node->child);
     aux1 = r_count - 1;
@@ -519,12 +623,14 @@ void generate_code(Node node)
     }
     break;
   }
+  case Null:
+    break;
+
   default:
     if (DEBUG)
       printf("Defaulted %s\n", get_label_string(node->label));
-    //full_generation(node);
-    if (node->child != NULL)
-      generate_code(node->child);
+
+    printf("FATAL: defaulted call in code generation %s\n", get_label_string(node->label));
     break;
   }
 }
@@ -596,7 +702,7 @@ int eval_int(Node node)
     return aux_int;
     break;
   default:
-    printf("Fatal error in eval_int %s\n", get_label_string(node->label));
+    printf("FATAL: error in eval_int %s\n", get_label_string(node->label));
     return ERROR;
   }
   return ERROR;
@@ -659,7 +765,7 @@ double eval_double(Node node)
     break;
 
   default:
-    printf("Fatal error in eval_double %s\n", get_label_string(node->label));
+    printf("FATAL: error in eval_double %s\n", get_label_string(node->label));
     return ERROR;
   }
   return ERROR;
