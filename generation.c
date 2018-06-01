@@ -159,10 +159,14 @@ void generate_code(Node node)
     printf("\tstore %s %%%d, %s* %s\n", get_llvm_type(node->type), aux1, get_llvm_type(node->type), get_register(node->child->value));
     break;
 
-  /* :(
+  /*
   case Or:
+
+    break;
   case And:
+    break;
   */
+
   case Eq:
     generate_code(node->child);
     aux1 = r_count - 1;
@@ -427,6 +431,36 @@ void generate_code(Node node)
     generate_code(node->child);
     break;
 
+  case BitWiseAnd:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+    aux1 = convert_register(node->type, node->child->type, aux1);
+    aux2 = convert_register(node->type, node->child->brother->type, aux2);
+    printf("\t%%%d = and %s %d %d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
+    break;
+
+  case BitWiseXor:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+    aux1 = convert_register(node->type, node->child->type, aux1);
+    aux2 = convert_register(node->type, node->child->brother->type, aux2);
+    printf("\t%%%d = xor %s %d %d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
+    break;
+
+  case BitWiseOr:
+    generate_code(node->child);
+    aux1 = r_count - 1;
+    generate_code(node->child->brother);
+    aux2 = r_count - 1;
+    aux1 = convert_register(node->type, node->child->type, aux1);
+    aux2 = convert_register(node->type, node->child->brother->type, aux2);
+    printf("\t%%%d = or %s %d %d\n", r_count++, get_llvm_type(node->type), aux1, aux2);
+    break;
+
   case RealLit:
     printf("\t%%%d = fadd double %s, %s\n", r_count++, get_default_value(Double), handle_constant(Double, node->value, aux_str));
     break;
@@ -437,6 +471,7 @@ void generate_code(Node node)
     printf("\t%%%d = add i32 %s, %s\n", r_count++, get_default_value(Char), handle_constant(Char, node->value, aux_str));
     // sim, tem mesmo que ser i32, porque um chrlit e sempre anotado como int
     break;
+
   case Id:
   {
     Table_list table = find_function_entry(current_function);
