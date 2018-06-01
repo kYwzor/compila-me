@@ -410,6 +410,9 @@ void generate_code(Node node)
     // Vou assumir que NUNCA ha !Double
     aux1 = convert_register(Int, node->child->type, r_count - 1);
     printf("\t%%%d = icmp eq i32 %%%d, 0\n", r_count++, aux1);
+    aux1 = r_count - 1;
+    printf("\t%%%d = zext i1 %%%d to i32\n", r_count++, aux1);
+
     break;
 
   case Minus:
