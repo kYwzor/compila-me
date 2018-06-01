@@ -1,13 +1,12 @@
 int f(int);
  
-int main()
+int main(void)
 {
-  int n, i = 0, c;
+  int n, i = 0;
  
   n = getchar();
   
-  c = 1;
-  while(c <= n){
+  while(i <= n){
 	putchar(f(i));
 	i = i + 1;
   }
